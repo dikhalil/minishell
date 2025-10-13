@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 15:13:07 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/12 21:03:14 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/13 20:13:00 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,8 @@
 
 int add_token(t_token **head, char *value, t_token_type type, t_quote_type quote)
 {
-    char *word;
     t_token *new;
 
-    
-    word = NULL;
     new = malloc(sizeof(t_token));
     if (!new)
         exit_program(head, ERR_MEM);
@@ -32,9 +29,6 @@ int add_token(t_token **head, char *value, t_token_type type, t_quote_type quote
 
 int add_redir(t_token **token, char chr, char nextchr)
 {
-    int i;
-
-    i = 0;
     if (chr == '|')
         return (add_token(token, "|", T_PIPE, NONE));
     else if (chr == '<' && nextchr == '<')
@@ -61,15 +55,25 @@ int add_word(t_token **head, char *str)
     if (quote_type != NONE)
         quote_chr = str[i++];
     start = i;
-    while ((str[i] && !is_space(str[i]) && !is_redir(str[i])) ||
-     (quote_chr && str[i] != quote_chr))
+    if (quote_chr)
+    {
+        while (str[i] && str[i] != quote_chr)
+            i++;
+        if (str[i] != quote_chr)
+            return (-1);
         i++;
-    if (!str[i] && quote_chr)  
-        return (-1);
-    word = ft_substr(str, start, i - start);
+        word = ft_substr(str, start, i - start - 1);
+    }
+    else
+    {
+        while (str[i] && !is_space(str[i]) && !is_redir(str[i]))
+            i++;
+        word = ft_substr(str, start, i - start);
+    }
     if (!word)
         exit_program(head, ERR_MEM);
-    i = add_token(head, word, T_WORD, quote_type);
+    if (*word)
+        add_token(head, word, T_WORD, quote_type);
     free(word);
     return (i);
 }
