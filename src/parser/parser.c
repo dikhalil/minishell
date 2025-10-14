@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 16:39:30 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/13 21:00:03 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/14 03:23:04 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	cmd_add_back(t_cmd **head, t_cmd *new)
 	last->next = new;
 }
 
-t_token	*redir_last(t_redir *head)
+t_redir	*redir_last(t_redir *head)
 {
 	if (!head)
 		return (NULL);
@@ -51,80 +51,109 @@ t_token	*redir_last(t_redir *head)
 	return (head);
 }
 
-void	redir_add_back(t_redir **head, t_redir *new)
+int	redir_add_back(t_redir **head, t_redir *new)
 {
 	t_redir	*last;
 
 	if (!head || !new)
-		return ;
+		return (0);
 	if (!*head)
 	{
 		*head = new;
-		return ;
+		return (1);
 	}
 	last = redir_last(*head);
 	last->next = new;
+    return (1);
 }
 
+t_arg *arg_new(char *value)
+{
+    t_arg *new = ft_calloc(1, sizeof(t_arg));
+    if (!new)
+        return (NULL);
+    new->value = ft_strdup(value);
+    if (!new->value)
+        return (NULL);
+    return (new);
+}
+t_redir *redir_new(t_token **token)
+{
+    t_redir *new = ft_calloc(1, sizeof(t_redir));
+    if (!new)
+        return (NULL);
+    new->type = (*token)->type;
+    if ((*token)->next && (*token)->next->type == T_WORD)
+    {
+        *token = (*token)->next;
+        new->file = ft_strdup((*token)->value);
+        if (!new->file)
+            return (NULL);
+    }
+    else
+        return (NULL);
+    return (new);
+}
+t_ard	*arg_last(t_arg *head)
+{
+	if (!head)
+		return (NULL);
+	while (head->next)
+		head = head->next;
+	return (head);
+}
+void arg_add_back(t_arg **head, t_arg *new)
+{
+    t_arg *last;
+
+    if (!*head)
+    {
+        *head = new;
+        return;
+    }
+    last = arg_last(*head);
+	last->next = new;
+}
+t_arg *cmd_new()
+{
+    t_cmd *new = ft_calloc(1, sizeof(t_cmd));
+    if (!new)
+        return (NULL);//error
+    return (new);
+}
 void parser(t_cmd **cmd, t_token **tokens, int *last_exit)
 {
     t_cmd *current_cmd;
-    t_redir *current_redir;
     t_token *current_token;
-    int i;
     
-    current_cmd = ft_calloc(1, sizeof(t_cmd));
-    if (!current_cmd)
-        //error
-    //malloc current_cmd->argv
-    *cmd = current_cmd;
+    current_cmd = cmd_new();
     current_token = *tokens;
-    current_redir = NULL;
-    i = 0;
     while (current_token)
     {
         if (current_token->type == T_WORD)
-        {
-            current_cmd->argv[i++] = ft_strdup(current_token->value);
-            if (!current_cmd->argv[i])
-                //error
-        }
+            arg_add_back(&current_cmd->arg, arg_new(current_token->value));
         else if (is_redir(current_token->type))
         {
-            current_redir = ft_calloc(1, sizeof(t_redir));
-            if (!current_redir)
-                //error
-            current_redir->type = current_token->type;
-            if (current_token->next && current_token->next->type == T_WORD)
-            {
-                current_token = current_token->next;
-                current_redir->file = ft_strdup(current_token->value);
-            }
-            else
-                //ERROR
-            redir_add_back(&current_cmd->redir, current_redir);
+            if (!redir_add_back(&current_cmd->redir, redir_new(&current_token)))
+                //error in redir
         }
         else if (current_token->type == PIPE)
         {
-            if (current_cmd->argv || current_cmd->redir)
-            {
-                if (current_token->next && (current_token->next->type == T_WORD || is_redir(current_token->next->type)) )
-                {
-                    cmd_add_back(cmd, current_cmd);
-                    //create new cmd
-                    current_cmd = ft_calloc(1, sizeof(t_cmd));
-                    if (!current_cmd)
-                        // handle error
-                    //malloc current_cmd->argv
-                    i = 0;
-                    current_redir = NULL;
-                }
-            }
-            else
-                //error
+            if (!handle_pipe(cmd, &current_cmd, current_token))
+                //error in pipe
         }
         current_token = current_token->next;
     }
-    
+	cmd_add_back(cmd, current_cmd);
+}
+
+int	handle_pipe(t_cmd **cmd, t_cmd **current_cmd, t_token *current_token)
+{
+    if (!(*current_cmd)->arg && !(*current_cmd)->redir)
+        return (0);
+    cmd_add_back(cmd, *current_cmd);
+    if (current_token->next)
+        *current_cmd = cmd_new();
+    return (1);
 }
 

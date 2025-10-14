@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:11:01 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/13 17:36:28 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:11:51 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,12 @@ typedef struct s_token
     struct s_token *next;
 }   t_token;
 
+typedef struct s_arg
+{
+    char            *value;
+    struct s_arg    *next;
+}   t_arg;
+
 typedef struct s_redir
 {
     t_token_type type;
@@ -63,7 +69,7 @@ typedef struct s_redir
 
 typedef struct s_cmd
 {
-    char **argv;
+    t_arg *arg;
     t_redir *redir;
     struct s_cmd *next;
 }

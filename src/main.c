@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/13 17:17:08 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/14 02:39:34 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int main(int argc, char **argv, char **envp)
             continue;
         }
         lexer(command_line, &token, &last_exit);
-        if (!token)
+        if (!token || !*token)
         {
             free(command_line);
             continue ;
