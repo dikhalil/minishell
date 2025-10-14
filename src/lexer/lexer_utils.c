@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 15:43:13 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/12 21:09:04 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/14 16:53:56 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,4 @@ t_quote_type get_quote_type(char c)
         return SINGLE_QUOTE;
     return NONE;
 }
-
 

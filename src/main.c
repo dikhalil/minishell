@@ -6,11 +6,53 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/14 02:39:34 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/14 22:28:19 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+const char *redir_type_name(t_redir *redir)
+{
+    if (!redir)
+        return "UNKNOWN";
+    if (redir->type == T_IN_REDIR)
+        return "IN";
+    if (redir->type == T_OUT_REDIR)
+        return "OUT";
+    if (redir->type == T_APPEND)
+        return "APPEND";
+    if (redir->type == T_HEREDOC)
+        return "HEREDOC";
+    return "UNKNOWN";
+}
+
+void print_commands(t_cmd *cmds)
+{
+    t_cmd *current = cmds;
+    while (current)
+    {
+        printf("Command:\n");
+        t_arg *arg = current->arg;
+        int i = 0;
+        while (arg)
+        {
+            printf("  Arg[%d]: '%s'\n", i++, arg->value);
+            arg = arg->next;
+        }
+
+        t_redir *redir = current->redir;
+        while (redir)
+        {
+            printf("  Redir: type=%s, file='%s'\n", redir_type_name(redir), redir->file);
+            redir = redir->next;
+        }
+
+        printf("-----\n");
+        current = current->next;
+    }
+}
+
 
 int main(int argc, char **argv, char **envp)
 {
@@ -36,7 +78,7 @@ int main(int argc, char **argv, char **envp)
             continue;
         }
         lexer(command_line, &token, &last_exit);
-        if (!token || !*token)
+        if (!token)
         {
             free(command_line);
             continue ;
@@ -44,12 +86,12 @@ int main(int argc, char **argv, char **envp)
         parser(&cmd, &token, &last_exit);
         if (!cmd)
         {
-            token_clear(&token, del);
             free(command_line);
             continue ;
         }
-        token_clear(&token, del);
-        cmd_clear(&cmd, del);
+        print_commands(cmd);
+        token_clear(&token);
+        cmd_clear(&cmd);
         free(command_line);
     }
     return (0);

@@ -13,8 +13,11 @@ LIBFT = $(LIBFT_PATH)/libft.a
 # Source files
 SRCS =  src/lexer/lexer.c \
 		src/lexer/lexer_utils.c \
-		src/utils/free_utils.c \
+		src/lexer/free_utils.c \
 		src/utils/utils.c \
+		src/parser/parser.c \
+		src/parser/parser_utils.c \
+		src/parser/free_utils.c \
 		src/main.c
 
 # Object files
