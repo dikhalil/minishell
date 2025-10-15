@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:11:01 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 21:17:51 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/15 22:58:04 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,20 @@ typedef struct s_cmd
     struct s_cmd *next;
 }   t_cmd;
 
+ typedef struct s_env
+ {
+    char *key;
+    char *value;
+    struct s_env *next;
+ }  t_env;
+
+ typedef struct s_data
+{
+    t_token *tokens;
+    t_cmd   *cmds;
+    t_env   *env;
+    int     last_exit;
+}   t_data;
 
 /*------ lexer char utils------*/
 int is_space(char c);
@@ -119,7 +133,11 @@ void parser_error_handling(t_cmd **cmds,t_token **tokens, t_token *current_token
 /*------ parser------*/
 void parser(t_cmd **cmds, t_token **tokens, int *last_exit);
 
-/*------ utils------*/
+/*------ env------*/
+t_env *init_env(char **envp);
+void	env_clear(t_env **env);
+
+/*------ exit------*/
 void exit_program(t_token **token, t_cmd **cmd, int status);
 
 #endif

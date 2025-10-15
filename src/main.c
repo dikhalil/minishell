@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 21:23:28 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/15 23:01:19 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,15 +71,17 @@ int main(int argc, char **argv, char **envp)
     int last_exit;
     t_token *token;
     t_cmd *cmd;
+    t_env *env;
+    t_data data;
     
     (void)argc;
     (void)argv;
-    (void)envp;
+    data.env =  init_env(envp);    
     while (TRUE)
     {
-        token = NULL;
-        cmd = NULL;
-        last_exit = 0;
+        data.tokens = NULL;
+        data.cmds = NULL;
+        data.last_exit = 0;
         command_line = readline(PROMPT);
         if (command_line && *command_line)
             add_history(command_line);
@@ -102,10 +104,12 @@ int main(int argc, char **argv, char **envp)
             free(command_line);
             continue ;
         }
+        expand(cmd, env_list);
         print_commands(cmd);
         token_clear(&token);
         cmd_clear(&cmd);
         free(command_line);
     }
+    env_clear(&env);
     return (0);
 }
