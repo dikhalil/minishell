@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/14 22:28:19 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:32:25 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,17 @@ const char *redir_type_name(t_redir *redir)
     return "UNKNOWN";
 }
 
+const char *quote_type_name(t_quote_type quote)
+{
+    if (quote == NONE)
+        return "NONE";
+    if (quote == SINGLE_QUOTE)
+        return "SINGLE";
+    if (quote == DOUBLE_QUOTE)
+        return "DOUBLE";
+    return "UNKNOWN";
+}
+
 void print_commands(t_cmd *cmds)
 {
     t_cmd *current = cmds;
@@ -37,14 +48,15 @@ void print_commands(t_cmd *cmds)
         int i = 0;
         while (arg)
         {
-            printf("  Arg[%d]: '%s'\n", i++, arg->value);
+            printf("  Arg[%d]: '%s', quote=%s\n", i++, arg->value, quote_type_name(arg->quote));
             arg = arg->next;
         }
 
         t_redir *redir = current->redir;
         while (redir)
         {
-            printf("  Redir: type=%s, file='%s'\n", redir_type_name(redir), redir->file);
+            printf("  Redir: type=%s, file='%s', quote=%s\n",
+                   redir_type_name(redir), redir->file, quote_type_name(redir->quote));
             redir = redir->next;
         }
 
@@ -52,6 +64,7 @@ void print_commands(t_cmd *cmds)
         current = current->next;
     }
 }
+
 
 
 int main(int argc, char **argv, char **envp)

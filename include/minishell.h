@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:11:01 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/14 22:20:23 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/15 21:17:51 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,14 @@ typedef struct s_token
 typedef struct s_arg
 {
     char            *value;
+    t_quote_type quote;
     struct s_arg    *next;
 }   t_arg;
 
 typedef struct s_redir
 {
     t_token_type type;
+    t_quote_type quote;
     char *file;
     struct s_redir *next;
 }   t_redir;
@@ -74,48 +76,51 @@ typedef struct s_cmd
     struct s_cmd *next;
 }   t_cmd;
 
-/*------ lexer utils ------*/
+
+/*------ lexer char utils------*/
 int is_space(char c);
 int is_redir(char c);
+
+/*------ lexer word utils ------*/
+char	*get_word(t_token **tokens, char *str, int *i, t_quote_type *quote_type);
+
+/*------ lexer token utils ------*/
 t_token	*token_last(t_token *head);
 void	token_add_back(t_token **head, t_token *new);
-t_quote_type get_quote_type(char c);
+void	token_clear(t_token **token);
+void token_error_handling(t_token **token ,int *last_exit);
 
 /*------ lexer ------*/
 void lexer(char *command_line, t_token **token, int *last_exit);
-int add_word(t_token **head, char *str);
-int add_redir(t_token **token, char chr, char nextchr);
-int add_token(t_token **head, char *value, t_token_type type, t_quote_type quote);
 
-/*------ free utils------*/
-void del(char *value);
-void	token_clear(t_token **token);
-
-/*------ utils------*/
-void token_error_handling(t_token **token ,int *last_exit);
-void exit_program(t_token **token, t_cmd **cmd, int status);
-
-
-
-
-/*------ parser------*/
-int is_redirection(t_token_type type);
+/*------ parser cmd utils------*/
+t_cmd *cmd_new(t_cmd **cmds, t_token **tokens);
 t_cmd	*cmd_last(t_cmd *head);
 void	cmd_add_back(t_cmd **head, t_cmd *new);
-t_redir	*redir_last(t_redir *head);
-void	redir_add_back(t_redir **head, t_redir *new);
-t_arg *arg_new(t_cmd **cmds, t_token **tokens, char *value);
-t_redir *redir_new(t_cmd **cmds, t_token **tokens, t_token **current_token);
+int	handle_pipe(t_cmd **cmds, t_token **tokens, t_cmd **current_cmd, t_token *current_token);
+
+/*------ parser arg utils------*/
+t_arg *arg_new(t_cmd **cmds, t_token **tokens, t_token *current_token);
 t_arg	*arg_last(t_arg *head);
 void arg_add_back(t_arg **head, t_arg *new);
-t_cmd *cmd_new(t_cmd **cmds, t_token **tokens);
-void parser(t_cmd **cmds, t_token **tokens, int *last_exit);
-int	handle_pipe(t_cmd **cmds, t_token **tokens, t_cmd **current_cmd, t_token *current_token);
+void handle_word(t_cmd **cmds, t_token **tokens, t_cmd **current_cmd, t_token *current_token);
+
+/*------ parser redir utils------*/
+int is_redirection(t_token_type type);
+t_redir *redir_new(t_cmd **cmds, t_token **tokens, t_token **current_token);
+t_redir	*redir_last(t_redir *head);
+void	redir_add_back(t_redir **head, t_redir *new);
 int handle_redir(t_cmd **cmds, t_token **tokens,t_cmd **current_cmd, t_token **current_token);
-void parser_error_handling(t_cmd **cmds,t_token **tokens, t_token *current_token, int *last_exit);
+
+/*------ parser free utils------*/
 void	cmd_clear(t_cmd **cmds);
-void free_cmd_redir(t_cmd **cmds);
-void free_cmd_arg(t_cmd **cmds);
+void parser_error_handling(t_cmd **cmds,t_token **tokens, t_token *current_token, int *last_exit);
+
+/*------ parser------*/
+void parser(t_cmd **cmds, t_token **tokens, int *last_exit);
+
+/*------ utils------*/
+void exit_program(t_token **token, t_cmd **cmd, int status);
 
 #endif
 

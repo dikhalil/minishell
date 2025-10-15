@@ -6,13 +6,13 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 15:13:07 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/14 22:15:20 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/15 18:19:53 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int add_token(t_token **tokens, char *value, t_token_type type, t_quote_type quote)
+static int add_token(t_token **tokens, char *value, t_token_type type, t_quote_type quote)
 {
     t_token *new;
 
@@ -29,7 +29,7 @@ int add_token(t_token **tokens, char *value, t_token_type type, t_quote_type quo
     return (ft_strlen(new->value));
 }
 
-int add_redir(t_token **tokens, char chr, char nextchr)
+static int add_redir(t_token **tokens, char chr, char nextchr)
 {
     if (chr == '|')
         return (add_token(tokens, "|", T_PIPE, NONE));
@@ -43,65 +43,22 @@ int add_redir(t_token **tokens, char chr, char nextchr)
         return (add_token(tokens, ">", T_OUT_REDIR, NONE));
 }
 
-static int	skip_quoted(char *str, int i, char quote_chr)
-{
-	while (str[i] && str[i] != quote_chr)
-		i++;
-	if (!str[i])
-		return (-1);
-	return (i + 1);
-}
-
-static int	skip_unquoted(char *str, int i)
-{
-	while (str[i] && !is_space(str[i]) && !is_redir(str[i]))
-		i++;
-	return (i);
-}
-
-static char	*get_word(t_token **tokens, char *str, int *i, char quote_chr)
-{
-	int		start;
-	char	*word;
-
-	start = *i;
-	if (quote_chr)
-	{
-		*i = skip_quoted(str, *i, quote_chr);
-		if (*i == -1)
-			return (NULL);
-		word = ft_substr(str, start, *i - start - 1);
-	}
-	else
-	{
-		*i = skip_unquoted(str, *i);
-		word = ft_substr(str, start, *i - start);
-	}
-    if (!word)
-        exit_program(tokens, NULL, ERR_MEM);
-    return (word);
-}
-
-int	add_word(t_token **tokens, char *str)
+static int	add_word(t_token **tokens, char *str)
 {
 	int				i;
-	char			quote_chr;
 	char			*word;
 	t_quote_type	quote_type;
 
     i = 0;
-    quote_chr = '\0';
-	quote_type = get_quote_type(str[i]);
-	if (quote_type != NONE)
-		quote_chr = str[i++];
-	word = get_word(tokens, str, &i, quote_chr);
+    quote_type = NONE;
+	word = get_word(tokens, str, &i, &quote_type);
 	if (!word)
 		return (-1);
-	if (*word)
-		add_token(tokens, word, T_WORD, quote_type);
+	add_token(tokens, word, T_WORD, quote_type);
 	free(word);
 	return (i);
 }
+
 
 void lexer(char *command_line, t_token **tokens, int *last_exit)
 {

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_utils.c                                       :+:      :+:    :+:   */
+/*   parser_free_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:54:26 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/14 22:26:41 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:28:03 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void free_cmd_arg(t_cmd **cmds)
+static void free_cmd_arg(t_cmd **cmds)
 {
 	t_arg *tmp_arg;
 
@@ -25,7 +25,7 @@ void free_cmd_arg(t_cmd **cmds)
 	}
 }
 
-void free_cmd_redir(t_cmd **cmds)
+static void free_cmd_redir(t_cmd **cmds)
 {
 	t_redir *tmp_redir;
 
