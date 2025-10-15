@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 15:32:25 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/15 21:23:28 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ void print_commands(t_cmd *cmds)
     }
 }
 
-
-
 int main(int argc, char **argv, char **envp)
 {
     char *command_line;
@@ -83,6 +81,8 @@ int main(int argc, char **argv, char **envp)
         cmd = NULL;
         last_exit = 0;
         command_line = readline(PROMPT);
+        if (command_line && *command_line)
+            add_history(command_line);
         if (!command_line)
             break ;
         if (!*command_line)
