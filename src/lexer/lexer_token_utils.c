@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 15:43:13 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 14:29:47 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/16 14:49:58 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ void	token_clear(t_token **tokens)
 	*tokens = NULL;
 }
 
-void token_error_handling(t_token **tokens ,int *last_exit)
+void token_error_handling(t_data *data)
 {
     ft_putendl_fd("minishell: syntax error unclosed quotes", 2);
-    *last_exit = 2;
-    token_clear(tokens);
+    data->last_exit = 2;
+    token_clear(&data->tokens);
 }

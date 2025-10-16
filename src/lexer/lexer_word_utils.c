@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:21:46 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 21:17:43 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/16 13:38:08 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	skip_unquoted(char *str, int i)
 	return (i);
 }
 
-static char *extract_word(t_token **tokens, char *str, int *i, t_quote_type *quote_type)
+static char *extract_word(t_data *data, char *str, int *i, t_quote_type *quote_type)
 {
 	int		start;
 	char 	*part;
@@ -62,11 +62,11 @@ static char *extract_word(t_token **tokens, char *str, int *i, t_quote_type *quo
 		part = ft_substr(str, start, *i - start);
 	}
 	if (!part)
-		exit_program(tokens, NULL, ERR_MEM);
+		exit_program(data, ERR_MEM);
 	return (part);
 }
 
-char	*get_word(t_token **tokens, char *str, int *i, t_quote_type *quote_type)
+char	*get_word(t_data *data, char *str, int *i, t_quote_type *quote_type)
 {
 	char	*word;	
 	char 	*part;
@@ -75,7 +75,7 @@ char	*get_word(t_token **tokens, char *str, int *i, t_quote_type *quote_type)
 	word = NULL;
 	while (str[*i] && !is_space(str[*i]) && ! is_redir(str[*i]))
 	{
-		part = extract_word(tokens, str, i, quote_type);
+		part = extract_word(data, str, i, quote_type);
 		if (!part)
 			return (NULL);
 		if (!word)
@@ -87,7 +87,7 @@ char	*get_word(t_token **tokens, char *str, int *i, t_quote_type *quote_type)
 			free(tmp);
 		}
 		if (!word)
-			exit_program(tokens, NULL, ERR_MEM);
+			exit_program(data, ERR_MEM);
 		free(part);
 	}
     return (word);

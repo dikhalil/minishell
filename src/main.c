@@ -6,110 +6,74 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 23:01:19 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/16 21:47:16 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-const char *redir_type_name(t_redir *redir)
-{
-    if (!redir)
-        return "UNKNOWN";
-    if (redir->type == T_IN_REDIR)
-        return "IN";
-    if (redir->type == T_OUT_REDIR)
-        return "OUT";
-    if (redir->type == T_APPEND)
-        return "APPEND";
-    if (redir->type == T_HEREDOC)
-        return "HEREDOC";
-    return "UNKNOWN";
-}
+#include <minishell.h>
+#include <stdio.h>
 
-const char *quote_type_name(t_quote_type quote)
+void print_cmds_after_expand(t_data *data)
 {
-    if (quote == NONE)
-        return "NONE";
-    if (quote == SINGLE_QUOTE)
-        return "SINGLE";
-    if (quote == DOUBLE_QUOTE)
-        return "DOUBLE";
-    return "UNKNOWN";
-}
+    t_cmd *cmd;
+    t_arg *arg;
+    t_redir *redir;
 
-void print_commands(t_cmd *cmds)
-{
-    t_cmd *current = cmds;
-    while (current)
+    cmd = data->cmds;
+    while (cmd)
     {
-        printf("Command:\n");
-        t_arg *arg = current->arg;
-        int i = 0;
+        arg = cmd->arg;
         while (arg)
         {
-            printf("  Arg[%d]: '%s', quote=%s\n", i++, arg->value, quote_type_name(arg->quote));
+            printf("ARG: %s\n", arg->value);
             arg = arg->next;
         }
-
-        t_redir *redir = current->redir;
+        redir = cmd->redir;
         while (redir)
         {
-            printf("  Redir: type=%s, file='%s', quote=%s\n",
-                   redir_type_name(redir), redir->file, quote_type_name(redir->quote));
+            printf("FILE: %s\n", redir->file);
             redir = redir->next;
         }
-
-        printf("-----\n");
-        current = current->next;
+        cmd = cmd->next;
     }
 }
 
 int main(int argc, char **argv, char **envp)
 {
-    char *command_line;
-    int last_exit;
-    t_token *token;
-    t_cmd *cmd;
-    t_env *env;
     t_data data;
     
-    (void)argc;
-    (void)argv;
-    data.env =  init_env(envp);    
+    ft_memset(&data, 0, sizeof(t_data));
+    init_env(&data, envp);    
+    data.argv = argv;
+    data.argc = argc;
     while (TRUE)
     {
-        data.tokens = NULL;
-        data.cmds = NULL;
-        data.last_exit = 0;
-        command_line = readline(PROMPT);
-        if (command_line && *command_line)
-            add_history(command_line);
-        if (!command_line)
-            break ;
-        if (!*command_line)
+        data.command_line = readline(PROMPT);
+        if (!data.command_line)
+            exit_program(&data, 0);
+        if (*data.command_line)
+            add_history(data.command_line);
+        else
         {
-            free(command_line);
+            free(data.command_line);
             continue;
         }
-        lexer(command_line, &token, &last_exit);
-        if (!token)
-        {
-            free(command_line);
+        data.tokens = NULL;
+        lexer(&data);
+        if (!data.tokens)
             continue ;
-        }
-        parser(&cmd, &token, &last_exit);
-        if (!cmd)
-        {
-            free(command_line);
+        data.cmds = NULL;
+        parser(&data);
+        if (!data.cmds)
             continue ;
-        }
-        expand(cmd, env_list);
-        print_commands(cmd);
-        token_clear(&token);
-        cmd_clear(&cmd);
-        free(command_line);
+        expand(&data);
+        print_cmds_after_expand(&data);
+        token_clear(&data.tokens);
+        cmd_clear(&data.cmds);
+        free(data.command_line);
     }
-    env_clear(&env);
+    env_clear(&data.env);
     return (0);
 }

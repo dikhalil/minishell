@@ -6,13 +6,13 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 22:41:21 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 22:43:07 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/16 14:27:51 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static t_env	*env_new(char *key, char *value, t_env **env)
+static t_env	*env_new(t_data *data, char *key, char *value)
 {
 	t_env	*new;
 
@@ -20,19 +20,19 @@ static t_env	*env_new(char *key, char *value, t_env **env)
 	if (!new)
     {
         free(key);
-        exit_program(env, NULL, NULL, ERR_MEM);
+        exit_program(data, ERR_MEM);
     }
 	new->key = ft_strdup(key);
     if (!new->key)
     {
         free(key);
-        exit_program(env, NULL, NULL, ERR_MEM);
+        exit_program(data, ERR_MEM);
     }    
     new->value = ft_strdup(value);
     if (!new->value)
     {
         free(key);
-        exit_program(env, NULL, NULL, ERR_MEM);
+        exit_program(data, ERR_MEM);
     }	
     new->next = NULL;
 	return (new);
@@ -79,30 +79,27 @@ void	env_clear(t_env **env)
 	*env = NULL;
 }
 
-t_env *init_env(char **envp)
+void init_env(t_data *data, char **envp)
 {
     int i;
-    t_env *env;
     char *equal;
     char *tmp;
 
-    env = NULL;
     i = 0;
     while (envp[i])
     {
         tmp = ft_strdup(envp[i]);
         if (!tmp)
-            exit_program(env, NULL, NULL, ERR_MEM);
+            exit_program(data, ERR_MEM);
         equal = ft_strchr(tmp, '=');
         if (equal)
         {
-            equal = '\0';
-            env_add_back(&env, env_new(tmp, equal + 1, &env));
+            *equal = '\0';
+            env_add_back(&data->env, env_new(data, tmp, equal + 1));
         }
         else
-            env_add_back(&env, env_new(tmp, "", &env));
+            env_add_back(&data->env, env_new(data, tmp, ""));
         free(tmp);
         i++;
     }
-    return (env);
 }

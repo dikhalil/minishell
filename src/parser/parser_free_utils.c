@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:54:26 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/15 15:28:03 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/16 14:03:31 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	cmd_clear(t_cmd **cmds)
 	*cmds = NULL;
 }
 
-void parser_error_handling(t_cmd **cmds,t_token **tokens, t_token *current_token, int *last_exit)
+void parser_error_handling(t_data *data, t_token *current_token)
 {
     ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
     if (current_token && current_token->value)
@@ -62,7 +62,7 @@ void parser_error_handling(t_cmd **cmds,t_token **tokens, t_token *current_token
 	else
 		ft_putstr_fd("newline", 2);
     ft_putendl_fd("'", 2);
-    *last_exit = 2;
-    token_clear(tokens);
-    cmd_clear(cmds);
+    data->last_exit = 2;
+    token_clear(&data->tokens);
+    cmd_clear(&data->cmds);
 }
