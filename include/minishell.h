@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/17 21:14:04 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/18 15:17:55 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 #include "../libft/libft.h"
 
 #define TRUE 1
-#define FALSE 0
 #define ERR_MEM 1
 #define PROMPT "minishell$ "
 

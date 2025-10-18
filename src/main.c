@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/17 21:39:12 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/18 14:49:44 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,56 @@
 #include <minishell.h>
 #include <stdio.h>
 
-// void print_cmds_after_expand(t_data *data)
-// {
-//     t_cmd *cmd;
-//     t_arg *arg;
+char *type(t_token_type type)
+{
+	if (type ==  T_PIPE)
+		return ("|");
+	if (type ==  T_IN_REDIR)
+		return ("<");
+	if (type ==   T_OUT_REDIR)
+		return (">");
+	if (type == T_APPEND)
+		return (">>");
+	if (type ==  T_HEREDOC)
+		return ("<<");
+	return ("");
+}
+ void print_cmds_after_expand(t_data *data)
+ {
+     t_cmd *cmd;
+     t_arg *arg;
+	 t_redir *redir;
 
-//     cmd = data->cmds;
-//     while (cmd)
-//     {
-//         arg = cmd->arg;
-//         while (arg)
-//         {
-//             printf("ARG: %s\n", arg->value);
-//             arg = arg->next;
-//         }
-//         cmd = cmd->next;
-//     }
-// }
+     cmd = data->cmds;
+     while (cmd)
+     {
+		printf("-----cmd-----\n");
+         arg = cmd->arg;
+         while (arg)
+         {
+             printf("ARG: %s\n", arg->value);
+             arg = arg->next;
+         }
+		 redir = cmd->redir;
+		 while (redir)
+		 {
+			printf("redir type: %s\n", type(redir->type));
+			if (redir->file)
+				printf("redir file: %s\n", redir->file);
+			else if (redir->delim)
+				printf("redir deilm: %s\n", redir->delim);
+             redir = redir->next;
+		 }
+         cmd = cmd->next;
+     }
+ }
 
 int main(int argc, char **argv, char **envp)
 {
     t_data data;
-    
+
     ft_memset(&data, 0, sizeof(t_data));
-    init_env(&data, envp);    
+    init_env(&data, envp);
     data.argv = argv;
     data.argc = argc;
     while (TRUE)
@@ -63,7 +89,7 @@ int main(int argc, char **argv, char **envp)
             continue ;
         heredoc(&data);
         expand(&data);
-        // print_cmds_after_expand(&data);
+		print_cmds_after_expand(&data);
         token_clear(&data.tokens);
         cmd_clear(&data.cmds);
         free(data.command_line);
