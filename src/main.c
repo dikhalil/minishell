@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/18 14:49:44 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/18 16:10:56 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,49 +15,49 @@
 #include <minishell.h>
 #include <stdio.h>
 
-char *type(t_token_type type)
-{
-	if (type ==  T_PIPE)
-		return ("|");
-	if (type ==  T_IN_REDIR)
-		return ("<");
-	if (type ==   T_OUT_REDIR)
-		return (">");
-	if (type == T_APPEND)
-		return (">>");
-	if (type ==  T_HEREDOC)
-		return ("<<");
-	return ("");
-}
- void print_cmds_after_expand(t_data *data)
- {
-     t_cmd *cmd;
-     t_arg *arg;
-	 t_redir *redir;
+//char *type(t_token_type type)
+//{
+//	if (type ==  T_PIPE)
+//		return ("|");
+//	if (type ==  T_IN_REDIR)
+//		return ("<");
+//	if (type ==   T_OUT_REDIR)
+//		return (">");
+//	if (type == T_APPEND)
+//		return (">>");
+//	if (type ==  T_HEREDOC)
+//		return ("<<");
+//	return ("");
+//}
+// void print_cmds_after_expand(t_data *data)
+// {
+//     t_cmd *cmd;
+//     t_arg *arg;
+//	 t_redir *redir;
 
-     cmd = data->cmds;
-     while (cmd)
-     {
-		printf("-----cmd-----\n");
-         arg = cmd->arg;
-         while (arg)
-         {
-             printf("ARG: %s\n", arg->value);
-             arg = arg->next;
-         }
-		 redir = cmd->redir;
-		 while (redir)
-		 {
-			printf("redir type: %s\n", type(redir->type));
-			if (redir->file)
-				printf("redir file: %s\n", redir->file);
-			else if (redir->delim)
-				printf("redir deilm: %s\n", redir->delim);
-             redir = redir->next;
-		 }
-         cmd = cmd->next;
-     }
- }
+//     cmd = data->cmds;
+//     while (cmd)
+//     {
+//		printf("-----cmd-----\n");
+//         arg = cmd->arg;
+//         while (arg)
+//         {
+//             printf("ARG: %s\n", arg->value);
+//             arg = arg->next;
+//         }
+//		 redir = cmd->redir;
+//		 while (redir)
+//		 {
+//			printf("redir type: %s\n", type(redir->type));
+//			if (redir->file)
+//				printf("redir file: %s\n", redir->file);
+//			else if (redir->delim)
+//				printf("redir deilm: %s\n", redir->delim);
+//             redir = redir->next;
+//		 }
+//         cmd = cmd->next;
+//     }
+// }
 
 int main(int argc, char **argv, char **envp)
 {
@@ -89,7 +89,7 @@ int main(int argc, char **argv, char **envp)
             continue ;
         heredoc(&data);
         expand(&data);
-		print_cmds_after_expand(&data);
+		executer(&data);
         token_clear(&data.tokens);
         cmd_clear(&data.cmds);
         free(data.command_line);
