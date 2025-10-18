@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/12 20:57:51 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/17 19:07:58 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/10/17 17:46:42 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/10/18 14:16:59 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void exit_program(t_data *data, int status)
+void heredoc(t_data *data)
 {
-    if (data)
+    t_cmd *cmd;
+    t_redir *redir;
+
+    cmd = data->cmds;
+    while (cmd)
     {
-        if (data->command_line)
-            free(data->command_line);
-        if (data->env)
-            env_clear(&data->env);
-        if (data->tokens)
-            token_clear(&data->tokens);
-        if (data->cmds)
-            cmd_clear(&data->cmds);
+        redir = cmd->redir;
+        while (redir)
+        {
+            if (redir->type == T_HEREDOC)
+                handle_heredoc(data, cmd, redir);
+            redir = redir->next;
+        }
+        cmd = cmd->next;
     }
-    rl_clear_history();
-    ft_putendl_fd("exit", 0);
-    exit(status);
 }

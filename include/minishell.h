@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/16 22:28:02 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/17 21:14:04 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_redir
     t_token_type type;
     t_quote_type quote;
     char *file;
+    char *delim;
     struct s_redir *next;
 }   t_redir;
 
@@ -73,6 +74,8 @@ typedef struct s_cmd
 {
     t_arg *arg;
     t_redir *redir;
+    int infile;
+    int outfile;
     struct s_cmd *next;
 }   t_cmd;
 
@@ -135,6 +138,12 @@ void parser_error_handling(t_data *data, t_token *current_token);
 
 /* ------ parser ------ */
 void parser(t_data *data);
+
+/* ------ heredoc utils ------ */
+void handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir);
+
+/* ------ heredoc ------ */
+void heredoc(t_data *data);
 
 /* ------ expand utils ------ */
 char *extract_key(t_data *data, char *str, int *i);

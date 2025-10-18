@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:21:43 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/16 14:01:42 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/17 21:14:39 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,28 @@ int is_redirection(t_token_type type)
 
 t_redir *redir_new(t_data *data, t_token **current_token)
 {
-    t_redir *new = ft_calloc(1, sizeof(t_redir));
+    t_redir *new ;
+
+    new = ft_calloc(1, sizeof(t_redir));
     if (!new)
         exit_program(data, ERR_MEM);
     new->type = (*current_token)->type;
     if ((*current_token)->next && (*current_token)->next->type == T_WORD)
     {
         *current_token = (*current_token)->next;
-        new->file = ft_strdup((*current_token)->value);
+        if (new->type != T_HEREDOC)
+        {
+            new->file = ft_strdup((*current_token)->value);
+            if (!new->file)
+                exit_program(data, ERR_MEM);
+        }    
+        else
+        {
+            new->delim = ft_strdup((*current_token)->value);
+            if (!new->delim)
+                exit_program(data, ERR_MEM);
+        }
         new->quote = (*current_token)->quote;
-        if (!new->file)
-            exit_program(data, ERR_MEM);
     }
     else
         return (NULL);

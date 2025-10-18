@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 15:06:11 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/16 22:46:42 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/18 14:18:59 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ void expand(t_data *data)
     t_arg *new;
     int i;
     char **split_arg;
-    
-    
 
     cmd = data->cmds;
     while (cmd)
@@ -61,7 +59,7 @@ void expand(t_data *data)
         redir = cmd->redir;
         while (arg)
         {
-            if (arg->quote != SINGLE_QUOTE)
+            if (arg->value && arg->quote != SINGLE_QUOTE)
             {
                 if (ft_strchr(arg->value, '$'))
                 {
@@ -80,7 +78,7 @@ void expand(t_data *data)
                         prev = arg;
                         while (split_arg[i])
                         {
-                            new = calloc(1, sizeof(t_arg));
+                            new = ft_calloc(1, sizeof(t_arg));
                             if (!new)
                                 exit_program(data, ERR_MEM);
                             new->value = ft_strdup(split_arg[i]);
@@ -102,8 +100,11 @@ void expand(t_data *data)
         {
             if (redir->quote != SINGLE_QUOTE)
             {
-                if (ft_strchr(redir->file, '$') && redir->type != T_HEREDOC)
-                    expand_str(data, &redir->file);
+                if (redir->file && redir->type != T_HEREDOC)
+                {
+                    if (ft_strchr(redir->file, '$'))
+                        expand_str(data, &redir->file);
+                }
             }
             redir = redir->next;
         }

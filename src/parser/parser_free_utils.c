@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:54:26 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/16 14:03:31 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/17 21:14:19 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ static void free_cmd_redir(t_cmd **cmds)
 	while ((*cmds)->redir)
 	{
 		tmp_redir = (*cmds)->redir;
-		free(tmp_redir->file);
+		if (tmp_redir->file)
+			free(tmp_redir->file);
+		if (tmp_redir->delim)
+			free(tmp_redir->delim);
 		(*cmds)->redir = (*cmds)->redir->next;
 		free(tmp_redir);
 	}
@@ -47,6 +50,10 @@ void	cmd_clear(t_cmd **cmds)
 	{
 		free_cmd_arg(cmds);
 		free_cmd_redir(cmds);
+		if ((*cmds)->infile > 0)
+			close((*cmds)->infile);
+		if ((*cmds)->outfile > 0)
+			close((*cmds)->outfile);
 		tmp_cmd = *cmds;
 		*cmds = (*cmds)->next;
 		free(tmp_cmd);
