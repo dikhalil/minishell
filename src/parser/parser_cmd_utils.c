@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:38:38 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/16 14:06:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/20 18:37:05 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,10 @@ void	cmd_add_back(t_cmd **head, t_cmd *new)
 int	handle_pipe(t_data *data, t_cmd **current_cmd, t_token *current_token)
 {
     if (!(*current_cmd)->arg && !(*current_cmd)->redir)
+	{
+        cmd_clear(current_cmd);
         return (0);
+	}
     cmd_add_back(&data->cmds, *current_cmd);
     if (current_token->next)
         *current_cmd = cmd_new(data);

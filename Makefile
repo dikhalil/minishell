@@ -23,10 +23,12 @@ SRCS =  src/lexer/lexer.c \
 		src/heredoc/heredoc.c\
 		src/heredoc/heredoc_utils.c\
 		src/expand/expand.c \
-		src/expand/expand_utils.c \
+		src/expand/expand_extract.c \
+		src/expand/expand_str.c \
 		src/utils/env.c \
 		src/utils/str_utils.c\
 		src/utils/exit.c \
+		src/signals/signals.c \
 		src/main.c
 
 # Object files

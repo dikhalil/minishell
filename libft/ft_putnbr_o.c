@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_putnbr_o.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/10 21:52:59 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/09/10 11:55:49 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/08/23 23:00:11 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/08/24 23:26:23 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+int	ft_putnbr_o(long n)
 {
-	while (*s)
+	int	count;
+
+	count = 0;
+	ft_putnbr_fd(n, 1);
+	if (n == 0)
+		return (1);
+	if (n < 0)
 	{
-		if ((char)c == *s)
-			return ((char *)s);
-		s++;
+		count++;
+		n = -n;
 	}
-	if ((char)c == 0 && !*s)
-		return ((char *)s);
-	return (NULL);
+	while (n)
+	{
+		count++;
+		n /= 10;
+	}
+	return (count);
 }

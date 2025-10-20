@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/17 21:14:04 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/20 22:36:29 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,13 @@ typedef struct s_data
     int     last_exit;
 }   t_data;
 
+/* ------ global var ------ */
+extern volatile sig_atomic_t  g_sig;
+
 /* ------ lexer char utils ------ */
 int is_space(char c);
 int is_redir(char c);
+int is_redirection(t_token_type type);
 
 /* ------ lexer word utils ------ */
 char *get_word(t_data *data, char *str, int *i, t_quote_type *quote_type);
@@ -120,14 +124,13 @@ void cmd_add_back(t_cmd **head, t_cmd *new);
 int handle_pipe(t_data *data, t_cmd **current_cmd, t_token *current_token);
 
 /* ------ parser arg utils ------ */
-t_arg *arg_new(t_data *data, t_token *current_token);
+t_arg *arg_new(t_data *data, t_cmd **current_cmd,t_token *current_token);
 t_arg *arg_last(t_arg *head);
 void arg_add_back(t_arg **head, t_arg *new);
 void handle_word(t_data *data, t_cmd **current_cmd, t_token *current_token);
 
 /* ------ parser redir utils ------ */
-int is_redirection(t_token_type type);
-t_redir *redir_new(t_data *data, t_token **current_token);
+t_redir *redir_new(t_data *data,  t_cmd **current_cmd, t_token **current_token);
 t_redir *redir_last(t_redir *head);
 void redir_add_back(t_redir **head, t_redir *new);
 int handle_redir(t_data *data, t_cmd **current_cmd, t_token **current_token);
@@ -145,16 +148,25 @@ void handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir);
 /* ------ heredoc ------ */
 void heredoc(t_data *data);
 
-/* ------ expand utils ------ */
+/* ------ expand extract ------ */
 char *extract_key(t_data *data, char *str, int *i);
 char *extract_value(t_data *data, char *key);
 
-/* ------ expand ------ */
+/* ------ expand str ------ */
+void expand_str(t_data *data, char **str);
+void expand_single_arg(t_data *data, t_arg *arg);
+void split_arg_spaces(t_arg *arg);
+
+/* ------ expand  ------ */
 void expand(t_data *data);
 
 /* ------ env ------ */
 void init_env(t_data *data, char **envp);
 void env_clear(t_env **env);
+
+/* ------ signals ------ */
+void set_prompt_signal(void);
+void set_heredoc_signal(void);
 
 /* ------ str utils ------ */
 int	ft_strcmp(const char *s1, const char *s2);
@@ -164,6 +176,7 @@ void	free_split(char **arr);
 int	is_number(char *str);
 
 /* ------ exit ------ */
+void free_all(t_data *data);
 void exit_program(t_data *data, int status);
 
 #endif

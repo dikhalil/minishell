@@ -6,43 +6,49 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 16:00:13 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/16 22:15:57 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/20 21:14:07 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
+static size_t	safe_strlen(char *s)
+{
+	size_t	len = 0;
+	if (!s)
+		return (0);
+	while (s[len])
+		len++;
+	return (len);
+}
+
 char	*str_join_free(char *s1, char *s2)
 {
 	char	*str;
-	size_t	len;
-	int		i;
-	int		j;
+	size_t	i;
+	size_t	j;
 
 	i = 0;
 	j = 0;
-    len = 0;
-    if (s1)
-        len += ft_strlen(s1);
-    if (s2)
-	    len += ft_strlen(s2);
-	str = malloc(len + 1);
-	if (str)
-    {
-        while (s1 && s1[i])
-        {
-            str[i] = s1[i];
-            i++;
-        }
-        while (s2 && s2[j])
-            str[i++] = s2[j++];
-        str[i] = 0;
-    }
-    free(s1);
-    free(s2);
+	str = malloc(safe_strlen(s1) + safe_strlen(s2) + 1);
+	if (!str)
+	{
+		free(s1);
+		free(s2);
+		return (NULL);
+	}
+	while (s1 && s1[i])
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (s2 && s2[j])
+		str[i++] = s2[j++];
+	str[i] = '\0';
+	free(s1);
+	free(s2);
 	return (str);
 }
-
 
 int	is_number(char *str)
 {

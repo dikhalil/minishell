@@ -1,26 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_putchr_o.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/10 21:52:59 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/09/10 11:55:49 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/08/23 22:58:52 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/08/24 23:26:19 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+int	ft_putchr_o(int c)
 {
-	while (*s)
-	{
-		if ((char)c == *s)
-			return ((char *)s);
-		s++;
-	}
-	if ((char)c == 0 && !*s)
-		return ((char *)s);
-	return (NULL);
+	ft_putchar_fd(c, 1);
+	return (1);
 }

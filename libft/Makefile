@@ -33,21 +33,30 @@ SRCS =	ft_isalpha.c \
 	ft_putstr_fd.c \
 	ft_putendl_fd.c \
 	ft_putnbr_fd.c \
+	get_next_line.c\
+	get_next_line_utils.c\
+	ft_printf.c \
+	ft_handle_format.c \
+	ft_putchr_o.c \
+	ft_putstr_o.c \
+	ft_putnbr_o.c \
+	ft_puthex.c \
+	ft_putptr.c \
+	ft_lstadd_back_bonus.c \
+    ft_lstadd_front_bonus.c \
+    ft_lstclear_bonus.c \
+    ft_lstdelone_bonus.c \
+    ft_lstiter_bonus.c \
+    ft_lstlast_bonus.c \
+    ft_lstmap_bonus.c \
+    ft_lstnew_bonus.c \
+    ft_lstsize_bonus.c
+	
 
-# Bonus source files (linked to linked list functions)
-BONUS_SRC = ft_lstadd_back_bonus.c \
-            ft_lstadd_front_bonus.c \
-            ft_lstclear_bonus.c \
-            ft_lstdelone_bonus.c \
-            ft_lstiter_bonus.c \
-            ft_lstlast_bonus.c \
-            ft_lstmap_bonus.c \
-            ft_lstnew_bonus.c \
-            ft_lstsize_bonus.c
 
-# Object files (regular and bonus)
+
+# Object files (regular a)
 OBJS = $(SRCS:.c=.o)
-BONUS_OBJS = $(BONUS_SRC:.c=.o)
 
 # Compiler and flags
 CC = cc
@@ -67,18 +76,14 @@ $(NAME): $(OBJS)
 
 # Clean: remove object files
 clean:
-	rm -f $(OBJS) $(BONUS_OBJS)
+	rm -f $(OBJS) 
 
 # Full clean: remove object files and the library
 fclean: clean
 	rm -f $(NAME)
 
-# Bonus: add bonus objects to the library, without recompiling the regular objects
-bonus: $(OBJS) $(BONUS_OBJS)
-	ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
-
 # Rebuild everything: clean and then all
 re: fclean all
 
 # Phony targets
-.PHONY: all clean fclean re bonus
+.PHONY: all clean fclean re 

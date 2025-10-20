@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:54:26 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/17 21:14:19 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/20 21:34:41 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ static void free_cmd_arg(t_cmd **cmds)
 {
 	t_arg *tmp_arg;
 
+	if (!(*cmds)->arg)
+		return ;
 	while ((*cmds)->arg)
 	{
 		tmp_arg = (*cmds)->arg;
@@ -29,6 +31,8 @@ static void free_cmd_redir(t_cmd **cmds)
 {
 	t_redir *tmp_redir;
 
+	if (!(*cmds)->redir)
+		return ;
 	while ((*cmds)->redir)
 	{
 		tmp_redir = (*cmds)->redir;
@@ -40,12 +44,13 @@ static void free_cmd_redir(t_cmd **cmds)
 		free(tmp_redir);
 	}
 }
+
 void	cmd_clear(t_cmd **cmds)
 {
 	t_cmd	*tmp_cmd;
 
-	if (!cmds)
-		return ;
+	 if (!cmds || !*cmds)
+        return;
 	while (*cmds)
 	{
 		free_cmd_arg(cmds);
@@ -70,6 +75,5 @@ void parser_error_handling(t_data *data, t_token *current_token)
 		ft_putstr_fd("newline", 2);
     ft_putendl_fd("'", 2);
     data->last_exit = 2;
-    token_clear(&data->tokens);
-    cmd_clear(&data->cmds);
+    free_all(data);
 }
