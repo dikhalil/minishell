@@ -11,6 +11,7 @@ SRCS =	ft_isalpha.c \
 	ft_memmove.c \
 	ft_strlcpy.c \
 	ft_strlcat.c \
+	ft_strcmp.c \
 	ft_toupper.c \
 	ft_tolower.c \
 	ft_strchr.c \
@@ -49,6 +50,8 @@ SRCS =	ft_isalpha.c \
     ft_lstiter_bonus.c \
     ft_lstlast_bonus.c \
     ft_lstmap_bonus.c \
+	ft_str_join_chr.c \
+	ft_isnumber.c \
     ft_lstnew_bonus.c \
     ft_lstsize_bonus.c
 	

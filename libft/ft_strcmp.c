@@ -1,38 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/04 15:58:36 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:11:35 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/10/21 14:02:19 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/10/21 14:02:46 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *s)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	size_t	len;
+	unsigned char	*s_1;
+	unsigned char	*s_2;
 
-	len = 0;
-	while (*s)
+	s_1 = (unsigned char *)s1;
+	s_2 = (unsigned char *)s2;
+	while (*s_1 && *s_1 == *s_2)
 	{
-		len++;
-		s++;
+		s_1++;
+		s_2++;
 	}
-	return (len);
+	return (*s_1 - *s_2);
 }
-
-size_t	safe_strlen(char *s)
-{
-	size_t	len = 0;
-	if (!s)
-		return (0);
-	while (s[len])
-		len++;
-	return (len);
-}
-
-

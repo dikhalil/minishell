@@ -1,38 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_str_join_chr.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/04 15:58:36 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:11:35 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/10/21 14:06:17 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/10/21 14:06:28 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *s)
+char *str_join_chr(char *s, char c)
 {
+    char	*str;
 	size_t	len;
+	int		i;
 
-	len = 0;
-	while (*s)
+	i = 0;
+    len = 0;
+    if (s)
+       len = ft_strlen(s);
+	str = malloc(len + 2);
+	if (str)
 	{
-		len++;
-		s++;
-	}
-	return (len);
+        while (s && s[i])
+        {
+            str[i] = s[i];
+            i++;
+        }   
+        str[i++] = c;
+        str[i] = 0;
+    }
+    free(s);
+	return (str);
 }
-
-size_t	safe_strlen(char *s)
-{
-	size_t	len = 0;
-	if (!s)
-		return (0);
-	while (s[len])
-		len++;
-	return (len);
-}
-
-

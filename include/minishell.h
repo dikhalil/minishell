@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/20 22:36:29 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/21 14:16:59 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ typedef struct s_data
 }   t_data;
 
 /* ------ global var ------ */
-extern volatile sig_atomic_t  g_sig;
+extern int g_sig;
 
 /* ------ lexer char utils ------ */
 int is_space(char c);
@@ -165,17 +165,14 @@ void init_env(t_data *data, char **envp);
 void env_clear(t_env **env);
 
 /* ------ signals ------ */
-void set_prompt_signal(void);
+void set_main_signal(void);
 void set_heredoc_signal(void);
 
-/* ------ str utils ------ */
-int	ft_strcmp(const char *s1, const char *s2);
-char *str_join_chr(char *s, char c);
-char	*str_join_free(char *s1, char *s2);
-void	free_split(char **arr);
-int	is_number(char *str);
+/* ------ shell ------ */
+void run_shell(t_data *data);
 
-/* ------ exit ------ */
+/* ------ cleanup ------ */
+void reset_data(t_data *data);
 void free_all(t_data *data);
 void exit_program(t_data *data, int status);
 

@@ -1,16 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 20:57:51 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/19 16:46:39 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/21 14:00:54 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+void reset_data(t_data *data)
+{
+    data->tokens = NULL;
+    data->cmds = NULL;
+    data->command_line = NULL;
+    data->last_exit = 0;
+}
+
 void free_all(t_data *data)
 {
     if (data)
@@ -23,11 +32,12 @@ void free_all(t_data *data)
             cmd_clear(&data->cmds);
     }   
 }
+
 void exit_program(t_data *data, int status)
 {
-    free_all(data);
     if (data->env)
         env_clear(&data->env);
+    free_all(data);
     rl_clear_history();
     ft_putendl_fd("exit", 0);
     exit(status);

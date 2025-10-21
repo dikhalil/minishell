@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 17:02:11 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/08/23 17:30:51 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/21 14:08:05 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,16 @@ static size_t	ft_count_words(const char *s, char c)
 	return (count);
 }
 
-static void	ft_free(char **s)
+void	free_split(char **arr)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
-	if (!s)
+	if (!arr)
 		return ;
-	while (s[i])
-		free(s[i++]);
-	free(s);
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
 }
 
 static int	ft_fill_words(char const *s, char **result, char c)
@@ -65,7 +65,7 @@ static int	ft_fill_words(char const *s, char **result, char c)
 			result[i] = ft_substr(start, 0, s - start);
 			if (!result[i])
 			{
-				ft_free(result);
+				free_split(result);
 				return (0);
 			}
 			i++;

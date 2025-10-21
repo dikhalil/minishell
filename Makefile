@@ -25,11 +25,11 @@ SRCS =  src/lexer/lexer.c \
 		src/expand/expand.c \
 		src/expand/expand_extract.c \
 		src/expand/expand_str.c \
-		src/utils/env.c \
-		src/utils/str_utils.c\
-		src/utils/exit.c \
+		src/env/env.c \
+		src/clean/cleanup.c \
 		src/signals/signals.c \
-		src/main.c
+		src/shell/shell.c \
+		src/shell/main.c
 
 # Object files
 OBJ_DIR = obj

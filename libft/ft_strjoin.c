@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 20:35:08 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/09/11 15:07:27 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/21 14:10:44 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,34 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (s2[j])
 		str[i++] = s2[j++];
 	str[i] = 0;
+	return (str);
+}
+
+
+char	*str_join_free(char *s1, char *s2)
+{
+	char	*str;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	str = malloc(safe_strlen(s1) + safe_strlen(s2) + 1);
+	if (!str)
+	{
+		free(s1);
+		free(s2);
+		return (NULL);
+	}
+	while (s1 && s1[i])
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (s2 && s2[j])
+		str[i++] = s2[j++];
+	str[i] = '\0';
+	free(s1);
+	free(s2);
 	return (str);
 }

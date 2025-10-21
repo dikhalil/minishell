@@ -1,38 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_isnumber.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/04 15:58:36 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:11:35 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/10/21 14:09:25 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/10/21 14:09:36 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *s)
+int	is_number(char *str)
 {
-	size_t	len;
+	int	j;
 
-	len = 0;
-	while (*s)
+	j = 0;
+	if (str[0] == '-' || str[0] == '+')
+		j++;
+	while (str[j])
 	{
-		len++;
-		s++;
+		if (!ft_isdigit(str[j]))
+			return (0);
+		j++;
 	}
-	return (len);
+	return (1);
 }
-
-size_t	safe_strlen(char *s)
-{
-	size_t	len = 0;
-	if (!s)
-		return (0);
-	while (s[len])
-		len++;
-	return (len);
-}
-
 
