@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/18 16:10:56 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/22 11:16:05 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ int main(int argc, char **argv, char **envp)
             continue ;
         heredoc(&data);
         expand(&data);
-		executer(&data);
-        token_clear(&data.tokens);
-        cmd_clear(&data.cmds);
-        free(data.command_line);
+		executor(&data, envp);
+        // token_clear(&data.tokens);
+        // cmd_clear(&data.cmds);
+        // free(data.command_line);
     }
     env_clear(&data.env);
     return (0);

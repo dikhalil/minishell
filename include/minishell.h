@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/18 16:19:52 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/22 11:15:23 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,15 @@ char *str_join_chr(char *s, char c);
 char	*str_join_free(char *s1, char *s2);
 void	free_split(char **arr);
 int	is_number(char *str);
+/* ------ executor ------ */
+int executor(t_data *data, char **envp);
+int	fork_and_execute(t_cmd *command, char **envp, t_data *data);
+int execute_program(t_arg *arg, char **envp, t_data *data);
+char	*get_path(char *cmd, t_env *env);
+void ex_free_split(char **path);
+int	check_cmd(char **cmd_args);
+int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
+void close_fds(t_cmd *cmd);
 
 /* ------ exit ------ */
 void exit_program(t_data *data, int status);
