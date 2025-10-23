@@ -76,10 +76,12 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 {
 	int	fd[2];
 
+	// printf("in file(%s): %d\n", cmd->arg->value, cmd->infile);
+	// printf("out file(%s): %d\n", cmd->arg->value, cmd->outfile);
 	if (cmd->infile == -1)
 		cmd->infile = STDIN_FILENO;
 	// close (cmd->outfile);
-		cmd->outfile = STDOUT_FILENO;
+	cmd->outfile = STDOUT_FILENO;
 	if (process_redirections(cmd) != 0){
 		close_fds(cmd);
 		return (1);
@@ -224,7 +226,7 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 	exit(126);
 }
 
-int	fork_and_execute(t_cmd *command, char **envp, t_data *data)
+int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 {
 	pid_t	pid;
 
@@ -236,6 +238,8 @@ int	fork_and_execute(t_cmd *command, char **envp, t_data *data)
 	}
 	if (pid == 0)
 	{
+		if (next)
+			close(next->infile);
 		if (command->infile != STDIN_FILENO)
 		{
 			dup2(command->infile, STDIN_FILENO);
@@ -276,7 +280,7 @@ int executor(t_data *data, char **envp)
 	while (command)
 	{
 		assign_fds(command, command->next);
-		last_pid = fork_and_execute(command, envp, data);
+		last_pid = fork_and_execute(command, command->next, envp, data);
 	// if (command->next)
     // {
     //     if (command->outfile != STDOUT_FILENO)

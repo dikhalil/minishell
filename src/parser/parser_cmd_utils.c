@@ -14,9 +14,11 @@
 
 t_cmd *cmd_new(t_data *data)
 {
-    t_cmd *new = ft_calloc(1, sizeof(t_cmd));
-    if (!new)
-        exit_program(data, ERR_MEM);
+	t_cmd *new = ft_calloc(1, sizeof(t_cmd));
+	if (!new)
+		exit_program(data, ERR_MEM);
+	new->infile = -1;
+	new->outfile = -1;
     return (new);
 }
 

@@ -163,7 +163,7 @@ void	free_split(char **arr);
 int	is_number(char *str);
 /* ------ executor ------ */
 int executor(t_data *data, char **envp);
-int	fork_and_execute(t_cmd *command, char **envp, t_data *data);
+int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data);
 int execute_program(t_arg *arg, char **envp, t_data *data);
 char	*get_path(char *cmd, t_env *env);
 void ex_free_split(char **path);
