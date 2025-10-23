@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/22 10:40:51 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/22 21:15:23 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	process_redirections(t_cmd *cmd)
 	redir = cmd->redir;
 	while (redir)
 	{
-		if (redir->type == T_IN_REDIR || redir->type == T_HEREDOC)
+		if (redir->type == T_IN_REDIR)
 		{
 			if (handle_input_redir(cmd, redir) != 0)
 				return (1);
@@ -78,7 +78,8 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 
 	if (cmd->infile == -1)
 		cmd->infile = STDIN_FILENO;
-	cmd->outfile = STDOUT_FILENO;
+	// close (cmd->outfile);
+		cmd->outfile = STDOUT_FILENO;
 	if (process_redirections(cmd) != 0){
 		close_fds(cmd);
 		return (1);
@@ -240,6 +241,7 @@ int	fork_and_execute(t_cmd *command, char **envp, t_data *data)
 			dup2(command->infile, STDIN_FILENO);
 			close(command->infile);
 		}
+		
 		if (command->outfile != STDOUT_FILENO)
 		{
 			dup2(command->outfile, STDOUT_FILENO);
@@ -275,6 +277,13 @@ int executor(t_data *data, char **envp)
 	{
 		assign_fds(command, command->next);
 		last_pid = fork_and_execute(command, envp, data);
+	// if (command->next)
+    // {
+    //     if (command->outfile != STDOUT_FILENO)
+    //         close(command->outfile);
+    //     if (command->next->infile != STDIN_FILENO)
+    //         close(command->next->infile);
+    // }
 		i++;
 		command = command->next;
 	}

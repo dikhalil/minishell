@@ -6,13 +6,12 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/22 11:16:05 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/22 21:10:40 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-#include <minishell.h>
 #include <stdio.h>
 
 //char *type(t_token_type type)
@@ -90,9 +89,9 @@ int main(int argc, char **argv, char **envp)
         heredoc(&data);
         expand(&data);
 		executor(&data, envp);
-        // token_clear(&data.tokens);
-        // cmd_clear(&data.cmds);
-        // free(data.command_line);
+        token_clear(&data.tokens);
+        cmd_clear(&data.cmds);
+        free(data.command_line);
     }
     env_clear(&data.env);
     return (0);

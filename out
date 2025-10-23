@@ -1,0 +1,8 @@
+include
+libft
+Makefile
+minishell
+obj
+out
+readline_curses.supp
+src
