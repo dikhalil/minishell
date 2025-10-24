@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 14:14:06 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:22:13 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/24 17:10:29 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void handle_commandline(t_data *data)
         return ;
     }
     expand(data);
-    // executor(data);
+    executor(data);
     free_all(data);
 }
 

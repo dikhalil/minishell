@@ -29,7 +29,8 @@ SRCS =  src/lexer/lexer.c \
 		src/clean/cleanup.c \
 		src/signals/signals.c \
 		src/shell/shell.c \
-		src/shell/main.c
+		src/shell/main.c\
+		src/executor/executor.c \
 
 # Object files
 OBJ_DIR = obj

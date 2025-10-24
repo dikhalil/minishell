@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:16:59 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/24 17:30:11 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ typedef struct s_env
 typedef struct s_data
 {
     char *command_line;
+    char **envp;
     t_env   *env;
     t_token *tokens;
     t_cmd   *cmds;
@@ -170,6 +171,15 @@ void set_heredoc_signal(void);
 
 /* ------ shell ------ */
 void run_shell(t_data *data);
+/* ------ executor utils ------*/
+char	*get_path(char *cmd, t_env *env);
+int		execute_program(t_arg *arg, char **envp, t_data *data);
+int		fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data);
+int		executor(t_data *data);
+void	ex_free_split(char **path);
+void close_fds(t_cmd *cmd);
+int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
+int	check_cmd(char **cmd_args);
 
 /* ------ cleanup ------ */
 void reset_data(t_data *data);
