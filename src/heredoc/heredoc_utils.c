@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 17:47:46 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/17 21:45:16 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/21 13:21:24 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void heredoc_ctrl_d(char *delim, int i)
 {
+    write(1, "\n", 1);
     ft_putstr_fd("minishell: warning: here-document at line ", 2);
     ft_putnbr_fd(i, 2);
     ft_putstr_fd(" delimited by end-of-file (wanted `", 2);
@@ -35,39 +36,40 @@ static int is_lastheredoc(t_redir *redir)
     return (1);
 }
 
-static void set_infile(t_cmd *cmd, t_redir *redir, int in_fd)
+static void set_infile(t_cmd *cmd, t_redir *redir, int in_fd, int out_fd)
 {
-    if (is_lastheredoc(redir))
+    if (is_lastheredoc(redir) && g_sig != SIGINT)
         cmd->infile = in_fd;
     else
         close(in_fd);
+    close(out_fd);
 }
 
 void handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir)
 {
-    int end[2];
-    char *line;
-    int i;
-    
+    int     end[2];
+    char    *line;
+    int     i;
+
     i = 0;
     if (pipe(end) == -1)
         exit_program(data, ERR_MEM);
     while (TRUE)
     {
         i++;
-        line = readline("> ");
-        if (!line)
-        {
-            heredoc_ctrl_d(redir->delim, i);
-            break;
-        } 
-        if (!ft_strcmp(line, redir->delim))
-            break;
+        line = get_next_line_stdin();
+        if (g_sig == SIGINT)
+            break ;
+        if (!line || !ft_strcmp(line, redir->delim))
+            break ;
+        if (redir->quote == NONE && ft_strchr(line, '$'))
+            expand_str(data, &line);
         ft_putendl_fd(line, end[1]);
         free(line);
     }
+    if (!line && g_sig != SIGINT)
+        heredoc_ctrl_d(redir->delim, i);
     if (line)
         free(line);
-    close(end[1]);
-    set_infile(cmd, redir, end[0]);
+    set_infile(cmd, redir, end[0], end[1]);
 }

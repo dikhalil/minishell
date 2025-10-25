@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/22 21:15:23 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 10:47:45 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,9 +263,39 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 	}
 	return (pid);
 }
+char **envp_to_list(t_env *env)
+{
+	int		count;
+	char	**envp;
+	t_env	*tmp;
+	int		i;
 
+	count = 0;
+	tmp = env;
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	envp = malloc((count + 1) * sizeof(char *));
+	if (!envp)
+		return (NULL);
+	envp[count] = NULL;
+	i = 0;
+	tmp = env;
+	while (tmp)
+	{
+		envp[i] = ft_strjoin(tmp->key, "=");
+		char *temp = envp[i];
+		envp[i] = ft_strjoin(envp[i], tmp->value);
+		free(temp);
+		i++;
+		tmp = tmp->next;
+	}
+	return (envp);
+}
 
-int executor(t_data *data, char **envp)
+int executor(t_data *data)
 {
 	t_cmd	*command;
 	int		status;
@@ -280,14 +310,7 @@ int executor(t_data *data, char **envp)
 	while (command)
 	{
 		assign_fds(command, command->next);
-		last_pid = fork_and_execute(command, command->next, envp, data);
-	// if (command->next)
-    // {
-    //     if (command->outfile != STDOUT_FILENO)
-    //         close(command->outfile);
-    //     if (command->next->infile != STDIN_FILENO)
-    //         close(command->next->infile);
-    // }
+		last_pid = fork_and_execute(command, command->next, envp_to_list(data->env), data);
 		i++;
 		command = command->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 15:58:36 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/08/14 04:43:52 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/21 14:11:35 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,3 +24,15 @@ size_t	ft_strlen(const char *s)
 	}
 	return (len);
 }
+
+size_t	safe_strlen(char *s)
+{
+	size_t	len = 0;
+	if (!s)
+		return (0);
+	while (s[len])
+		len++;
+	return (len);
+}
+
+

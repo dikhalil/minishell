@@ -1,26 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/10 21:52:59 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/09/10 11:55:49 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/08/23 21:29:19 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/08/24 23:26:17 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+int	ft_printf(const char *format, ...)
 {
-	while (*s)
+	va_list	args;
+	int		count;
+
+	count = 0;
+	if (!format)
+		return (-1);
+	va_start(args, format);
+	while (*format)
 	{
-		if ((char)c == *s)
-			return ((char *)s);
-		s++;
+		if (*format == '%')
+		{
+			format++;
+			count += ft_handle_format(args, *format);
+		}
+		else
+			count += ft_putchr_o(*format);
+		format++;
 	}
-	if ((char)c == 0 && !*s)
-		return ((char *)s);
-	return (NULL);
+	va_end(args);
+	return (count);
 }

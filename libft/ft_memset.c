@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 16:02:43 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/12 18:31:36 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/08/14 01:12:34 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	*ft_memset(void *s, int c, size_t n)
 	len = 0;
 	ptr = (unsigned char *)s;
 	while (len < n)
+	{
 		ptr[len++] = (unsigned char)c;
+	}
 	return (s);
 }

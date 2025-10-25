@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = cc
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 NAME = minishell
 
 # Include
@@ -23,11 +23,13 @@ SRCS =  src/lexer/lexer.c \
 		src/heredoc/heredoc.c\
 		src/heredoc/heredoc_utils.c\
 		src/expand/expand.c \
-		src/expand/expand_utils.c \
-		src/utils/env.c \
-		src/utils/str_utils.c\
-		src/utils/exit.c \
-		src/main.c\
+		src/expand/expand_extract.c \
+		src/expand/expand_str.c \
+		src/env/env.c \
+		src/clean/cleanup.c \
+		src/signals/signals.c \
+		src/shell/shell.c \
+		src/shell/main.c\
 		src/executor/executor.c \
 
 # Object files

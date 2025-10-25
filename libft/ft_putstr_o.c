@@ -1,26 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_putstr_o.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/10 21:52:59 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/09/10 11:55:49 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/08/23 22:59:47 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/08/24 23:26:28 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+int	ft_putstr_o(char *s)
 {
-	while (*s)
+	if (!s)
 	{
-		if ((char)c == *s)
-			return ((char *)s);
-		s++;
+		ft_putstr_fd("(null)", 1);
+		return (ft_strlen("(null)"));
 	}
-	if ((char)c == 0 && !*s)
-		return ((char *)s);
-	return (NULL);
+	ft_putstr_fd(s, 1);
+	return (ft_strlen(s));
 }
