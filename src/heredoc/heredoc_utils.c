@@ -38,7 +38,14 @@ static int is_lastheredoc(t_redir *redir)
 
 static void set_infile(t_cmd *cmd, t_redir *redir, int in_fd, int out_fd)
 {
-    if (is_lastheredoc(redir) && g_sig != SIGINT)
+    if (g_sig == SIGINT)
+    {
+        close(in_fd);
+        close(out_fd);
+        cmd->infile = -1;
+        return;
+    }
+    if (is_lastheredoc(redir))
         cmd->infile = in_fd;
     else
         close(in_fd);
@@ -59,7 +66,10 @@ void handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir)
         i++;
         line = get_next_line_stdin();
         if (g_sig == SIGINT)
+        {
+            data->last_exit = 130;
             break ;
+        }
         if (!line || !ft_strcmp(line, redir->delim))
             break ;
         if (redir->quote == NONE && ft_strchr(line, '$'))

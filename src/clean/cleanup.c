@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 20:57:51 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/24 18:29:29 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 15:58:10 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void reset_data(t_data *data)
     data->tokens = NULL;
     data->cmds = NULL;
     data->command_line = NULL;
-    data->last_exit = 0;
 }
 
 void free_all(t_data *data)

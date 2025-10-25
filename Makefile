@@ -26,6 +26,7 @@ SRCS =  src/lexer/lexer.c \
 		src/expand/expand_extract.c \
 		src/expand/expand_str.c \
 		src/env/env.c \
+		src/env/shlvl.c \
 		src/clean/cleanup.c \
 		src/signals/signals.c \
 		src/shell/shell.c \

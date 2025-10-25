@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/24 17:30:11 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 15:11:00 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <sys/types.h>
@@ -89,7 +90,6 @@ typedef struct s_env
 typedef struct s_data
 {
     char *command_line;
-    char **envp;
     t_env   *env;
     t_token *tokens;
     t_cmd   *cmds;
@@ -164,18 +164,23 @@ void expand(t_data *data);
 /* ------ env ------ */
 void init_env(t_data *data, char **envp);
 void env_clear(t_env **env);
+void increment_shlvl(t_data *data);
+t_env	*env_new(t_data *data, char *key, char *value);
+void	env_add_back(t_env **env, t_env *new);
 
 /* ------ signals ------ */
 void set_main_signal(void);
 void set_heredoc_signal(void);
+void set_child_signal(void);
 
 /* ------ shell ------ */
 void run_shell(t_data *data);
+
 /* ------ executor utils ------*/
 char	*get_path(char *cmd, t_env *env);
 int		execute_program(t_arg *arg, char **envp, t_data *data);
 int		fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data);
-int		executor(t_data *data);
+void		executor(t_data *data);
 void	ex_free_split(char **path);
 void close_fds(t_cmd *cmd);
 int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);

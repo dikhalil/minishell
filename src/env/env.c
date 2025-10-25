@@ -6,13 +6,13 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 22:41:21 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:25:25 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/25 14:59:29 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static t_env	*env_new(t_data *data, char *key, char *value)
+t_env	*env_new(t_data *data, char *key, char *value)
 {
 	t_env	*new;
 
@@ -47,7 +47,7 @@ static t_env	*env_last(t_env *env)
 	return (env);
 }
 
-static void	env_add_back(t_env **env, t_env *new)
+void	env_add_back(t_env **env, t_env *new)
 {
 	t_env	*last;
 
@@ -102,4 +102,5 @@ void init_env(t_data *data, char **envp)
         free(tmp);
         i++;
     }
+    increment_shlvl(data);
 }
