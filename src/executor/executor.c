@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/25 15:30:48 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 15:37:31 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,6 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 		cmd->infile = STDIN_FILENO;
 	// close (cmd->outfile);
 	cmd->outfile = STDOUT_FILENO;
-	if (process_redirections(cmd) != 0){
-		close_fds(cmd);
-		return (1);
-	}
-	//here if there is a next command i do a pipe anyway to make the next command read from it
-	//and if the current command has no output redirection i make its output the write end of the pipe
-	//but if there is an output redirection i just close the write end of the pipe and let the current command write to its output redirection
 	if (has_next_cmd)
 	{
 		if (pipe(fd) == -1)
@@ -102,6 +95,14 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 			close(fd[1]);
 		cmd->next->infile = fd[0];
 	}
+	if (process_redirections(cmd) != 0){
+		close_fds(cmd);
+		return (1);
+	}
+	//here if there is a next command i do a pipe anyway to make the next command read from it
+	//and if the current command has no output redirection i make its output the write end of the pipe
+	//but if there is an output redirection i just close the write end of the pipe and let the current command write to its output redirection
+	
 	return (0);
 }
 
