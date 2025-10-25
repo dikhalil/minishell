@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/25 14:32:42 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 15:30:48 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,6 +316,11 @@ int executor(t_data *data)
 	while (command){
 		//here i made it cus if their smth wrong with the fds assignment we skip this command
 		//and go to the next one
+		if (!command->arg || !command->arg->value)
+    	{
+        	command = command->next;
+        	continue; // skip empty commands
+    	}
 		if(assign_fds(command, command->next) != 0)
 		{
 			command = command->next;
