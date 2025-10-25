@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/25 13:47:56 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 14:32:42 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 			write(2, ": No such file or directory\n", 29);
 			return (1);
 		}
+		//i will go with this type of errors on the next errors like the real bash
 	}	
 	return (0);
 }
@@ -85,7 +86,9 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 		close_fds(cmd);
 		return (1);
 	}
-	
+	//here if there is a next command i do a pipe anyway to make the next command read from it
+	//and if the current command has no output redirection i make its output the write end of the pipe
+	//but if there is an output redirection i just close the write end of the pipe and let the current command write to its output redirection
 	if (has_next_cmd)
 	{
 		if (pipe(fd) == -1)
@@ -311,6 +314,8 @@ int executor(t_data *data)
 	i = 0;
 	envp = envp_to_list(data->env);
 	while (command){
+		//here i made it cus if their smth wrong with the fds assignment we skip this command
+		//and go to the next one
 		if(assign_fds(command, command->next) != 0)
 		{
 			command = command->next;
@@ -329,3 +334,4 @@ int executor(t_data *data)
 		ex_free_split(envp);
 	return ((final_status >> 8) & 0xFF);
 }
+//i commented the if fds > 2 in the close or that clean the cmds thing
