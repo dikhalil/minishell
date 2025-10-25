@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/25 15:11:00 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/25 20:30:21 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,7 @@ void	env_add_back(t_env **env, t_env *new);
 void set_main_signal(void);
 void set_heredoc_signal(void);
 void set_child_signal(void);
+void set_exec_signal(void);
 
 /* ------ shell ------ */
 void run_shell(t_data *data);

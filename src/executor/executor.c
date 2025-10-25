@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/25 15:45:10 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/10/25 20:29:22 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,7 +354,7 @@ void executor(t_data *data)
 	char	**envp_list;
 	pid_t pid;
 
-	set_main_signal();
+	set_exec_signal();
 	envp_list = envp_to_list(data->env);
 	if (!envp_list)
 		return ;
@@ -392,10 +392,12 @@ void executor(t_data *data)
 				if (sig == SIGINT)
 				{
 					data->last_exit = 130;
+					write(1, "\n", 1); 
 				}
 				else if (sig == SIGQUIT)
 				{
 					data->last_exit = 131;
+					write(1, "Quit (core dumped)\n", 19);
 				}
 				else
 					data->last_exit = 128 + sig;
