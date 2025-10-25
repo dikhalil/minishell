@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:54:26 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/24 18:29:41 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 13:00:11 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,10 @@ void	cmd_clear(t_cmd **cmds)
 	{
 		free_cmd_arg(cmds);
 		free_cmd_redir(cmds);
-		if ((*cmds)->infile > 2)
-			close((*cmds)->infile);
-		if ((*cmds)->outfile > 2)
-			close((*cmds)->outfile);
+		// if ((*cmds)->infile > 2)
+		// 	close((*cmds)->infile);
+		// if ((*cmds)->outfile > 2)
+		// 	close((*cmds)->outfile);
 		tmp_cmd = *cmds;
 		*cmds = (*cmds)->next;
 		free(tmp_cmd);

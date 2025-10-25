@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/25 10:47:45 by yocto            ###   ########.fr       */
+/*   Updated: 2025/10/25 13:47:56 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 	if (redir->type == T_IN_REDIR)
 	{
 		cmd->infile = open(redir->file, O_RDONLY);
-		if (cmd->infile < 0)
-		{
-			perror(redir->file);
+		if (cmd->infile < 0){
+			write(2, "minishell: ", 11);
+			write(2, redir->file, ft_strlen(redir->file));
+			write(2, ": No such file or directory\n", 29);
 			return (1);
 		}
 	}	
@@ -76,8 +77,6 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 {
 	int	fd[2];
 
-	// printf("in file(%s): %d\n", cmd->arg->value, cmd->infile);
-	// printf("out file(%s): %d\n", cmd->arg->value, cmd->outfile);
 	if (cmd->infile == -1)
 		cmd->infile = STDIN_FILENO;
 	// close (cmd->outfile);
@@ -87,14 +86,17 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 		return (1);
 	}
 	
-	if (has_next_cmd && cmd->outfile == STDOUT_FILENO)
+	if (has_next_cmd)
 	{
 		if (pipe(fd) == -1)
 		{
 			perror("pipe");
 			return (1);
 		}
-		cmd->outfile = fd[1];
+		if(cmd->outfile == STDOUT_FILENO)
+			cmd->outfile = fd[1];
+		else
+			close(fd[1]);
 		cmd->next->infile = fd[0];
 	}
 	return (0);
@@ -219,7 +221,6 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 	else
 		path = cmd_args[0];
 	execve(path, cmd_args, envp);
-	//if there is an error while executiion
 	perror(cmd_args[0]);
 	ex_free_split(cmd_args);
 	free(path);
@@ -302,15 +303,20 @@ int executor(t_data *data)
 	int		final_status;
 	pid_t	last_pid;
 	int   i;
+	char **envp;
 
 	last_pid = 0;
 	command = data->cmds;
 	final_status = 0;
 	i = 0;
-	while (command)
-	{
-		assign_fds(command, command->next);
-		last_pid = fork_and_execute(command, command->next, envp_to_list(data->env), data);
+	envp = envp_to_list(data->env);
+	while (command){
+		if(assign_fds(command, command->next) != 0)
+		{
+			command = command->next;
+			continue;
+		}
+		last_pid = fork_and_execute(command, command->next, envp, data);
 		i++;
 		command = command->next;
 	}
@@ -319,5 +325,7 @@ int executor(t_data *data)
 		if (wait(&status) == last_pid)
 			final_status = status;
 	}
+	if (envp)
+		ex_free_split(envp);
 	return ((final_status >> 8) & 0xFF);
 }
