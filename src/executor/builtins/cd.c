@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/03 17:06:18 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/05 21:41:16 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,21 +47,22 @@ void set_env_value(t_env **env, const char *key, const char *value)
 }
 void cd_builtin(t_data *data, t_arg *args)
 {
-    char *target_dir;
+    char *target_dir = NULL;
+    char oldpwd[1024];
     char cwd[1024];
 
-    if (getcwd(cwd, sizeof(cwd)) != NULL)
-        set_env_value(&data->env, "OLDPWD", cwd);
+    if (getcwd(oldpwd, sizeof(oldpwd)) == NULL)
+        return;
     if (args == NULL || args->value == NULL)
     {
         target_dir = get_env_value(data->env, "HOME");
-        if (target_dir == NULL)
+        if (!target_dir)
         {
             write(STDERR_FILENO, "cd: HOME not set\n", 17);
             return;
         }
     }
-    if (args && strcmp(args->value, "-") == 0)
+    else if (strcmp(args->value, "-") == 0)
     {
         target_dir = get_env_value(data->env, "OLDPWD");
         if (!target_dir)
@@ -73,14 +74,13 @@ void cd_builtin(t_data *data, t_arg *args)
     }
     else
         target_dir = args->value;
-
-
     if (chdir(target_dir) != 0)
     {
         perror("cd");
         return;
     }
+    set_env_value(&data->env, "OLDPWD", oldpwd);
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         set_env_value(&data->env, "PWD", cwd);
-
 }
+
