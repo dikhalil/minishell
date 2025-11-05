@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/05 21:19:10 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/05 21:28:56 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,46 +338,82 @@ char **envp_to_list(t_env *env)
 	}
 	return (envp);
 }
+int check_builtin(t_cmd *command, t_data *data)
+{
+	if (ft_strcmp(command->arg->value, "cd") == 0)
+	{
+		cd_builtin(data, command ->arg->next);
+		return (1);
+	}
+	else if (ft_strcmp(command->arg->value, "exit") == 0)
+	{
+		if (command->arg->next)
+			exit_builtin(data, ft_atoi(command->arg->next->value));
+		else
+			exit_program(data, data->last_exit);
+	}
+	// else if (ft_strcmp(command->arg->value, "export") == 0)
+	// {
+	// 	export_builtin(data, command->arg->next);
+	// 	return (1);
+	// }
+	else if (ft_strcmp(command->arg->value, "unset") == 0)
+	{
+		unset_builtin(data, command->arg->next);
+		return (1);
+	}
+	else if (ft_strcmp(command->arg->value, "echo") == 0)
+	{
+		echo_builtin(data, command->arg->next);
+		return (1);
+	}
+	else if (ft_strcmp(command->arg->value, "env") == 0)
+	{
+		env_builtin(data->env);
+		return (1);
+	}
+	return (0);
+}
 void executor(t_data *data)
 {
 	t_cmd	*command;
 	int		status;
-	int		final_status;
 	pid_t	last_pid;
-	int		i;
-	char	**envp;
-	pid_t	pid;
-	int		sig;
+	int sig;
+	char	**envp_list;
+	pid_t pid;
 
-	set_main_signal();	
-	last_pid = 0;
-	final_status = 0;
-	i = 0;
-	command = data->cmds;
-	envp = envp_to_list(data->env);
-	if (!envp)
+	set_exec_signal();
+	envp_list = envp_to_list(data->env);
+	if (!envp_list)
 		return ;
-
+	last_pid = 0;
+	command = data->cmds;
 	while (command)
 	{
-		if (!command->arg || !command->arg->value)
-		{
-    		if (process_redirections(command) != 0)
-    		{
-        		command = command->next;
-        		continue;
-    		}
-    		close_fds(command);
-    		command = command->next;
-    		continue;
-		}
-		if (assign_fds(command, command->next) != 0)
+		if(assign_fds(command, command->next) != 0)
 		{
 			command = command->next;
 			continue;
 		}
-		last_pid = fork_and_execute(command, command->next, envp, data);
-		i++;
+		if (command->arg)
+		{
+			if (check_builtin(command, data))
+			{
+				close_fds(command);
+				last_pid = 0;
+				command = command->next;
+				continue;
+			}
+			last_pid = fork_and_execute(command, command->next, envp_list, data);
+			if (last_pid < 0)
+			{
+				ex_free_split(envp_list);
+				return ;
+			}
+		}
+		else
+			last_pid = 0;
 		command = command->next;
 	}
 	pid = 1;
@@ -386,13 +422,13 @@ void executor(t_data *data)
 		pid = waitpid(-1, &status, 0);
 		if (pid == last_pid && last_pid != 0)
 		{
-			if (WIFSIGNALED(status))
+			if (WIFSIGNALED(status)) 
 			{
 				sig = WTERMSIG(status);
 				if (sig == SIGINT)
 				{
-					final_status = 130;
-					write(1, "\n", 1);
+					data->last_exit = 130;
+					write(1, "\n", 1); 
 				}
 				else if (sig == SIGQUIT)
 				{
@@ -400,18 +436,14 @@ void executor(t_data *data)
 					write(1, "Quit (core dumped)\n", 19);
 				}
 				else
-					final_status = 128 + sig;
+					data->last_exit = 128 + sig;
 			}
 			else if (WIFEXITED(status))
-				final_status = WEXITSTATUS(status);
+				data->last_exit = WEXITSTATUS(status);
 		}
 		else if (last_pid == 0)
-			final_status = 0;
+			data->last_exit = 0;
 	}
-	if (envp)
-		ex_free_split(envp);
-	/* set shell last exit status */
-	data->last_exit = final_status;
-	return ;
+	ex_free_split(envp_list);
 }
 
