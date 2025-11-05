@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/25 20:30:21 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/03 18:05:14 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,14 @@ void		executor(t_data *data);
 void	ex_free_split(char **path);
 void close_fds(t_cmd *cmd);
 int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
-int	check_cmd(char **cmd_args);
-
+int	check_cmd(char **cmd_args); 
+            
+/* ------ builtins ------ */
+    void	cd_builtin(t_data *data, t_arg *args);
+    void	echo_builtin(t_data *data, t_arg *args);
+    void    env_builtin(t_env *env);
+    void    exit_builtin(t_data *data, int status);
+    void   unset_builtin(t_data *data, t_arg *args);
 /* ------ cleanup ------ */
 void reset_data(t_data *data);
 void free_all(t_data *data);

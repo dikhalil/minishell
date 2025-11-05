@@ -32,6 +32,13 @@ SRCS =  src/lexer/lexer.c \
 		src/shell/shell.c \
 		src/shell/main.c\
 		src/executor/executor.c \
+		src/executor/builtins/cd.c\
+		src/executor/builtins/echo.c\
+		src/executor/builtins/env.c\
+		src/executor/builtins/exit.c\
+		src/executor/builtins/unset.c\
+# 		src/executor/builtins/export.c\
+		
 
 # Object files
 OBJ_DIR = obj

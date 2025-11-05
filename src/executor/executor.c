@@ -3,22 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/10/25 20:29:22 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/05 21:19:10 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <sys/stat.h>
 
 static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 {
 	if (cmd->infile > STDIN_FILENO)
-	{
 		close(cmd->infile);
-		cmd->infile = -1;
-	}
 	if (redir->type == T_IN_REDIR)
 	{
 		cmd->infile = open(redir->file, O_RDONLY);
@@ -36,10 +34,7 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 static int	handle_output_redir(t_cmd *cmd, t_redir *redir)
 {
 	if (cmd->outfile > STDOUT_FILENO)
-	{
 		close(cmd->outfile);
-		cmd->outfile = -1;
-	}
 	if (redir->type == T_OUT_REDIR)
 		cmd->outfile = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (redir->type == T_APPEND)
@@ -73,33 +68,23 @@ static int	process_redirections(t_cmd *cmd)
 	}
 	return (0);
 }
+
 void close_fds(t_cmd *cmd)
 {
-	if (cmd->infile > STDIN_FILENO)
-	{
-		close(cmd->infile);
-		cmd->infile = -1;
-	}
-	if (cmd->outfile > STDOUT_FILENO)
-	{
-		close(cmd->outfile);
-		cmd->outfile = -1;
-	}
-}	
+    if (cmd->infile >= 0 && cmd->infile != STDIN_FILENO)
+        close(cmd->infile);
+    if (cmd->outfile >= 0 && cmd->outfile != STDOUT_FILENO)
+        close(cmd->outfile);
+}
+
 int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 {
 	int	fd[2];
 
-	// printf("in file(%s): %d\n", cmd->arg->value, cmd->infile);
-	// printf("out file(%s): %d\n", cmd->arg->value, cmd->outfile);
 	if (cmd->infile == -1)
 		cmd->infile = STDIN_FILENO;
 	// close (cmd->outfile);
 	cmd->outfile = STDOUT_FILENO;
-	if (process_redirections(cmd) != 0){
-		close_fds(cmd);
-		return (1);
-	}
 	if (has_next_cmd)
 	{
 		if (pipe(fd) == -1)
@@ -113,16 +98,33 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 			close(fd[1]);
 		cmd->next->infile = fd[0];
 	}
+	if (process_redirections(cmd) != 0){
+		close_fds(cmd);
+		return (1);
+	}
 	return (0);
 }
 
 int	check_cmd(char **cmd_args)
 {
+	struct stat st;
 	if (!cmd_args || !cmd_args[0])
 	{
 		write(2, "pipex: invalid command\n", 23);
 		exit(127);
 	}
+	
+	if (stat(cmd_args[0], &st) == 0)
+	{
+    	if (S_ISDIR(st.st_mode))
+    	{
+        	write(2, cmd_args[0], ft_strlen(cmd_args[0]));
+        	write(2, ": Is a directory\n", 17);
+        	ex_free_split(cmd_args);
+        	exit(126);
+    	}
+	}
+
 	if (cmd_args[0][0] == '/' || ft_strncmp(cmd_args[0], "./", 2) == 0
 		|| ft_strncmp(cmd_args[0], "../", 3) == 0)
 	{
@@ -264,42 +266,34 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		perror("fork");
 		return (-1);
 	}
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	if (pid == 0)
 	{
 		set_child_signal();
 		if (next)
-		{
 			close(next->infile);
-			next->infile = -1;
-		}
 		if (command->infile != STDIN_FILENO)
 		{
 			dup2(command->infile, STDIN_FILENO);
 			close(command->infile);
-			command->infile = -1;
 		}
 		
 		if (command->outfile != STDOUT_FILENO)
 		{
 			dup2(command->outfile, STDOUT_FILENO);
 			close(command->outfile);
-			command->outfile = -1;
 		}
 		execute_program(command->arg, envp, data);
+		close_fds(command);
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		if (command->outfile != STDOUT_FILENO)
-		{
 			close(command->outfile);
-			command->outfile = -1;
-		}
 		if (command->infile != STDIN_FILENO)
-		{
 			close(command->infile);
-			command->infile = -1;
-		}
 	}
 	return (pid);
 }
@@ -344,40 +338,46 @@ char **envp_to_list(t_env *env)
 	}
 	return (envp);
 }
-
 void executor(t_data *data)
 {
 	t_cmd	*command;
 	int		status;
+	int		final_status;
 	pid_t	last_pid;
-	int sig;
-	char	**envp_list;
-	pid_t pid;
+	int		i;
+	char	**envp;
+	pid_t	pid;
+	int		sig;
 
-	set_exec_signal();
-	envp_list = envp_to_list(data->env);
-	if (!envp_list)
-		return ;
+	set_main_signal();	
 	last_pid = 0;
+	final_status = 0;
+	i = 0;
 	command = data->cmds;
+	envp = envp_to_list(data->env);
+	if (!envp)
+		return ;
+
 	while (command)
 	{
-		if(assign_fds(command, command->next) != 0)
+		if (!command->arg || !command->arg->value)
+		{
+    		if (process_redirections(command) != 0)
+    		{
+        		command = command->next;
+        		continue;
+    		}
+    		close_fds(command);
+    		command = command->next;
+    		continue;
+		}
+		if (assign_fds(command, command->next) != 0)
 		{
 			command = command->next;
 			continue;
 		}
-		if (command->arg)
-		{	
-			last_pid = fork_and_execute(command, command->next, envp_list, data);
-			if (last_pid < 0)
-			{
-				ex_free_split(envp_list);
-				return ;
-			}
-		}
-		else
-			last_pid = 0;
+		last_pid = fork_and_execute(command, command->next, envp, data);
+		i++;
 		command = command->next;
 	}
 	pid = 1;
@@ -386,13 +386,13 @@ void executor(t_data *data)
 		pid = waitpid(-1, &status, 0);
 		if (pid == last_pid && last_pid != 0)
 		{
-			if (WIFSIGNALED(status)) 
+			if (WIFSIGNALED(status))
 			{
 				sig = WTERMSIG(status);
 				if (sig == SIGINT)
 				{
-					data->last_exit = 130;
-					write(1, "\n", 1); 
+					final_status = 130;
+					write(1, "\n", 1);
 				}
 				else if (sig == SIGQUIT)
 				{
@@ -400,13 +400,18 @@ void executor(t_data *data)
 					write(1, "Quit (core dumped)\n", 19);
 				}
 				else
-					data->last_exit = 128 + sig;
+					final_status = 128 + sig;
 			}
 			else if (WIFEXITED(status))
-				data->last_exit = WEXITSTATUS(status);
+				final_status = WEXITSTATUS(status);
 		}
 		else if (last_pid == 0)
-			data->last_exit = 0;
+			final_status = 0;
 	}
-	ex_free_split(envp_list);
+	if (envp)
+		ex_free_split(envp);
+	/* set shell last exit status */
+	data->last_exit = final_status;
+	return ;
 }
+
