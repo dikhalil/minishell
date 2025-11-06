@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 14:14:06 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/24 18:28:23 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/06 18:16:49 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@ static void handle_input(t_data *data)
 {
     set_main_signal();
     data->command_line = readline(PROMPT);
+	if (g_sig)
+		data->last_exit = g_sig + 128;
     if (!data->command_line)
         exit_program(data, data->last_exit);
-    if (!ft_strcmp(data->command_line, "exit"))
+    if (!ft_strncmp(data->command_line, "exit", 4))
         exit_program(data, data->last_exit);
     if (!*data->command_line)
     {

@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/11/06 18:27:46 by yocto            ###   ########.fr       */
+=======
+/*   Updated: 2025/11/06 17:45:37 by dikhalil         ###   ########.fr       */
+>>>>>>> ebe1eb5 (diana update)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,9 +260,13 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 		path = get_path(cmd_args[0], data->env);
 		if (!path)
 		{
+			ft_putstr_fd(cmd_args[0],2);
+			if (ft_strchr(cmd_args[0] , '/'))
+				ft_putendl_fd(" :No such file or directory",2);
+			else		
+				ft_putendl_fd(" :command not found", 2);
 			ex_free_split(cmd_args);
 			free_envp_list(envp);
-			perror("command not found");
 			exit_program_v2(data, 127);
 		}
 	}
@@ -316,7 +324,6 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 			dup2(command->infile, STDIN_FILENO);
 			close(command->infile);
 		}
-		
 		if (command->outfile != STDOUT_FILENO)
 		{
 			dup2(command->outfile, STDOUT_FILENO);

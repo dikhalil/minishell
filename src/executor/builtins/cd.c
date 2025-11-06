@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/05 21:41:16 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/06 17:40:51 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,9 @@ void cd_builtin(t_data *data, t_arg *args)
         target_dir = args->value;
     if (chdir(target_dir) != 0)
     {
-        perror("cd");
+        ft_putstr_fd(target_dir,2);
+		ft_putstr_fd(" :",2);
+		perror(NULL);
         return;
     }
     set_env_value(&data->env, "OLDPWD", oldpwd);

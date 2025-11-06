@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 20:57:51 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/25 15:58:10 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/06 16:40:57 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,6 @@ void exit_program(t_data *data, int status)
         env_clear(&data->env);
     free_all(data);
     rl_clear_history();
-    ft_putendl_fd("exit", 0);
+    ft_putendl_fd("exit", 1);
     exit(status);
 }
