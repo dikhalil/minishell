@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/06 16:29:45 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/06 18:27:46 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,8 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
     	}
 	}
 
-	if (cmd_args[0][0] == '/' || ft_strncmp(cmd_args[0], "./", 2) == 0
+
+	if (  cmd_args[0][0] == '/' || ft_strncmp(cmd_args[0], "./", 2) == 0
 		|| ft_strncmp(cmd_args[0], "../", 3) == 0)
 	{
 		if (access(cmd_args[0], F_OK) != 0)
@@ -145,6 +146,9 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
 		}
 		return (1);
 	}
+	if(cmd_args[0][0])
+		if (access(cmd_args[0], F_OK) == 0 && access(cmd_args[0], X_OK) == 0)
+			return 1;
 	return (0);
 }
 
@@ -281,6 +285,27 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 	}
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
+	if(pid == 0 && isBuiltin(command))
+	{
+		set_child_signal();
+		if (next)
+			close(next->infile);
+		if (command->infile != STDIN_FILENO)
+		{
+			dup2(command->infile, STDIN_FILENO);
+			close(command->infile);
+		}
+		
+		if (command->outfile != STDOUT_FILENO)
+		{
+			dup2(command->outfile, STDOUT_FILENO);
+			close(command->outfile);
+		}
+		check_builtin_pipe(command, data);
+		close_fds(command);
+		exit_program_v2(data, EXIT_SUCCESS);
+	}
+	else
 	if (pid == 0)
 	{
 		set_child_signal();
@@ -299,7 +324,6 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		}
 		execute_program(command->arg, envp, data);
 		close_fds(command);
-		// printf("we out herer :)");
 		exit_program_v2(data, EXIT_FAILURE);
 	}
 	else
@@ -352,11 +376,35 @@ char **envp_to_list(t_env *env)
 	}
 	return (envp);
 }
+int isBuiltin(t_cmd *command)
+{
+	if (ft_strcmp(command->arg->value, "echo") == 0)
+		return (1);
+	else if (ft_strcmp(command->arg->value, "env") == 0)
+		return (1);
+	return (0);
+}
+int check_builtin_pipe(t_cmd *command, t_data *data)
+{
+	if (ft_strcmp(command->arg->value, "echo") == 0){
+		echo_builtin(data, command->arg->next);
+		return (1);
+	}
+	else if (ft_strcmp(command->arg->value, "env") == 0){
+		env_builtin(data->env);
+		return (1);
+	}
+	return (0);
+}
+
 int check_builtin(t_cmd *command, t_data *data)
 {
+	if(command -> next)
+		return (1);
 	if (ft_strcmp(command->arg->value, "cd") == 0)
 	{
 		cd_builtin(data, command ->arg->next);
+
 		return (1);
 	}
 	else if (ft_strcmp(command->arg->value, "exit") == 0)
@@ -374,16 +422,6 @@ int check_builtin(t_cmd *command, t_data *data)
 	else if (ft_strcmp(command->arg->value, "unset") == 0)
 	{
 		unset_builtin(data, command->arg->next);
-		return (1);
-	}
-	else if (ft_strcmp(command->arg->value, "echo") == 0)
-	{
-		echo_builtin(data, command->arg->next);
-		return (1);
-	}
-	else if (ft_strcmp(command->arg->value, "env") == 0)
-	{
-		env_builtin(data->env);
 		return (1);
 	}
 	return (0);
@@ -422,6 +460,13 @@ void executor(t_data *data)
 		if (command->arg)
 		{
 			if (check_builtin(command, data))
+			{
+				close_fds(command);
+				last_pid = 0;
+				command = command->next;
+				continue;
+			}
+			if (!command->next && check_builtin_pipe(command, data))
 			{
 				close_fds(command);
 				last_pid = 0;
