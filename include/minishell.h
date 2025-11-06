@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/05 23:43:10 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/06 16:28:49 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ void		executor(t_data *data);
 void	ex_free_split(char **path);
 void close_fds(t_cmd *cmd);
 int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
-int	check_cmd(char **cmd_args, t_data *data); 
+int	check_cmd(char **cmd_args, t_data *data, char **envp); 
 void exit_program_v2(t_data *data, int status);
             
 /* ------ builtins ------ */

@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/05 23:45:41 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/06 16:29:45 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 	return (0);
 }
 
-int	check_cmd(char **cmd_args, t_data *data)
+int	check_cmd(char **cmd_args, t_data *data, char **envp)
 {
 	struct stat st;
 	if (!cmd_args || !cmd_args[0])
@@ -121,6 +121,7 @@ int	check_cmd(char **cmd_args, t_data *data)
         	write(2, cmd_args[0], ft_strlen(cmd_args[0]));
         	write(2, ": Is a directory\n", 17);
         	ex_free_split(cmd_args);
+			ex_free_split(envp);
         	exit_program_v2(data, 126);
     	}
 	}
@@ -132,12 +133,14 @@ int	check_cmd(char **cmd_args, t_data *data)
 		{
 			perror(cmd_args[0]);
 			ex_free_split(cmd_args);
+			ex_free_split(envp);
 			exit_program_v2(data, 127);
 		}
 		if (access(cmd_args[0], X_OK) != 0)
 		{
 			perror(cmd_args[0]);
 			ex_free_split(cmd_args);
+			ex_free_split(envp);
 			exit_program_v2(data, 126);
 		}
 		return (1);
@@ -244,12 +247,13 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 		arg = arg->next;
 		i++;
 	}
-	if (check_cmd(cmd_args, data) == 0)
+	if (check_cmd(cmd_args, data, envp) == 0)
 	{
 		path = get_path(cmd_args[0], data->env);
 		if (!path)
 		{
 			ex_free_split(cmd_args);
+			free_envp_list(envp);
 			perror("command not found");
 			exit_program_v2(data, 127);
 		}
@@ -295,6 +299,7 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		}
 		execute_program(command->arg, envp, data);
 		close_fds(command);
+		// printf("we out herer :)");
 		exit_program_v2(data, EXIT_FAILURE);
 	}
 	else
