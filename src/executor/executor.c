@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/05 21:28:56 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/05 23:45:41 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,13 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 	return (0);
 }
 
-int	check_cmd(char **cmd_args)
+int	check_cmd(char **cmd_args, t_data *data)
 {
 	struct stat st;
 	if (!cmd_args || !cmd_args[0])
 	{
 		write(2, "pipex: invalid command\n", 23);
-		exit(127);
+		exit_program_v2(data, 127);
 	}
 	
 	if (stat(cmd_args[0], &st) == 0)
@@ -121,7 +121,7 @@ int	check_cmd(char **cmd_args)
         	write(2, cmd_args[0], ft_strlen(cmd_args[0]));
         	write(2, ": Is a directory\n", 17);
         	ex_free_split(cmd_args);
-        	exit(126);
+        	exit_program_v2(data, 126);
     	}
 	}
 
@@ -131,12 +131,14 @@ int	check_cmd(char **cmd_args)
 		if (access(cmd_args[0], F_OK) != 0)
 		{
 			perror(cmd_args[0]);
-			exit(127);
+			ex_free_split(cmd_args);
+			exit_program_v2(data, 127);
 		}
 		if (access(cmd_args[0], X_OK) != 0)
 		{
 			perror(cmd_args[0]);
-			exit(126);
+			ex_free_split(cmd_args);
+			exit_program_v2(data, 126);
 		}
 		return (1);
 	}
@@ -153,6 +155,12 @@ void ex_free_split(char **path)
 		i++;	
 	}
 	free(path);
+}
+void free_envp_list(char **envp_list)
+{
+    if (!envp_list)
+        return;
+    ex_free_split(envp_list);
 }
 char	*get_path(char *cmd, t_env *env)
 {
@@ -236,14 +244,14 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 		arg = arg->next;
 		i++;
 	}
-	if (check_cmd(cmd_args) == 0)
+	if (check_cmd(cmd_args, data) == 0)
 	{
 		path = get_path(cmd_args[0], data->env);
 		if (!path)
 		{
 			ex_free_split(cmd_args);
 			perror("command not found");
-			exit(127);
+			exit_program_v2(data, 127);
 		}
 	}
 	else
@@ -253,7 +261,8 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 	perror(cmd_args[0]);
 	ex_free_split(cmd_args);
 	free(path);
-	exit(126);
+	exit_program_v2(data, 126);
+	return (0);
 }
 
 int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
@@ -286,7 +295,7 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		}
 		execute_program(command->arg, envp, data);
 		close_fds(command);
-		exit(EXIT_FAILURE);
+		exit_program_v2(data, EXIT_FAILURE);
 	}
 	else
 	{
@@ -374,6 +383,15 @@ int check_builtin(t_cmd *command, t_data *data)
 	}
 	return (0);
 }
+void exit_program_v2(t_data *data, int status)
+{
+
+    if (data->env)
+        env_clear(&data->env);
+    free_all(data);
+    exit(status);
+}
+
 void executor(t_data *data)
 {
 	t_cmd	*command;
@@ -444,6 +462,6 @@ void executor(t_data *data)
 		else if (last_pid == 0)
 			data->last_exit = 0;
 	}
-	ex_free_split(envp_list);
+	free_envp_list(envp_list);
 }
 
