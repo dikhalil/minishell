@@ -6,21 +6,23 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 17:25:37 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:11:41 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/07 13:49:32 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include <stdarg.h>
-# include <stdint.h>
-# include <stdlib.h>
-# include <unistd.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stddef.h>
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
-# endif
+
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 42
+#endif
 
 typedef struct s_list
 {

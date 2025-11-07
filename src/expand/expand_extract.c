@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 18:01:04 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/20 22:32:29 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/07 14:25:59 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ char *extract_key(t_data *data, char *str, int *i)
     }
     else if (!str[*i] || (!ft_isalnum(str[*i]) && str[*i] != '_'))
         key = ft_strdup("$");
+    else if (ft_isdigit(str[*i]))
+    {
+        key = ft_substr(str, *i, 1); 
+        (*i)++;
+    }
     else
     {
         start = *i;
@@ -39,33 +44,49 @@ char *extract_key(t_data *data, char *str, int *i)
 static char *extract_special(t_data *data, char *key)
 {
     int num;
+    char *value;
 
+    value = NULL;
     if (!ft_strcmp(key, "$"))
-        return (ft_strdup(key));
+        value = ft_strdup(key);
     else if (!ft_strcmp(key, "?"))
-        return (ft_itoa(data->last_exit));
-    else if (is_number(key))
+        value = ft_itoa(data->last_exit);
+    else if (ft_isdigit(key[0]))
     {
         num = ft_atoi(key);
         if (num >= 0 && num < data->argc)
-            return (ft_strdup(data->argv[num]));
+            value = ft_strdup(data->argv[num]);
         else
-            return (ft_strdup(""));
+            value = ft_strdup("");
     }
-    return (NULL);
+    else
+        return (NULL);
+    if (!value)
+        exit_program(data, ERR_MEM);
+    return (value);
 }
 
 static char *extract_env(t_data *data, char *key)
 {
-    t_env *env = data->env;
-
+    t_env *env;
+    char *value;
+    
+    env = data->env;
     while (env)
     {
         if (ft_strcmp(env->key, key) == 0)
-            return (ft_strdup(env->value));
+        {
+            value = ft_strdup(env->value);
+            if (!value)
+                exit_program(data, ERR_MEM);
+            return (value);
+        }
         env = env->next;
     }
-    return (ft_strdup(""));
+    value = ft_strdup("");
+    if (!value)
+        exit_program(data, ERR_MEM);
+    return (value);
 }
 
 char *extract_value(t_data *data, char *key)

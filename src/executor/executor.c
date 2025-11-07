@@ -5,12 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/11/06 18:27:46 by yocto            ###   ########.fr       */
-=======
-/*   Updated: 2025/11/06 17:45:37 by dikhalil         ###   ########.fr       */
->>>>>>> ebe1eb5 (diana update)
+/*   Created: 2025/11/07 13:57:48 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/11/07 14:43:44 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +108,11 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 int	check_cmd(char **cmd_args, t_data *data, char **envp)
 {
 	struct stat st;
+	
 	if (!cmd_args || !cmd_args[0])
 	{
-		write(2, "pipex: invalid command\n", 23);
+		ft_putstr_fd(cmd_args[0], 2);
+		ft_putendl_fd("invalid command", 2);
 		exit_program_v2(data, 127);
 	}
 	
@@ -122,15 +120,13 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
 	{
     	if (S_ISDIR(st.st_mode))
     	{
-        	write(2, cmd_args[0], ft_strlen(cmd_args[0]));
-        	write(2, ": Is a directory\n", 17);
+        	ft_putstr_fd(cmd_args[0], 2);
+        	ft_putendl_fd(": Is a directory\n", 2);
         	ex_free_split(cmd_args);
 			ex_free_split(envp);
         	exit_program_v2(data, 126);
     	}
 	}
-
-
 	if (  cmd_args[0][0] == '/' || ft_strncmp(cmd_args[0], "./", 2) == 0
 		|| ft_strncmp(cmd_args[0], "../", 3) == 0)
 	{
@@ -291,8 +287,7 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		perror("fork");
 		return (-1);
 	}
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	set_exec_signal();
 	if(pid == 0 && isBuiltin(command))
 	{
 		set_child_signal();
