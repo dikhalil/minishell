@@ -6,7 +6,11 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/11/07 13:48:01 by dikhalil         ###   ########.fr       */
+=======
+/*   Updated: 2025/11/07 15:33:22 by yocto            ###   ########.fr       */
+>>>>>>> fa4ae4e (i change but it doesn't change :()
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,8 +200,10 @@ int check_builtin_pipe(t_cmd *command, t_data *data);
     void	cd_builtin(t_data *data, t_arg *args);
     void	echo_builtin(t_data *data, t_arg *args);
     void    env_builtin(t_env *env);
-    void    exit_builtin(t_data *data, int status);
+    void    exit_builtin(t_data *data, t_arg *args);
     void   unset_builtin(t_data *data, t_arg *args);
+int ft_isnumber(const char *s);
+
 /* ------ cleanup ------ */
 void reset_data(t_data *data);
 void free_all(t_data *data);

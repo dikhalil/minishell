@@ -5,8 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
+<<<<<<< HEAD
 /*   Created: 2025/11/07 13:57:48 by dikhalil          #+#    #+#             */
 /*   Updated: 2025/11/07 14:43:44 by dikhalil         ###   ########.fr       */
+=======
+/*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
+/*   Updated: 2025/11/07 16:10:19 by yocto            ###   ########.fr       */
+>>>>>>> fa4ae4e (i change but it doesn't change :()
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +120,8 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
 		ft_putendl_fd("invalid command", 2);
 		exit_program_v2(data, 127);
 	}
-	
-	if (stat(cmd_args[0], &st) == 0)
+
+	if (cmd_args[0] && stat(cmd_args[0], &st) == 0)
 	{
     	if (S_ISDIR(st.st_mode))
     	{
@@ -298,7 +303,6 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 			dup2(command->infile, STDIN_FILENO);
 			close(command->infile);
 		}
-		
 		if (command->outfile != STDOUT_FILENO)
 		{
 			dup2(command->outfile, STDOUT_FILENO);
@@ -409,12 +413,37 @@ int check_builtin(t_cmd *command, t_data *data)
 
 		return (1);
 	}
-	else if (ft_strcmp(command->arg->value, "exit") == 0)
+	else if (ft_strcmp(command->arg->value, "exit" ) == 0 && command-> infile == STDIN_FILENO)
 	{
 		if (command->arg->next)
-			exit_builtin(data, ft_atoi(command->arg->next->value));
+			exit_builtin(data, command->arg->next);
 		else
 			exit_program(data, data->last_exit);
+	}
+	else if (ft_strcmp(command->arg->value, "exit") == 0 && command-> infile != STDIN_FILENO)
+	{
+		if (command->arg && !ft_isnumber(command->arg->next->value))
+		{
+			write(2, "exit: ", 6);
+			write(2, command->arg->value, ft_strlen(command->arg->value));
+			write(2, ": numeric argument required\n", 29);
+			data->last_exit = 2;
+			return (1);
+		}
+		else if (command->arg->next && command->arg->next->next)
+		{
+			write(2, "exit: too many arguments\n", 25);
+			data->last_exit = 1;
+			return (1);
+		}
+		else if (command->arg->next)
+		{
+			int code = ft_atoi(command->arg->next->value);
+			data->last_exit = code;
+			return (1);
+		}
+		data->last_exit = 0;
+		return (1);
 	}
 	// else if (ft_strcmp(command->arg->value, "export") == 0)
 	// {
@@ -475,6 +504,7 @@ void executor(t_data *data)
 				command = command->next;
 				continue;
 			}
+			
 			last_pid = fork_and_execute(command, command->next, envp_list, data);
 			if (last_pid < 0)
 			{
