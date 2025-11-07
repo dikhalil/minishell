@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <minishell.h>
+#include <stdlib.h>
 
 static int add_token(t_data *data, char *value, t_token_type type, t_quote_type quote)
 {

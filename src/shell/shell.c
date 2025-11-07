@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 14:14:06 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/06 18:16:49 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:25:32 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ static void handle_input(t_data *data)
 	if (g_sig)
 		data->last_exit = g_sig + 128;
     if (!data->command_line)
-        exit_program(data, data->last_exit);
-    if (!ft_strncmp(data->command_line, "exit", 4))
         exit_program(data, data->last_exit);
     if (!*data->command_line)
     {

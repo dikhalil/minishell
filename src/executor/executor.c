@@ -5,13 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-<<<<<<< HEAD
-/*   Created: 2025/11/07 13:57:48 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/07 14:43:44 by dikhalil         ###   ########.fr       */
-=======
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/07 16:10:19 by yocto            ###   ########.fr       */
->>>>>>> fa4ae4e (i change but it doesn't change :()
+/*   Updated: 2025/11/07 19:59:55 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +111,6 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
 	
 	if (!cmd_args || !cmd_args[0])
 	{
-		ft_putstr_fd(cmd_args[0], 2);
 		ft_putendl_fd("invalid command", 2);
 		exit_program_v2(data, 127);
 	}
@@ -293,7 +287,7 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		return (-1);
 	}
 	set_exec_signal();
-	if(pid == 0 && isBuiltin(command))
+	if(pid == 0)
 	{
 		set_child_signal();
 		if (next)
@@ -308,29 +302,16 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 			dup2(command->outfile, STDOUT_FILENO);
 			close(command->outfile);
 		}
-		check_builtin_pipe(command, data);
+		if (isBuiltin(command))
+		{
+			check_builtin(command, data, 1);
+			close_fds(command);
+			exit_program_v2(data, data->last_exit);
+		}
+		else
+			execute_program(command->arg, envp, data);
 		close_fds(command);
 		exit_program_v2(data, EXIT_SUCCESS);
-	}
-	else
-	if (pid == 0)
-	{
-		set_child_signal();
-		if (next)
-			close(next->infile);
-		if (command->infile != STDIN_FILENO)
-		{
-			dup2(command->infile, STDIN_FILENO);
-			close(command->infile);
-		}
-		if (command->outfile != STDOUT_FILENO)
-		{
-			dup2(command->outfile, STDOUT_FILENO);
-			close(command->outfile);
-		}
-		execute_program(command->arg, envp, data);
-		close_fds(command);
-		exit_program_v2(data, EXIT_FAILURE);
 	}
 	else
 	{
@@ -384,78 +365,41 @@ char **envp_to_list(t_env *env)
 }
 int isBuiltin(t_cmd *command)
 {
-	if (ft_strcmp(command->arg->value, "echo") == 0)
-		return (1);
-	else if (ft_strcmp(command->arg->value, "env") == 0)
-		return (1);
-	return (0);
-}
-int check_builtin_pipe(t_cmd *command, t_data *data)
-{
-	if (ft_strcmp(command->arg->value, "echo") == 0){
-		echo_builtin(data, command->arg->next);
-		return (1);
-	}
-	else if (ft_strcmp(command->arg->value, "env") == 0){
-		env_builtin(data->env);
-		return (1);
-	}
-	return (0);
+    char *cmd;
+	
+	if (!command || !command->arg || !command->arg->value)
+		return (0);
+	cmd = command->arg->value;
+    if (!cmd)
+        return (0);
+    if (ft_strcmp(cmd, "echo") == 0
+        || ft_strcmp(cmd, "cd") == 0
+        || ft_strcmp(cmd, "env") == 0
+        || ft_strcmp(cmd, "exit") == 0
+        || ft_strcmp(cmd, "unset") == 0
+        || ft_strcmp(cmd, "export") == 0)
+        return (1);
+    return (0);
 }
 
-int check_builtin(t_cmd *command, t_data *data)
+
+int check_builtin(t_cmd *command, t_data *data, int ischild)
 {
-	if(command -> next)
-		return (1);
+	if (!command || !command->arg || !command->arg->value)
+		return (0);
 	if (ft_strcmp(command->arg->value, "cd") == 0)
-	{
 		cd_builtin(data, command ->arg->next);
-
-		return (1);
-	}
-	else if (ft_strcmp(command->arg->value, "exit" ) == 0 && command-> infile == STDIN_FILENO)
-	{
-		if (command->arg->next)
-			exit_builtin(data, command->arg->next);
-		else
-			exit_program(data, data->last_exit);
-	}
-	else if (ft_strcmp(command->arg->value, "exit") == 0 && command-> infile != STDIN_FILENO)
-	{
-		if (command->arg && !ft_isnumber(command->arg->next->value))
-		{
-			write(2, "exit: ", 6);
-			write(2, command->arg->value, ft_strlen(command->arg->value));
-			write(2, ": numeric argument required\n", 29);
-			data->last_exit = 2;
-			return (1);
-		}
-		else if (command->arg->next && command->arg->next->next)
-		{
-			write(2, "exit: too many arguments\n", 25);
-			data->last_exit = 1;
-			return (1);
-		}
-		else if (command->arg->next)
-		{
-			int code = ft_atoi(command->arg->next->value);
-			data->last_exit = code;
-			return (1);
-		}
-		data->last_exit = 0;
-		return (1);
-	}
-	// else if (ft_strcmp(command->arg->value, "export") == 0)
-	// {
-	// 	export_builtin(data, command->arg->next);
-	// 	return (1);
-	// }
+	else if (ft_strcmp(command->arg->value, "echo") == 0)
+		echo_builtin(data, command->arg->next);
+	else if (ft_strcmp(command->arg->value, "env") == 0)
+		env_builtin(data->env);
+	else if (ft_strcmp(command->arg->value, "exit") == 0)
+		exit_builtin(data,  command->arg->next, ischild);
 	else if (ft_strcmp(command->arg->value, "unset") == 0)
-	{
 		unset_builtin(data, command->arg->next);
-		return (1);
-	}
-	return (0);
+	else
+		return (0);
+	return (1);
 }
 void exit_program_v2(t_data *data, int status)
 {
@@ -472,9 +416,11 @@ void executor(t_data *data)
 	int		status;
 	pid_t	last_pid;
 	int sig;
+	int num_of_cmd;
 	char	**envp_list;
 	pid_t pid;
 
+	num_of_cmd = 0;
 	set_exec_signal();
 	envp_list = envp_to_list(data->env);
 	if (!envp_list)
@@ -483,6 +429,7 @@ void executor(t_data *data)
 	command = data->cmds;
 	while (command)
 	{
+		num_of_cmd++;
 		if(assign_fds(command, command->next) != 0)
 		{
 			command = command->next;
@@ -490,21 +437,16 @@ void executor(t_data *data)
 		}
 		if (command->arg)
 		{
-			if (check_builtin(command, data))
+			if (!command->next && num_of_cmd == 1)
 			{
-				close_fds(command);
-				last_pid = 0;
-				command = command->next;
-				continue;
-			}
-			if (!command->next && check_builtin_pipe(command, data))
-			{
-				close_fds(command);
-				last_pid = 0;
-				command = command->next;
-				continue;
-			}
-			
+				if (check_builtin(command, data, 0))
+				{
+					close_fds(command);
+					last_pid = 0;
+					command = command->next;
+					continue;
+				}
+			}		
 			last_pid = fork_and_execute(command, command->next, envp_list, data);
 			if (last_pid < 0)
 			{
@@ -541,8 +483,6 @@ void executor(t_data *data)
 			else if (WIFEXITED(status))
 				data->last_exit = WEXITSTATUS(status);
 		}
-		else if (last_pid == 0)
-			data->last_exit = 0;
 	}
 	free_envp_list(envp_list);
 }

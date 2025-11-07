@@ -6,17 +6,14 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/11/07 13:48:01 by dikhalil         ###   ########.fr       */
-=======
-/*   Updated: 2025/11/07 15:33:22 by yocto            ###   ########.fr       */
->>>>>>> fa4ae4e (i change but it doesn't change :()
+/*   Updated: 2025/11/07 19:30:36 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -193,17 +190,14 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp);
 void exit_program_v2(t_data *data, int status);
 
             
-/* ------ builtins ------ */int 
-isBuiltin(t_cmd *command);
-int check_builtin(t_cmd *command, t_data *data);
-int check_builtin_pipe(t_cmd *command, t_data *data);
-    void	cd_builtin(t_data *data, t_arg *args);
-    void	echo_builtin(t_data *data, t_arg *args);
-    void    env_builtin(t_env *env);
-    void    exit_builtin(t_data *data, t_arg *args);
-    void   unset_builtin(t_data *data, t_arg *args);
+/* ------ builtins ------ */
+int isBuiltin(t_cmd *command);
+int check_builtin(t_cmd *command, t_data *data, int ischild);    void	cd_builtin(t_data *data, t_arg *args);
+void	echo_builtin(t_data *data, t_arg *args);
+void    env_builtin(t_env *env);
+void   unset_builtin(t_data *data, t_arg *args);
 int ft_isnumber(const char *s);
-
+void	exit_builtin(t_data *data, t_arg *arg, int is_child);
 /* ------ cleanup ------ */
 void reset_data(t_data *data);
 void free_all(t_data *data);
