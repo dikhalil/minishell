@@ -3,26 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:21:42 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/03 17:22:06 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/08 14:58:20 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void env_builtin(t_env *env)
+void	env_builtin(t_env *env)
 {
-    while (env)
-    {
-        if (env->value)
-        {
-            write(STDOUT_FILENO, env->key, ft_strlen(env->key));
-            write(STDOUT_FILENO, "=", 1);
-            write(STDOUT_FILENO, env->value, ft_strlen(env->value));
-            write(STDOUT_FILENO, "\n", 1);
-        }
-        env = env->next;
-    }
+	while (env)
+	{
+		if (env->value)
+		{
+			write(STDOUT_FILENO, env->key, ft_strlen(env->key));
+			write(STDOUT_FILENO, "=", 1);
+			write(STDOUT_FILENO, env->value, ft_strlen(env->value));
+			write(STDOUT_FILENO, "\n", 1);
+		}
+		env = env->next;
+	}
 }

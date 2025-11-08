@@ -12,10 +12,11 @@
 
 #include "minishell.h"
 
-int ft_isnumber(const char *s)
+int	ft_isnumber(const char *s)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (!s || !*s)
 		return (0);
 	if (s[0] == '+' || s[0] == '-')
@@ -33,7 +34,7 @@ int ft_isnumber(const char *s)
 
 void	exit_builtin(t_data *data, t_arg *arg, int is_child)
 {
-	int code;
+	int	code;
 
 	code = 0;
 	if (!is_child)
@@ -54,7 +55,7 @@ void	exit_builtin(t_data *data, t_arg *arg, int is_child)
 			return ;
 	}
 	else if (arg)
-		code = ft_atoi(arg->value) & 0xFF; 
+		code = ft_atoi(arg->value) & 0xFF;
 	data->last_exit = code;
 	if (is_child)
 	{

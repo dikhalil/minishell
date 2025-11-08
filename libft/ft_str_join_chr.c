@@ -12,27 +12,27 @@
 
 #include "libft.h"
 
-char *str_join_chr(char *s, char c)
+char	*str_join_chr(char *s, char c)
 {
-    char	*str;
+	char	*str;
 	size_t	len;
 	int		i;
 
 	i = 0;
-    len = 0;
-    if (s)
-       len = ft_strlen(s);
+	len = 0;
+	if (s)
+		len = ft_strlen(s);
 	str = malloc(len + 2);
 	if (str)
 	{
-        while (s && s[i])
-        {
-            str[i] = s[i];
-            i++;
-        }   
-        str[i++] = c;
-        str[i] = 0;
-    }
-    free(s);
+		while (s && s[i])
+		{
+			str[i] = s[i];
+			i++;
+		}
+		str[i++] = c;
+		str[i] = 0;
+	}
+	free(s);
 	return (str);
 }

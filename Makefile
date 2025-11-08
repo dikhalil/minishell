@@ -29,6 +29,7 @@ SRCS =  src/lexer/lexer.c \
 		src/env/shlvl.c \
 		src/clean/cleanup.c \
 		src/signals/signals.c \
+		src/signals/child_signal.c \
 		src/shell/shell.c \
 		src/shell/main.c\
 		src/executor/executor.c \
@@ -37,8 +38,8 @@ SRCS =  src/lexer/lexer.c \
 		src/executor/builtins/env.c\
 		src/executor/builtins/exit.c\
 		src/executor/builtins/unset.c\
-# 		src/executor/builtins/export.c\
-		
+		src/executor/builtins/export.c\
+
 
 # Object files
 OBJ_DIR = obj
@@ -74,4 +75,4 @@ fclean: clean
 re: fclean all
 
 # Phony targets
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re

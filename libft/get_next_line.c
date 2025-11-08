@@ -6,12 +6,11 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 18:59:39 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/20 21:45:33 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:55:51 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
 
 static int	handle_read(char *buf, ssize_t bytes, char **buffer)
 {

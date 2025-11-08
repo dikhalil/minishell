@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/08 14:35:49 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/08 15:35:00 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,4 +138,3 @@ void print_env_sorted(t_env *env)
         current = current->next;
     }
 }
-

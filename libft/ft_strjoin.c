@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 20:35:08 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/05 23:29:24 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/08 14:54:16 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	str[i] = 0;
 	return (str);
 }
-
 
 char	*str_join_free(char *s1, char *s2)
 {

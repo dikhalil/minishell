@@ -12,13 +12,13 @@
 
 #include <minishell.h>
 
-static t_quote_type get_quote_type(char c)
+static t_quote_type	get_quote_type(char c)
 {
-    if (c == '"')
-        return DOUBLE_QUOTE;
-    else if (c == '\'')
-        return SINGLE_QUOTE;
-    return NONE;
+	if (c == '"')
+		return (DOUBLE_QUOTE);
+	else if (c == '\'')
+		return (SINGLE_QUOTE);
+	return (NONE);
 }
 
 static int	skip_quoted(char *str, int i, char quote_chr)
@@ -32,21 +32,23 @@ static int	skip_quoted(char *str, int i, char quote_chr)
 
 static int	skip_unquoted(char *str, int i)
 {
-	while (str[i] && !is_space(str[i]) && !is_redir(str[i]) && get_quote_type(str[i]) == NONE)
-		i++;	
+	while (str[i] && !is_space(str[i]) && !is_redir(str[i])
+		&& get_quote_type(str[i]) == NONE)
+		i++;
 	return (i);
 }
 
-static char *extract_word(t_data *data, char *str, int *i, t_quote_type *quote_type)
+static char	*extract_word(t_data *data, char *str, int *i,
+		t_quote_type *quote_type)
 {
 	int		start;
-	char 	*part;
-	char quote_chr;
-	
+	char	*part;
+	char	quote_chr;
+
 	quote_chr = '\0';
 	if (get_quote_type(str[*i]) != NONE)
 	{
-		*quote_type =  get_quote_type(str[*i]);
+		*quote_type = get_quote_type(str[*i]);
 		quote_chr = str[*i];
 		(*i)++;
 		start = *i;
@@ -68,12 +70,12 @@ static char *extract_word(t_data *data, char *str, int *i, t_quote_type *quote_t
 
 char	*get_word(t_data *data, char *str, int *i, t_quote_type *quote_type)
 {
-	char	*word;	
-	char 	*part;
-	char 	*tmp;
+	char	*word;
+	char	*part;
+	char	*tmp;
 
 	word = NULL;
-	while (str[*i] && !is_space(str[*i]) && ! is_redir(str[*i]))
+	while (str[*i] && !is_space(str[*i]) && !is_redir(str[*i]))
 	{
 		part = extract_word(data, str, i, quote_type);
 		if (!part)
@@ -90,5 +92,5 @@ char	*get_word(t_data *data, char *str, int *i, t_quote_type *quote_type)
 			exit_program(data, ERR_MEM);
 		free(part);
 	}
-    return (word);
+	return (word);
 }

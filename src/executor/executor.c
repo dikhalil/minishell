@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/07 19:59:55 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/08 15:34:37 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,6 +397,8 @@ int check_builtin(t_cmd *command, t_data *data, int ischild)
 		exit_builtin(data,  command->arg->next, ischild);
 	else if (ft_strcmp(command->arg->value, "unset") == 0)
 		unset_builtin(data, command->arg->next);
+	else if (ft_strcmp(command->arg->value, "export") == 0)
+		export_builtin(data, command->arg->next);
 	else
 		return (0);
 	return (1);
@@ -486,4 +488,3 @@ void executor(t_data *data)
 	}
 	free_envp_list(envp_list);
 }
-

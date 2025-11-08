@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 20:43:46 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/20 20:12:23 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:54:45 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,14 @@ char	*ft_strdup_gnl(const char *s)
 	return (str);
 }
 
-void *free_and_return(char **ptr)
+void	*free_and_return(char **ptr)
 {
-    if (ptr && *ptr)
-    {
-        free(*ptr); 
-        *ptr = NULL;  
-    }
-    return (NULL);   
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
+	return (NULL);
 }
 
 char	*ft_strjoin_gnl(char *s1, char const *s2)

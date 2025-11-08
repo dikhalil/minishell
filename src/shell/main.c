@@ -12,17 +12,17 @@
 
 #include <minishell.h>
 
-int g_sig = 0;
+int	g_sig = 0;
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-    t_data data;
+	t_data	data;
 
-    ft_memset(&data, 0, sizeof(t_data));
-    init_env(&data, envp);
-    data.argv = argv;
-    data.argc = argc;
-    run_shell(&data);
-    env_clear(&data.env);
-    return (0);
+	ft_memset(&data, 0, sizeof(t_data));
+	init_env(&data, envp);
+	data.argv = argv;
+	data.argc = argc;
+	run_shell(&data);
+	env_clear(&data.env);
+	return (0);
 }

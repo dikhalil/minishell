@@ -12,9 +12,9 @@
 
 #include <minishell.h>
 
-static void free_cmd_arg(t_cmd **cmds)
+static void	free_cmd_arg(t_cmd **cmds)
 {
-	t_arg *tmp_arg;
+	t_arg	*tmp_arg;
 
 	if (!(*cmds)->arg)
 		return ;
@@ -27,9 +27,9 @@ static void free_cmd_arg(t_cmd **cmds)
 	}
 }
 
-static void free_cmd_redir(t_cmd **cmds)
+static void	free_cmd_redir(t_cmd **cmds)
 {
-	t_redir *tmp_redir;
+	t_redir	*tmp_redir;
 
 	if (!(*cmds)->redir)
 		return ;
@@ -49,8 +49,8 @@ void	cmd_clear(t_cmd **cmds)
 {
 	t_cmd	*tmp_cmd;
 
-	 if (!cmds || !*cmds)
-        return;
+	if (!cmds || !*cmds)
+		return ;
 	while (*cmds)
 	{
 		free_cmd_arg(cmds);
@@ -66,14 +66,14 @@ void	cmd_clear(t_cmd **cmds)
 	*cmds = NULL;
 }
 
-void parser_error_handling(t_data *data, t_token *current_token)
+void	parser_error_handling(t_data *data, t_token *current_token)
 {
-    ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-    if (current_token && current_token->value)
+	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+	if (current_token && current_token->value)
 		ft_putstr_fd(current_token->value, 2);
 	else
 		ft_putstr_fd("newline", 2);
-    ft_putendl_fd("'", 2);
-    data->last_exit = 2;
-    free_all(data);
+	ft_putendl_fd("'", 2);
+	data->last_exit = 2;
+	free_all(data);
 }

@@ -18,23 +18,23 @@ t_env	*env_new(t_data *data, char *key, char *value)
 
 	new = malloc(sizeof(t_env));
 	if (!new)
-    {
-        free(key);
-        exit_program(data, ERR_MEM);
-    }
+	{
+		free(key);
+		exit_program(data, ERR_MEM);
+	}
 	new->key = ft_strdup(key);
-    if (!new->key)
-    {
-        free(key);
-        exit_program(data, ERR_MEM);
-    }    
-    new->value = ft_strdup(value);
-    if (!new->value)
-    {
-        free(key);
-        exit_program(data, ERR_MEM);
-    }	
-    new->next = NULL;
+	if (!new->key)
+	{
+		free(key);
+		exit_program(data, ERR_MEM);
+	}
+	new->value = ft_strdup(value);
+	if (!new->value)
+	{
+		free(key);
+		exit_program(data, ERR_MEM);
+	}
+	new->next = NULL;
 	return (new);
 }
 
@@ -64,13 +64,13 @@ void	env_add_back(t_env **env, t_env *new)
 
 void	env_clear(t_env **env)
 {
-    t_env	*tmp;
-    
+	t_env	*tmp;
+
 	if (!env)
 		return ;
-    while (*env)
+	while (*env)
 	{
-        free((*env)->key);
+		free((*env)->key);
 		free((*env)->value);
 		tmp = *env;
 		*env = (*env)->next;
@@ -79,28 +79,28 @@ void	env_clear(t_env **env)
 	*env = NULL;
 }
 
-void init_env(t_data *data, char **envp)
+void	init_env(t_data *data, char **envp)
 {
-    int i;
-    char *equal;
-    char *tmp;
+	int		i;
+	char	*equal;
+	char	*tmp;
 
-    i = 0;
-    while (envp[i])
-    {
-        tmp = ft_strdup(envp[i]);
-        if (!tmp)
-            exit_program(data, ERR_MEM);
-        equal = ft_strchr(tmp, '=');
-        if (equal)
-        {
-            *equal = '\0';
-            env_add_back(&data->env, env_new(data, tmp, equal + 1));
-        }
-        else
-            env_add_back(&data->env, env_new(data, tmp, ""));
-        free(tmp);
-        i++;
-    }
-    increment_shlvl(data);
+	i = 0;
+	while (envp[i])
+	{
+		tmp = ft_strdup(envp[i]);
+		if (!tmp)
+			exit_program(data, ERR_MEM);
+		equal = ft_strchr(tmp, '=');
+		if (equal)
+		{
+			*equal = '\0';
+			env_add_back(&data->env, env_new(data, tmp, equal + 1));
+		}
+		else
+			env_add_back(&data->env, env_new(data, tmp, ""));
+		free(tmp);
+		i++;
+	}
+	increment_shlvl(data);
 }

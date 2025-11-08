@@ -12,30 +12,30 @@
 
 #include <minishell.h>
 
-void heredoc(t_data *data)
+void	heredoc(t_data *data)
 {
-    t_cmd *cmd;
-    t_redir *redir;
-    
-    cmd = data->cmds;
-    while (cmd)
-    {
-        redir = cmd->redir;
-        while (redir)
-        {
-            if (redir->type == T_HEREDOC)
-            {
-                set_heredoc_signal();
-                handle_heredoc(data, cmd, redir);
-                set_main_signal();
-                if (g_sig == SIGINT)
-                {
-                    data->last_exit = 130;
-                    return ;
-                }
-            }
-            redir = redir->next;
-        }
-        cmd = cmd->next;
-    }
+	t_cmd	*cmd;
+	t_redir	*redir;
+
+	cmd = data->cmds;
+	while (cmd)
+	{
+		redir = cmd->redir;
+		while (redir)
+		{
+			if (redir->type == T_HEREDOC)
+			{
+				set_heredoc_signal();
+				handle_heredoc(data, cmd, redir);
+				set_main_signal();
+				if (g_sig == SIGINT)
+				{
+					data->last_exit = 130;
+					return ;
+				}
+			}
+			redir = redir->next;
+		}
+		cmd = cmd->next;
+	}
 }
