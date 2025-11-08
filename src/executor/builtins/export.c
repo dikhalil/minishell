@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/08 13:04:44 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/08 14:35:49 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ void export_builtin(t_data *data, t_arg *args)
         {
             if (!valid_identifier(args->value)){
                 write(2, "not a valid identifier\n", 23);
-                return ;
+                args = args->next;
+                continue;
             }
             else
                 add_or_update_env(data, args->value);
@@ -105,7 +106,9 @@ void print_env_sorted(t_env *env)
 
     if (!env)
         return ;
-    do
+
+    swapped = 1;
+    while (swapped)
     {
         swapped = 0;
         current = env;
@@ -124,7 +127,7 @@ void print_env_sorted(t_env *env)
             }
             current = current->next;
         }
-    } while (swapped);
+    }
     current = env;
     while (current)
     {
@@ -135,3 +138,4 @@ void print_env_sorted(t_env *env)
         current = current->next;
     }
 }
+
