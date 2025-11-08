@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 22:27:04 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/08 15:04:36 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/08 16:54:59 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,28 +56,36 @@ static void	delete_arg_node(t_cmd *cmd, t_arg *arg, t_arg *prev)
 int	expand_single_arg(t_data *data, t_cmd *cmd, t_arg *arg, t_arg *prev)
 {
 	if (!arg || !arg->value || arg->quote == SINGLE_QUOTE)
-		return (0);
+		return (-1);
 	if (ft_strchr(arg->value, '$'))
 	{
 		expand_str(data, &arg->value);
-		delete_arg_node(cmd, arg, prev);
+		if (!arg->value[0])
+		{
+			delete_arg_node(cmd, arg, prev);
+			return (0);
+		}
 		return (1);
 	}
-	return (0);
+	return (-1);
 }
 
-static void	create_new_args(t_arg *prev, char **split_arg, int start)
+static void	create_new_args(t_data *data, t_arg *prev, char **split_arg, int start)
 {
 	t_arg	*new;
 	int		i;
 
 	i = start;
+	if (!split_arg[0])
+		return ;
 	while (split_arg[i])
 	{
 		new = ft_calloc(1, sizeof(t_arg));
 		if (!new)
-			return ;
+			exit_program(data, ERR_MEM);
 		new->value = ft_strdup(split_arg[i]);
+		if (!new->value)
+			exit_program(data, ERR_MEM);
 		new->quote = prev->quote;
 		new->next = prev->next;
 		prev->next = new;
@@ -86,7 +94,7 @@ static void	create_new_args(t_arg *prev, char **split_arg, int start)
 	}
 }
 
-void	split_arg_spaces(t_arg *arg)
+void	split_arg_spaces(t_data *data, t_arg *arg)
 {
 	char	**split_arg;
 
@@ -97,7 +105,10 @@ void	split_arg_spaces(t_arg *arg)
 	if (!split_arg)
 		return ;
 	free(arg->value);
-	arg->value = ft_strdup(split_arg[0]);
-	create_new_args(arg, split_arg, 1);
+	if (!split_arg[0])
+		arg->value = ft_strdup("");
+	else
+		arg->value = ft_strdup(split_arg[0]);
+	create_new_args(data, arg, split_arg, 1);
 	free_split(split_arg);
 }

@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 15:06:11 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/08 14:47:18 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/08 16:52:53 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ static void	expand_all_args(t_data *data, t_cmd *cmd)
 	while (arg)
 	{
 		next = arg->next;
-		if (!expand_single_arg(data, cmd, arg, prev))
+		if (expand_single_arg(data, cmd, arg, prev) == 1)
 		{
-			split_arg_spaces(arg);
+			split_arg_spaces(data, arg);
 			prev = arg;
 		}
 		arg = next;

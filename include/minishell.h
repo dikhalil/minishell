@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/08 15:20:26 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/08 16:55:30 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ char				*extract_value(t_data *data, char *key);
 void				expand_str(t_data *data, char **str);
 int					expand_single_arg(t_data *data, t_cmd *cmd, t_arg *arg,
 						t_arg *prev);
-void				split_arg_spaces(t_arg *arg);
+void				split_arg_spaces(t_data *data, t_arg *arg);
 
 /* ------ expand  ------ */
 void				expand(t_data *data);

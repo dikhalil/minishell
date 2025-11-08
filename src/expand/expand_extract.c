@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 18:01:04 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/08 13:50:08 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/08 16:35:45 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,10 @@ static char	*extract_env(t_data *data, char *key)
 	{
 		if (ft_strcmp(env->key, key) == 0)
 		{
-			value = ft_strdup(env->value);
+			if (!env->value)
+				value = ft_strdup("");
+			else
+				value = ft_strdup(env->value);
 			if (!value)
 				exit_program(data, ERR_MEM);
 			return (value);
