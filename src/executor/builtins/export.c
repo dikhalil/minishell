@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/08 16:13:35 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 07:30:17 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void export_builtin(t_data *data, t_arg *args)
             if (!valid_identifier(args->value)){
                 write(2, "not a valid identifier\n", 23);
                 args = args->next;
+                data->last_exit = 2;
                 continue;
             }
             else

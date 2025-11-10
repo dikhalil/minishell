@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/08 16:13:20 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 11:55:04 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	handle_output_redir(t_cmd *cmd, t_redir *redir)
 	return (0);
 }
 
-static int	process_redirections(t_cmd *cmd)
+static int		process_redirections(t_cmd *cmd)
 {
 	t_redir	*redir;
 
@@ -405,7 +405,6 @@ int check_builtin(t_cmd *command, t_data *data, int ischild)
 }
 void exit_program_v2(t_data *data, int status)
 {
-
     if (data->env)
         env_clear(&data->env);
     free_all(data);
@@ -435,6 +434,8 @@ void executor(t_data *data)
 		if(assign_fds(command, command->next) != 0)
 		{
 			command = command->next;
+			data->last_exit = 1;
+			//added this
 			continue;
 		}
 		if (command->arg)

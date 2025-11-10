@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/08 14:58:05 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 09:21:50 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,12 @@ void	cd_builtin(t_data *data, t_arg *args)
 	char	oldpwd[1024];
 	char	cwd[1024];
 
+	if(args && args->next)
+	{
+		ft_putstr_fd("cd: too many arguments\n", 2);
+		data->last_exit = 1;
+		return ;
+	}
 	target_dir = NULL;
 	if (getcwd(oldpwd, sizeof(oldpwd)) == NULL)
 		return ;
@@ -80,6 +86,7 @@ void	cd_builtin(t_data *data, t_arg *args)
 	{
 		ft_putstr_fd(target_dir, 2);
 		ft_putstr_fd(" :", 2);
+		data ->last_exit = 1;
 		perror(NULL);
 		return ;
 	}
