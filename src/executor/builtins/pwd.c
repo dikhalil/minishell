@@ -3,11 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 07:27:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 07:29:18 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/10 15:41:04 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"  
+#include "minishell.h"
+

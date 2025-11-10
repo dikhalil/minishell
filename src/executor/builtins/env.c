@@ -6,14 +6,16 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:21:42 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/08 14:58:20 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 17:35:04 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	env_builtin(t_env *env)
+void	env_builtin(t_env *env , t_arg *args)
 {
+	if(args -> next)
+		return;
 	while (env)
 	{
 		if (env->value)

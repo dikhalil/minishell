@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:21:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 07:54:35 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/10 17:59:22 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,8 @@ void	echo_builtin(t_data *data, t_arg *args)
 		newline = 0;
 		args = args->next;
 	}
-
-	
 	while (args)
 	{
-		if (args && ft_strcmp(args->value, "$?") == 0)
-		{
-			write(STDOUT_FILENO, str_exit, ft_strlen(str_exit));
-			args = args->next;
-		}
 		write(STDOUT_FILENO, args->value, ft_strlen(args->value));
 		args = args->next;
 		if (args)
@@ -59,4 +52,5 @@ void	echo_builtin(t_data *data, t_arg *args)
 	if (newline && data->cmds->outfile == STDOUT_FILENO)
 		write(STDOUT_FILENO, "\n", 1);
 	free(str_exit);
+	data->last_exit = 0;
 }

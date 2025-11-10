@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 11:55:04 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/10 17:46:56 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 			return (1);
 		}
 		//i will go with this type of errors on the next errors like the real bash
-	}	
+	}
 	return (0);
 }
 
@@ -108,23 +108,55 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 int	check_cmd(char **cmd_args, t_data *data, char **envp)
 {
 	struct stat st;
-	
+
 	if (!cmd_args || !cmd_args[0])
 	{
 		ft_putendl_fd("invalid command", 2);
 		exit_program_v2(data, 127);
 	}
-
 	if (cmd_args[0] && stat(cmd_args[0], &st) == 0)
 	{
     	if (S_ISDIR(st.st_mode))
     	{
         	ft_putstr_fd(cmd_args[0], 2);
-        	ft_putendl_fd(": Is a directory\n", 2);
-        	ex_free_split(cmd_args);
-			ex_free_split(envp);
-        	exit_program_v2(data, 126);
+
+			if (!ft_strcmp(cmd_args[0], ".") || cmd_args[0][ft_strlen(cmd_args[0]) - 1] == '/')
+			{
+        		ft_putendl_fd(": Is a directory", 2);
+				ex_free_split(cmd_args);
+				ex_free_split(envp);
+				exit_program_v2(data, 126);
+			}
+			else if (!ft_strcmp(cmd_args[0], ".."))
+			{
+				ft_putendl_fd(": command not found", 2);
+				ex_free_split(cmd_args);
+				ex_free_split(envp);
+        		exit_program_v2(data, 127);
+			}
     	}
+	}
+	else
+	{
+		if (cmd_args[0][ft_strlen(cmd_args[0]) - 1] == '/')
+		{
+			ft_putstr_fd(cmd_args[0], 2);
+			cmd_args[0][ft_strlen(cmd_args[0]) - 1] = 0;
+			if (!access(cmd_args[0], F_OK))
+			{
+				ft_putendl_fd(": Not a directory", 2);
+				ex_free_split(cmd_args);
+				ex_free_split(envp);
+				exit_program_v2(data, 126);
+			}
+			else
+			{
+				ft_putendl_fd(": No such file or directory", 2);
+				ex_free_split(cmd_args);
+				ex_free_split(envp);
+				exit_program_v2(data, 127);
+			}
+		}
 	}
 	if (  cmd_args[0][0] == '/' || ft_strncmp(cmd_args[0], "./", 2) == 0
 		|| ft_strncmp(cmd_args[0], "../", 3) == 0)
@@ -158,7 +190,7 @@ void ex_free_split(char **path)
 	i = 0;
 	while(path[i]){
 		free(path[i]);
-		i++;	
+		i++;
 	}
 	free(path);
 }
@@ -256,10 +288,7 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 		if (!path)
 		{
 			ft_putstr_fd(cmd_args[0],2);
-			if (ft_strchr(cmd_args[0] , '/'))
-				ft_putendl_fd(" :No such file or directory",2);
-			else		
-				ft_putendl_fd(" :command not found", 2);
+			ft_putendl_fd(" :command not found", 2);
 			ex_free_split(cmd_args);
 			free_envp_list(envp);
 			exit_program_v2(data, 127);
@@ -306,11 +335,13 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		{
 			check_builtin(command, data, 1);
 			close_fds(command);
+			ex_free_split(envp);
 			exit_program_v2(data, data->last_exit);
 		}
 		else
 			execute_program(command->arg, envp, data);
 		close_fds(command);
+		ex_free_split(envp);
 		exit_program_v2(data, EXIT_SUCCESS);
 	}
 	else
@@ -366,7 +397,7 @@ char **envp_to_list(t_env *env)
 int isBuiltin(t_cmd *command)
 {
     char *cmd;
-	
+
 	if (!command || !command->arg || !command->arg->value)
 		return (0);
 	cmd = command->arg->value;
@@ -392,7 +423,7 @@ int check_builtin(t_cmd *command, t_data *data, int ischild)
 	else if (ft_strcmp(command->arg->value, "echo") == 0)
 		echo_builtin(data, command->arg->next);
 	else if (ft_strcmp(command->arg->value, "env") == 0)
-		env_builtin(data->env);
+		env_builtin(data->env, command->arg);
 	else if (ft_strcmp(command->arg->value, "exit") == 0)
 		exit_builtin(data,  command->arg->next, ischild);
 	else if (ft_strcmp(command->arg->value, "unset") == 0)
@@ -403,6 +434,7 @@ int check_builtin(t_cmd *command, t_data *data, int ischild)
 		return (0);
 	return (1);
 }
+
 void exit_program_v2(t_data *data, int status)
 {
     if (data->env)
@@ -435,7 +467,6 @@ void executor(t_data *data)
 		{
 			command = command->next;
 			data->last_exit = 1;
-			//added this
 			continue;
 		}
 		if (command->arg)
@@ -449,7 +480,7 @@ void executor(t_data *data)
 					command = command->next;
 					continue;
 				}
-			}		
+			}
 			last_pid = fork_and_execute(command, command->next, envp_list, data);
 			if (last_pid < 0)
 			{
@@ -467,21 +498,21 @@ void executor(t_data *data)
 		pid = waitpid(-1, &status, 0);
 		if (pid == last_pid && last_pid != 0)
 		{
-			if (WIFSIGNALED(status)) 
+			if (WIFSIGNALED(status))
 			{
 				sig = WTERMSIG(status);
 				if (sig == SIGINT)
 				{
 					data->last_exit = 130;
-					write(1, "\n", 1); 
+					write(1, "\n", 1);
 				}
 				else if (sig == SIGQUIT)
 				{
 					data->last_exit = 131;
-					write(1, "Quit (core dumped)\n", 19);
+					ft_putendl_fd("^\\Quit (core dumped)", 1);
 				}
-				else
-					data->last_exit = 128 + sig;
+				//else
+				//	data->last_exit = 128 + sig;
 			}
 			else if (WIFEXITED(status))
 				data->last_exit = WEXITSTATUS(status);
