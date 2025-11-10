@@ -37,6 +37,7 @@ SRCS =	ft_isalpha.c \
 	get_next_line.c\
 	get_next_line_utils.c\
 	ft_printf.c \
+	ft_atoll.c \
 	ft_handle_format.c \
 	ft_putchr_o.c \
 	ft_putstr_o.c \
@@ -54,7 +55,7 @@ SRCS =	ft_isalpha.c \
 	ft_isnumber.c \
     ft_lstnew_bonus.c \
     ft_lstsize_bonus.c
-	
+
 
 
 
@@ -79,7 +80,7 @@ $(NAME): $(OBJS)
 
 # Clean: remove object files
 clean:
-	rm -f $(OBJS) 
+	rm -f $(OBJS)
 
 # Full clean: remove object files and the library
 fclean: clean
@@ -89,4 +90,4 @@ fclean: clean
 re: fclean all
 
 # Phony targets
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re

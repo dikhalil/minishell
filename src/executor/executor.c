@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 17:46:56 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 19:04:23 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,7 +333,7 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 		}
 		if (isBuiltin(command))
 		{
-			check_builtin(command, data, 1);
+			check_builtin(command, data, 1, envp);
 			close_fds(command);
 			ex_free_split(envp);
 			exit_program_v2(data, data->last_exit);
@@ -414,7 +414,7 @@ int isBuiltin(t_cmd *command)
 }
 
 
-int check_builtin(t_cmd *command, t_data *data, int ischild)
+int check_builtin(t_cmd *command, t_data *data, int ischild, char **envp)
 {
 	if (!command || !command->arg || !command->arg->value)
 		return (0);
@@ -425,7 +425,7 @@ int check_builtin(t_cmd *command, t_data *data, int ischild)
 	else if (ft_strcmp(command->arg->value, "env") == 0)
 		env_builtin(data->env, command->arg);
 	else if (ft_strcmp(command->arg->value, "exit") == 0)
-		exit_builtin(data,  command->arg->next, ischild);
+		exit_builtin(data,  command->arg->next, ischild, envp);
 	else if (ft_strcmp(command->arg->value, "unset") == 0)
 		unset_builtin(data, command->arg->next);
 	else if (ft_strcmp(command->arg->value, "export") == 0)
@@ -440,6 +440,7 @@ void exit_program_v2(t_data *data, int status)
     if (data->env)
         env_clear(&data->env);
     free_all(data);
+	rl_clear_history();
     exit(status);
 }
 
@@ -473,7 +474,7 @@ void executor(t_data *data)
 		{
 			if (!command->next && num_of_cmd == 1)
 			{
-				if (check_builtin(command, data, 0))
+				if (check_builtin(command, data, 0, envp_list))
 				{
 					close_fds(command);
 					last_pid = 0;

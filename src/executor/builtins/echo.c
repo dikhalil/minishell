@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:21:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 17:59:22 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 19:42:00 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	echo_builtin(t_data *data, t_arg *args)
 		if (args)
 			write(STDOUT_FILENO, " ", 1);
 	}
-	if (newline && data->cmds->outfile == STDOUT_FILENO)
+	if (newline)
 		write(STDOUT_FILENO, "\n", 1);
 	free(str_exit);
 	data->last_exit = 0;

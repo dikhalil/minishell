@@ -2,6 +2,7 @@
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
 		"minishell.h": "c",
-		"fcntl.h": "c"
+		"fcntl.h": "c",
+		"type_traits": "c"
 	}
 }

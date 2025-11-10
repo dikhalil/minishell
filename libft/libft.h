@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 17:25:37 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/07 13:49:32 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 18:21:30 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int					ft_tolower(int c);
 /* Memory Allocation Functions */
 void				*ft_calloc(size_t count, size_t size);
 int					ft_atoi(const char *str);
+long long			ft_atoll(const char *str);
 void				ft_bzero(void *s, size_t n);
 
 /* Get Next Line Functions */

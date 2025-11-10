@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 14:41:49 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/06 16:43:13 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:37:10 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
 
-	ft_memset(&data, 0, sizeof(t_data));
+	ft_bzero(&data, sizeof(t_data));
 	init_env(&data, envp);
 	data.argv = argv;
 	data.argc = argc;

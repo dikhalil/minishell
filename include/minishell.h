@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/10 17:34:29 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:40:11 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 # include <unistd.h>
 
 # define TRUE 1
-# define FALSE 0
 # define ERR_MEM 1
 # define PROMPT "minishell$ "
 
@@ -60,6 +59,7 @@ typedef struct s_arg
 {
 	char			*value;
 	t_quote_type	quote;
+	int join;
 	struct s_arg	*next;
 }					t_arg;
 
@@ -199,13 +199,13 @@ void				exit_program_v2(t_data *data, int status);
 
 /* ------ builtins ------ */
 int					isBuiltin(t_cmd *command);
-int					check_builtin(t_cmd *command, t_data *data, int ischild);
+int					check_builtin(t_cmd *command, t_data *data, int ischild, char **envp);
 void				cd_builtin(t_data *data, t_arg *args);
 void				echo_builtin(t_data *data, t_arg *args);
 void					env_builtin(t_env *env, t_arg *args);
 void				unset_builtin(t_data *data, t_arg *args);
 int					ft_isnumber(const char *s);
-void				exit_builtin(t_data *data, t_arg *arg, int is_child);
+void				exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp);
 /* ------ cleanup ------ */
 void				reset_data(t_data *data);
 void				free_all(t_data *data);
