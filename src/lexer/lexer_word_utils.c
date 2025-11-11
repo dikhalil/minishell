@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/15 14:21:46 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/12 00:50:41 by dikhalil         ###   ########.fr       */
+/*   Created: 2025/11/12 01:20:24 by dikhalil          #+#    #+#             */
+/*   Updated: 2025/11/12 01:53:56 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include <minishell.h>
 
@@ -86,7 +87,13 @@ int	add_word(t_data *data, char *str)
 	{
 		part = extract_word(data, str, &idx, &quote_type);
 		if (!part)
+		{
+			if (splited)
+				free_split(splited);
+			if (word)
+				free(word);
 			return (-1);
+		}
 		if (quote_type != SINGLE_QUOTE && ft_strchr(part, '$'))
 			expand_str(data, &part);
 		if (part && part[0] != '\0')
@@ -141,11 +148,8 @@ int	add_word(t_data *data, char *str)
 				else
 				{
 					word = ft_strdup(part);
-					if (part)
-						free(part);
+					free(part);
 					part = NULL;
-					if (!word)
-						exit_program(data, ERR_MEM);
 				}
 			}
 			else
@@ -155,7 +159,7 @@ int	add_word(t_data *data, char *str)
 					j = 0;
 					while (splited[j] && splited[j][0] != '\0')
 					{
-						if (j == 0)
+						if (splited[j + 1] != NULL)
 						{
 							part = ft_strdup(splited[j]);
 							if (!part)
@@ -167,6 +171,7 @@ int	add_word(t_data *data, char *str)
 								exit_program(data, ERR_MEM);
 							}
 							word = str_join_free(word, part);
+							part = NULL;
 							if (!word)
 							{
 								free_split(splited);
@@ -176,22 +181,26 @@ int	add_word(t_data *data, char *str)
 							free(word);
 							word = NULL;
 						}
-						else if (splited[j + 1] == NULL)
+						else
 						{
-							word = ft_strdup(splited[j]);
+							part = ft_strdup(splited[j]);
+							if (!part)
+							{
+								free_split(splited);
+								free(word);
+								word = NULL;
+								splited = NULL;
+								exit_program(data, ERR_MEM);
+							}
+							word = str_join_free(word, part);
+							part = NULL;
 							if (!word)
 							{
 								free_split(splited);
 								exit_program(data, ERR_MEM);
 							}
 						}
-						else
-						{
-							if (word)
-								free(word);
-							word = NULL;
-							add_token(data, splited[j], T_WORD, NONE);
-						}
+					
 						j++;
 					}
 					free_split(splited);
@@ -200,6 +209,7 @@ int	add_word(t_data *data, char *str)
 				else
 				{
 					word = str_join_free(word, part);
+					part = NULL; 
 					if (!word)
 					{
 						exit_program(data, ERR_MEM);
@@ -207,11 +217,13 @@ int	add_word(t_data *data, char *str)
 				}
 			}
 		}
-		else
+		else  
 		{
 			if(part)
+			{	
 				free(part);
-			part = NULL;
+				part = NULL;
+			}
 		}
 	}
 	if (word && word[0] != '\0')
