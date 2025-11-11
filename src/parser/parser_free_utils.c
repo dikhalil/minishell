@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_free_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:54:26 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/24 18:29:41 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/11 23:14:03 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,6 @@ void	cmd_clear(t_cmd **cmds)
 	{
 		free_cmd_arg(cmds);
 		free_cmd_redir(cmds);
-		if ((*cmds)->infile > 2)
-			close((*cmds)->infile);
-		if ((*cmds)->outfile > 2)
-			close((*cmds)->outfile);
 		tmp_cmd = *cmds;
 		*cmds = (*cmds)->next;
 		free(tmp_cmd);

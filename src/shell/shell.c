@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 14:14:06 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/07 17:25:32 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/11 20:14:26 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ static void	handle_commandline(t_data *data)
 		free_all(data);
 		return ;
 	}
-	expand(data);
 	executor(data);
 	free_all(data);
 }

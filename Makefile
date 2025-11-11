@@ -22,7 +22,6 @@ SRCS =  src/lexer/lexer.c \
 		src/parser/parser_free_utils.c \
 		src/heredoc/heredoc.c\
 		src/heredoc/heredoc_utils.c\
-		src/expand/expand.c \
 		src/expand/expand_extract.c \
 		src/expand/expand_str.c \
 		src/env/env.c \

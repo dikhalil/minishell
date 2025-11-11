@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:21:46 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/10 20:45:18 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 00:50:41 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ static int	skip_unquoted(char *str, int i)
 	return (i);
 }
 
-static char	*extract_word(t_data *data, char *str, int *i,
-		t_quote_type *quote_type)
+static char	*extract_word(t_data *data, char *str, int *i, t_quote_type *quote_type)
 {
 	int		start;
 	char	*part;
@@ -59,6 +58,7 @@ static char	*extract_word(t_data *data, char *str, int *i,
 	}
 	else
 	{
+		*quote_type = NONE;
 		start = *i;
 		*i = skip_unquoted(str, *i);
 		part = ft_substr(str, start, *i - start);
@@ -68,29 +68,159 @@ static char	*extract_word(t_data *data, char *str, int *i,
 	return (part);
 }
 
-char	*get_word(t_data *data, char *str, int *i, t_quote_type *quote_type)
+int	add_word(t_data *data, char *str)
 {
-	char	*word;
-	char	*part;
-	char	*tmp;
+	int				idx;
+	char			*word;
+	char			*part;
+	char			**splited;
+	int				j;
+	t_quote_type	quote_type;
 
+	idx = 0;
 	word = NULL;
-	while (str[*i] && !is_space(str[*i]) && !is_redir(str[*i]))
+	splited = NULL;
+	quote_type = NONE;
+
+	while (str[idx] && !is_space(str[idx]) && !is_redir(str[idx]))
 	{
-		part = extract_word(data, str, i, quote_type);
+		part = extract_word(data, str, &idx, &quote_type);
 		if (!part)
-			return (NULL);
-		if (!word)
-			word = ft_strdup(part);
+			return (-1);
+		if (quote_type != SINGLE_QUOTE && ft_strchr(part, '$'))
+			expand_str(data, &part);
+		if (part && part[0] != '\0')
+		{
+			if (quote_type == NONE && ft_strchr(part, ' '))
+			{
+				splited = ft_split(part, ' ');
+				if (part)
+					free(part);
+				part = NULL;
+				if (!splited)
+				{
+					if (word)
+						free(word);
+					exit_program(data, ERR_MEM);
+				}
+			}
+			if (!word)
+			{
+				if (splited)
+				{
+					j = 0;
+					while (splited[j] && splited[j][0] != '\0')
+					{
+						if (splited[j + 1] != NULL)
+						{
+							word = ft_strdup(splited[j]);
+							if (!word)
+							{
+								free_split(splited);
+								exit_program(data, ERR_MEM);
+							}
+							add_token(data, word, T_WORD, NONE);
+							if (word)
+								free(word);
+							word = NULL;
+						}
+						else
+						{
+							word = ft_strdup(splited[j]);
+							if (!word)
+							{
+								free_split(splited);
+								exit_program(data, ERR_MEM);
+							}
+						}
+						j++;
+					}
+					free_split(splited);
+					splited = NULL;
+				}
+				else
+				{
+					word = ft_strdup(part);
+					if (part)
+						free(part);
+					part = NULL;
+					if (!word)
+						exit_program(data, ERR_MEM);
+				}
+			}
+			else
+			{
+				if (splited)
+				{
+					j = 0;
+					while (splited[j] && splited[j][0] != '\0')
+					{
+						if (j == 0)
+						{
+							part = ft_strdup(splited[j]);
+							if (!part)
+							{
+								free_split(splited);
+								free(word);
+								word = NULL;
+								splited = NULL;
+								exit_program(data, ERR_MEM);
+							}
+							word = str_join_free(word, part);
+							if (!word)
+							{
+								free_split(splited);
+								exit_program(data, ERR_MEM);
+							}
+							add_token(data, word, T_WORD, NONE);
+							free(word);
+							word = NULL;
+						}
+						else if (splited[j + 1] == NULL)
+						{
+							word = ft_strdup(splited[j]);
+							if (!word)
+							{
+								free_split(splited);
+								exit_program(data, ERR_MEM);
+							}
+						}
+						else
+						{
+							if (word)
+								free(word);
+							word = NULL;
+							add_token(data, splited[j], T_WORD, NONE);
+						}
+						j++;
+					}
+					free_split(splited);
+					splited = NULL;
+				}
+				else
+				{
+					word = str_join_free(word, part);
+					if (!word)
+					{
+						exit_program(data, ERR_MEM);
+					}
+				}
+			}
+		}
 		else
 		{
-			tmp = word;
-			word = ft_strjoin(word, part);
-			free(tmp);
+			if(part)
+				free(part);
+			part = NULL;
 		}
-		if (!word)
-			exit_program(data, ERR_MEM);
-		free(part);
 	}
-	return (word);
+	if (word && word[0] != '\0')
+		add_token(data, word, T_WORD, quote_type);
+	if (splited)
+		free_split(splited);
+	if (word)
+		free(word);
+	if (part)
+		free(part);
+	return (idx);
 }

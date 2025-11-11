@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 14:06:17 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 14:06:28 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 00:42:59 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ char	*str_join_chr(char *s, char c)
 		str[i++] = c;
 		str[i] = 0;
 	}
-	free(s);
+	if (s)
+		free(s);
+	s = NULL;
 	return (str);
 }

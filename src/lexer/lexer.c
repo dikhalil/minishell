@@ -6,14 +6,13 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 15:13:07 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/19 14:20:05 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/11 20:26:36 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-#include <stdlib.h>
 
-static int	add_token(t_data *data, char *value, t_token_type type,
+int	add_token(t_data *data, char *value, t_token_type type,
 		t_quote_type quote)
 {
 	t_token	*new;
@@ -43,22 +42,6 @@ static int	add_redir(t_data *data, char chr, char next_chr)
 		return (add_token(data, ">>", T_APPEND, NONE));
 	else
 		return (add_token(data, ">", T_OUT_REDIR, NONE));
-}
-
-static int	add_word(t_data *data, char *str)
-{
-	int				i;
-	char			*word;
-	t_quote_type	quote_type;
-
-	i = 0;
-	quote_type = NONE;
-	word = get_word(data, str, &i, &quote_type);
-	if (!word)
-		return (-1);
-	add_token(data, word, T_WORD, quote_type);
-	free(word);
-	return (i);
 }
 
 void	lexer(t_data *data)

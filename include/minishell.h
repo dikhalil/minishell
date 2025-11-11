@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/10 20:40:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/11 20:27:04 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 # include "../libft/libft.h"
 # include <fcntl.h>
+# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stddef.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/types.h>
@@ -108,14 +108,14 @@ int					is_redir(char c);
 int					is_redirection(t_token_type type);
 
 /* ------ lexer word utils ------ */
-char				*get_word(t_data *data, char *str, int *i,
-						t_quote_type *quote_type);
+int	add_word(t_data *data, char *str);
 
 /* ------ lexer token utils ------ */
 t_token				*token_last(t_token *head);
 void				token_add_back(t_token **head, t_token *new);
 void				token_clear(t_token **token);
 void				token_error_handling(t_data *data);
+int	add_token(t_data *data, char *value, t_token_type type, t_quote_type quote);
 
 /* ------ lexer ------ */
 void				lexer(t_data *data);
@@ -162,12 +162,6 @@ char				*extract_value(t_data *data, char *key);
 
 /* ------ expand str ------ */
 void				expand_str(t_data *data, char **str);
-int					expand_single_arg(t_data *data, t_cmd *cmd, t_arg *arg,
-						t_arg *prev);
-void				split_arg_spaces(t_data *data, t_arg *arg);
-
-/* ------ expand  ------ */
-void				expand(t_data *data);
 
 /* ------ env ------ */
 void				init_env(t_data *data, char **envp);
