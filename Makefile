@@ -38,7 +38,7 @@ SRCS =  src/lexer/lexer.c \
 		src/executor/builtins/exit.c\
 		src/executor/builtins/unset.c\
 		src/executor/builtins/export.c\
-
+		src/executor/builtins/pwd.c\
 
 # Object files
 OBJ_DIR = obj

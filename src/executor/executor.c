@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/12 10:02:44 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 17:15:51 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -430,6 +430,8 @@ int check_builtin(t_cmd *command, t_data *data, int ischild, char **envp)
 		unset_builtin(data, command->arg->next);
 	else if (ft_strcmp(command->arg->value, "export") == 0)
 		export_builtin(data, command->arg->next);
+	else if (ft_strcmp(command->arg->value, "pwd") == 0)
+		pwd_builtin(data, command->arg->next);
 	else
 		return (0);
 	return (1);
@@ -472,7 +474,7 @@ void executor(t_data *data)
 		}
 		if (command->arg)
 		{
-			if (!command->next && num_of_cmd == 1)
+			if (!command->next && num_of_cmd == 1 && command-> outfile == STDOUT_FILENO )
 			{
 				if (check_builtin(command, data, 0, envp_list))
 				{

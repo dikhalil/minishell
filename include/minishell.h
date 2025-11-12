@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/11 20:27:04 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 17:16:05 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,7 @@ void					env_builtin(t_env *env, t_arg *args);
 void				unset_builtin(t_data *data, t_arg *args);
 int					ft_isnumber(const char *s);
 void				exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp);
+void                pwd_builtin(t_data *data, t_arg *args);
 /* ------ cleanup ------ */
 void				reset_data(t_data *data);
 void				free_all(t_data *data);

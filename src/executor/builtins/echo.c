@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:21:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 19:42:00 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 17:00:51 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,24 @@
 int	is_n_flag(char *s)
 {
 	int	i;
+	int n_counter = 0;
+	int e_counter = 0;
 
-	if (!s || s[0] != '-' || s[1] != 'n')
+	if (!s || s[0] != '-' || (s[1] != 'n' && s[1] != 'e' && s[1] != 'E'))
 		return (0);
 	i = 2;
 	while (s[i])
 	{
-		if (s[i] != 'n')
+		if (s[i] != 'n' && s[i] != 'e' && s[i] != 'E')
 			return (0);
+		if(s[i] == 'n')
+			n_counter++;
+		else
+			e_counter++;
 		i++;
 	}
+	if(e_counter > 0 && n_counter == 0)
+		return (0);
 	return (1);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 18:56:40 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 17:19:53 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,15 @@ void	cd_builtin(t_data *data, t_arg *args)
 			return ;
 		}
 		printf("%s\n", target_dir);
+	}
+	else if(strcmp(args->value, "~") == 0)
+	{
+		target_dir = get_env_value(data->env, "HOME");
+		if (!target_dir)
+		{
+			write(STDERR_FILENO, "cd: HOME not set\n", 17);
+			return ;
+		}
 	}
 	else
 		target_dir = args->value;
