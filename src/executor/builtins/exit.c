@@ -6,12 +6,11 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:24:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/10 19:04:14 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 09:34:00 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <limits.h>
 
 int	ft_isnumber(const char *s)
 {
@@ -35,12 +34,11 @@ int	ft_isnumber(const char *s)
 
 void	exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp)
 {
-	int	code;
 	long long num;
 
-	code = 0;
 	if (!is_child)
 		ft_putendl_fd("exit", 1);
+	data->last_exit = 0;
 	if (arg)
 	{
 		if (!ft_isnumber(arg->value))
@@ -48,17 +46,19 @@ void	exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp)
 			ft_putstr_fd("minishell: exit: ", 2);
 			ft_putstr_fd(arg->value, 2);
 			ft_putendl_fd(": numeric argument required", 2);
-			code = 2;
+			data->last_exit  = 2;
 		}
 		else 
 		{
 			num = ft_atoll(arg->value);
-			if (num > LONG_MAX || num < LONG_MIN)
-			{
+			if ((num == LLONG_MAX && arg->value[0] != '-') ||
+    			(num == LLONG_MIN && arg->value[0] == '-')
+				|| (num >= LLONG_MAX) || (num <= LLONG_MIN))
+			{			
 				ft_putstr_fd("minishell: exit: ", 2);
 				ft_putstr_fd(arg->value, 2);
 				ft_putendl_fd(": numeric argument required", 2);
-				code = 2;
+				data->last_exit = 2;
 			}
 			if (arg->next)
 			{
@@ -67,11 +67,10 @@ void	exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp)
 				if (!is_child)
 					return;
 			}
-			else
-				code = (int)(num & 0xFF);
+			else if (data->last_exit == 0)
+				data->last_exit = (int)(num & 0xFF);
 		}
 	}
-	data->last_exit = code;
 	ex_free_split(envp);
-	exit_program_v2(data, code);
+	exit_program_v2(data, data->last_exit);
 }

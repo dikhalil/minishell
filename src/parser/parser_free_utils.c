@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:54:26 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/11 23:14:03 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 08:54:16 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,16 @@ void	cmd_clear(t_cmd **cmds)
 	{
 		free_cmd_arg(cmds);
 		free_cmd_redir(cmds);
+		if ((*cmds)->infile > 2)
+		{
+			close((*cmds)->infile);
+			(*cmds)->infile = -1;
+		}
+		if ((*cmds)->outfile > 2)
+		{
+			close((*cmds)->outfile);
+			(*cmds)->outfile = -1;
+		}
 		tmp_cmd = *cmds;
 		*cmds = (*cmds)->next;
 		free(tmp_cmd);

@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 14:29:35 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/08 14:59:39 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 08:38:48 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,13 @@ void	increment_shlvl(t_data *data)
 	lvl = 1;
 	if (shlvl && shlvl->value)
 		lvl = ft_atoi(shlvl->value) + 1;
+	if (lvl >= 1000)
+	{
+		ft_putendl_fd("minishell:  warning: shell level (1000) too high, resetting to 1", 2);
+		lvl = 1;
+	}
+	else if (lvl < 0)
+		lvl = 0;
 	lvl_value = ft_itoa(lvl);
 	if (!lvl_value)
 		exit_program(data, ERR_MEM);
