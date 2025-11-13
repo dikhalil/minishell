@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 17:47:46 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/10/21 13:21:24 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/13 16:57:23 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,19 @@ static int	is_lastheredoc(t_redir *redir)
 	return (1);
 }
 
-static void	set_infile(t_cmd *cmd, t_redir *redir, int in_fd, int out_fd)
+static void	set_infile(t_data *data, t_cmd *cmd, t_redir *redir, int in_fd)
 {
 	if (g_sig == SIGINT)
 	{
 		close(in_fd);
-		close(out_fd);
 		cmd->infile = -1;
+        data->last_exit = 130;
 		return ;
 	}
 	if (is_lastheredoc(redir))
 		cmd->infile = in_fd;
 	else
 		close(in_fd);
-	close(out_fd);
 }
 
 void	handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir)
@@ -57,25 +56,19 @@ void	handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir)
     int		end[2];
     char	*line;
     int		i;
-    int		expanded;
 
     i = 0;
-    expanded = 0;
     if (pipe(end) == -1)
         exit_program(data, 1);
     while (TRUE)
     {
         i++;
         line = get_next_line_stdin();
-        if (g_sig == SIGINT)
-        {
-            data->last_exit = 130;
-            break ;
-        }
-        if (!line || !ft_strcmp(line, redir->delim))
+        if (g_sig == SIGINT || !line
+            || !ft_strcmp(line, redir->delim))
             break ;
         if (redir->quote == NONE && ft_strchr(line, '$'))
-            expand_str(data, &line, &expanded);
+            expand_str(data, &line);
         ft_putendl_fd(line, end[1]);
         free(line);
     }
@@ -83,5 +76,6 @@ void	handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir)
         heredoc_ctrl_d(redir->delim, i);
     if (line)
         free(line);
-    set_infile(cmd, redir, end[0], end[1]);
+    close(end[1]);
+    set_infile(data, cmd, redir, end[0]);
 }

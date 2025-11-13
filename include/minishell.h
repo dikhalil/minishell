@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/13 14:39:17 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/13 18:29:15 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ int					is_redir(char c);
 int					is_redirection(t_token_type type);
 
 /* ------ lexer word utils ------ */
+char	*extract_word(t_data *data, char *str, int *i, t_quote_type *quote_type);
 int	add_word(t_data *data, char *str);
 
 /* ------ lexer token utils ------ */
@@ -163,7 +164,7 @@ char				*extract_key(t_data *data, char *str, int *i);
 char				*extract_value(t_data *data, char *key);
 
 /* ------ expand str ------ */
-void				expand_str(t_data *data, char **str, int *expanded);
+void				expand_str(t_data *data, char **str);
 
 /* ------ env ------ */
 void				init_env(t_data *data, char **envp);

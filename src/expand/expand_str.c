@@ -6,13 +6,13 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 22:27:04 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/12 00:00:19 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/13 16:46:21 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	expand_str(t_data *data, char **str, int *expanded)
+void	expand_str(t_data *data, char **str)
 {
 	char	*cur_val;
 	char	*old_val;
@@ -30,7 +30,6 @@ void	expand_str(t_data *data, char **str, int *expanded)
 			new_val = str_join_free(new_val,
 					extract_value(data, extract_key(data,
 							cur_val, &i)));
-			*expanded = 1;
 		}
 		else
 			new_val = str_join_chr(new_val, cur_val[i++]);
