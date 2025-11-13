@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/12 17:15:51 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/12 20:19:30 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,15 +185,21 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
 
 void ex_free_split(char **path)
 {
-	int i;
+    int i;
 
-	i = 0;
-	while(path[i]){
-		free(path[i]);
-		i++;
-	}
-	free(path);
+    if (!path)
+        return;
+    i = 0;
+    while (path[i])
+    {
+        free(path[i]);
+        path[i] = NULL;
+        i++;
+    }
+    free(path);
+    path = NULL;
 }
+
 void free_envp_list(char **envp_list)
 {
     if (!envp_list)
@@ -299,8 +305,10 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 	execve(path, cmd_args, envp);
 	//if there is an error while executiion
 	perror(cmd_args[0]);
+	if(path != cmd_args[0])
+		free(path);
 	ex_free_split(cmd_args);
-	free(path);
+	// if(path != cmd_args[0])
 	exit_program_v2(data, 126);
 	return (0);
 }
@@ -465,6 +473,7 @@ void executor(t_data *data)
 	command = data->cmds;
 	while (command)
 	{
+		
 		num_of_cmd++;
 		if(assign_fds(command, command->next) != 0)
 		{

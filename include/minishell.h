@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/12 17:16:05 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/12 22:14:53 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,6 +201,7 @@ void				unset_builtin(t_data *data, t_arg *args);
 int					ft_isnumber(const char *s);
 void				exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp);
 void                pwd_builtin(t_data *data, t_arg *args);
+int				    validate_exit_arg(const char *str, long long *out);
 /* ------ cleanup ------ */
 void				reset_data(t_data *data);
 void				free_all(t_data *data);
