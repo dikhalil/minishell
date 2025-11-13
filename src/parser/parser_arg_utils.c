@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:37:41 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/08 15:07:09 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/13 11:58:27 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_arg	*arg_new(t_data *data, t_cmd **current_cmd, t_token *current_token)
 	}
 	new->quote = current_token->quote;
 	new->value = ft_strdup(current_token->value);
+	new->expanded = current_token->expanded;
 	if (!new->value)
 	{
 		cmd_clear(current_cmd);

@@ -12,7 +12,7 @@
 
 #include <minishell.h>
 
-void	expand_str(t_data *data, char **str)
+void	expand_str(t_data *data, char **str, int *expanded)
 {
 	char	*cur_val;
 	char	*old_val;
@@ -30,6 +30,7 @@ void	expand_str(t_data *data, char **str)
 			new_val = str_join_free(new_val,
 					extract_value(data, extract_key(data,
 							cur_val, &i)));
+			*expanded = 1;
 		}
 		else
 			new_val = str_join_chr(new_val, cur_val[i++]);

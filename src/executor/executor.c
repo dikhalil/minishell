@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/12 20:19:30 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/13 14:41:32 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static int	handle_output_redir(t_cmd *cmd, t_redir *redir)
 	}
 	return (0);
 }
-
 static int		process_redirections(t_cmd *cmd)
 {
 	t_redir	*redir;
@@ -107,81 +106,84 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 
 int	check_cmd(char **cmd_args, t_data *data, char **envp)
 {
-	struct stat st;
+    struct stat st;
+    if (!cmd_args || !cmd_args[0])
+    {
+        ft_putendl_fd("invalid command", 2);
+        exit_program_v2(data, 127);
+    }    
+    
+    if (cmd_args[0] && stat(cmd_args[0], &st) == 0)
+    {
+        if (S_ISDIR(st.st_mode))
+        {
+            ft_putstr_fd(cmd_args[0], 2);
 
-	if (!cmd_args || !cmd_args[0])
-	{
-		ft_putendl_fd("invalid command", 2);
-		exit_program_v2(data, 127);
-	}
-	if (cmd_args[0] && stat(cmd_args[0], &st) == 0)
-	{
-    	if (S_ISDIR(st.st_mode))
-    	{
-        	ft_putstr_fd(cmd_args[0], 2);
-
-			if (!ft_strcmp(cmd_args[0], ".") || cmd_args[0][ft_strlen(cmd_args[0]) - 1] == '/')
-			{
-        		ft_putendl_fd(": Is a directory", 2);
-				ex_free_split(cmd_args);
-				ex_free_split(envp);
-				exit_program_v2(data, 126);
-			}
-			else if (!ft_strcmp(cmd_args[0], ".."))
-			{
-				ft_putendl_fd(": command not found", 2);
-				ex_free_split(cmd_args);
-				ex_free_split(envp);
-        		exit_program_v2(data, 127);
-			}
-    	}
-	}
-	else
-	{
-		if (cmd_args[0][ft_strlen(cmd_args[0]) - 1] == '/')
-		{
-			ft_putstr_fd(cmd_args[0], 2);
-			cmd_args[0][ft_strlen(cmd_args[0]) - 1] = 0;
-			if (!access(cmd_args[0], F_OK))
-			{
-				ft_putendl_fd(": Not a directory", 2);
-				ex_free_split(cmd_args);
-				ex_free_split(envp);
-				exit_program_v2(data, 126);
-			}
-			else
-			{
-				ft_putendl_fd(": No such file or directory", 2);
-				ex_free_split(cmd_args);
-				ex_free_split(envp);
-				exit_program_v2(data, 127);
-			}
-		}
-	}
-	if (  cmd_args[0][0] == '/' || ft_strncmp(cmd_args[0], "./", 2) == 0
-		|| ft_strncmp(cmd_args[0], "../", 3) == 0)
-	{
-		if (access(cmd_args[0], F_OK) != 0)
-		{
-			perror(cmd_args[0]);
-			ex_free_split(cmd_args);
-			ex_free_split(envp);
-			exit_program_v2(data, 127);
-		}
-		if (access(cmd_args[0], X_OK) != 0)
-		{
-			perror(cmd_args[0]);
-			ex_free_split(cmd_args);
-			ex_free_split(envp);
-			exit_program_v2(data, 126);
-		}
-		return (1);
-	}
-	if(cmd_args[0][0])
-		if (access(cmd_args[0], F_OK) == 0 && access(cmd_args[0], X_OK) == 0)
-			return 1;
-	return (0);
+            if (!ft_strcmp(cmd_args[0], ".") || cmd_args[0][ft_strlen(cmd_args[0]) - 1] == '/')
+            {
+                ft_putendl_fd(": Is a directory", 2);
+                ex_free_split(cmd_args);
+                ex_free_split(envp);
+                exit_program_v2(data, 126);
+            }
+            else if (!ft_strcmp(cmd_args[0], ".."))
+            {
+                ft_putendl_fd(": command not found", 2);
+                ex_free_split(cmd_args);
+                ex_free_split(envp);
+                exit_program_v2(data, 127);
+            }
+        }
+    }
+    else
+    {
+        // Check length before accessing last character
+        if (cmd_args[0] && ft_strlen(cmd_args[0]) > 0 && cmd_args[0][ft_strlen(cmd_args[0]) - 1] == '/')
+        {
+            ft_putstr_fd(cmd_args[0], 2);
+            cmd_args[0][ft_strlen(cmd_args[0]) - 1] = 0;
+            if (!access(cmd_args[0], F_OK))
+            {
+                ft_putendl_fd(": Not a directory", 2);
+                ex_free_split(cmd_args);
+                ex_free_split(envp);
+                exit_program_v2(data, 126);
+            }
+            else
+            {
+                ft_putendl_fd(": No such file or directory", 2);
+                ex_free_split(cmd_args);
+                ex_free_split(envp);
+                exit_program_v2(data, 127);
+            }
+        }
+    }
+    if (cmd_args[0] && (cmd_args[0][0] == '/' || ft_strncmp(cmd_args[0], "./", 2) == 0
+        || ft_strncmp(cmd_args[0], "../", 3) == 0))
+    {
+        if (access(cmd_args[0], F_OK) != 0)
+        {
+            perror(cmd_args[0]);
+            ex_free_split(cmd_args);
+            ex_free_split(envp);
+            exit_program_v2(data, 127);
+        }
+        if (access(cmd_args[0], X_OK) != 0)
+        {
+            perror(cmd_args[0]);
+            ex_free_split(cmd_args);
+            ex_free_split(envp);
+            exit_program_v2(data, 126);
+        }
+        return (1);
+    }
+    if(cmd_args[0] && cmd_args[0][0])
+        if (access(cmd_args[0], F_OK) == 0 && access(cmd_args[0], X_OK) == 0)
+            return 1;
+    return (0);
 }
+
+
 
 void ex_free_split(char **path)
 {
@@ -199,13 +201,13 @@ void ex_free_split(char **path)
     free(path);
     path = NULL;
 }
-
 void free_envp_list(char **envp_list)
 {
     if (!envp_list)
         return;
     ex_free_split(envp_list);
 }
+
 char	*get_path(char *cmd, t_env *env)
 {
 	char *path;
@@ -259,13 +261,24 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 	char	*path;
 	t_arg	*tmp;
 
-	tmp = arg;
 	i = 0;
+	if (arg && !arg->value[0] && arg->expanded && arg->quote == NONE)
+	{
+		if (!arg->next)
+		{
+			free_envp_list(envp);
+			exit_program_v2(data, 0);
+		}
+		else
+			arg = arg->next;
+	}
+	tmp = arg;
 	while (tmp)
 	{
 		i++;
 		tmp = tmp->next;
 	}
+	tmp = arg;
 	count = i;
 	cmd_args = malloc((count + 1) * sizeof(char *));
 	if (!cmd_args)
@@ -275,9 +288,10 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 	}
 	cmd_args[count] = NULL;
 	i = 0;
+	
 	while (i < count)
 	{
-		cmd_args[i] = ft_strdup(arg->value);
+		cmd_args[i] = ft_strdup(tmp->value);
 		if (!cmd_args[i])
 		{
 			cmd_args[i] = NULL;
@@ -285,16 +299,18 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 			perror("malloc failed");
 			exit(1);
 		}
-		arg = arg->next;
+		tmp = tmp->next;
 		i++;
 	}
+
 	if (check_cmd(cmd_args, data, envp) == 0)
 	{
 		path = get_path(cmd_args[0], data->env);
 		if (!path)
 		{
+			ft_putstr_fd("minishell: ",2);
 			ft_putstr_fd(cmd_args[0],2);
-			ft_putendl_fd(" :command not found", 2);
+			ft_putendl_fd(": command not found", 2);
 			ex_free_split(cmd_args);
 			free_envp_list(envp);
 			exit_program_v2(data, 127);
@@ -305,10 +321,8 @@ int execute_program(t_arg *arg, char **envp, t_data *data)
 	execve(path, cmd_args, envp);
 	//if there is an error while executiion
 	perror(cmd_args[0]);
-	if(path != cmd_args[0])
-		free(path);
 	ex_free_split(cmd_args);
-	// if(path != cmd_args[0])
+	//(path);
 	exit_program_v2(data, 126);
 	return (0);
 }
@@ -361,6 +375,7 @@ int	fork_and_execute(t_cmd *command, t_cmd *next, char **envp, t_data *data)
 	}
 	return (pid);
 }
+
 char **envp_to_list(t_env *env)
 {
 	int		count;
@@ -402,6 +417,7 @@ char **envp_to_list(t_env *env)
 	}
 	return (envp);
 }
+
 int isBuiltin(t_cmd *command)
 {
     char *cmd;

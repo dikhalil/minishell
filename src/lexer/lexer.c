@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 15:13:07 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/11 20:26:36 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/13 13:22:11 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,23 @@ int	add_token(t_data *data, char *value, t_token_type type,
 	new->quote = quote;
 	new->type = type;
 	new->next = NULL;
+	new->expanded = 0;
 	token_add_back(&data->tokens, new);
 	return (ft_strlen(new->value));
 }
 
 static int	add_redir(t_data *data, char chr, char next_chr)
 {
-	if (chr == '|')
-		return (add_token(data, "|", T_PIPE, NONE));
-	else if (chr == '<' && next_chr == '<')
-		return (add_token(data, "<<", T_HEREDOC, NONE));
-	else if (chr == '<')
-		return (add_token(data, "<", T_IN_REDIR, NONE));
-	else if (chr == '>' && next_chr == '>')
-		return (add_token(data, ">>", T_APPEND, NONE));
-	else
-		return (add_token(data, ">", T_OUT_REDIR, NONE));
+    if (chr == '|')
+        return (add_token(data, "|", T_PIPE, NONE));
+    else if (chr == '<' && next_chr == '<')
+        return (add_token(data, "<<", T_HEREDOC, NONE));
+    else if (chr == '<')
+        return (add_token(data, "<", T_IN_REDIR, NONE));
+    else if (chr == '>' && next_chr == '>')
+        return (add_token(data, ">>", T_APPEND, NONE));
+    else
+        return (add_token(data, ">", T_OUT_REDIR, NONE));
 }
 
 void	lexer(t_data *data)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/12 22:14:53 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/13 14:39:17 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef enum e_quote_type
 typedef struct s_token
 {
 	char			*value;
+	int 			expanded;
 	t_token_type	type;
 	t_quote_type	quote;
 	struct s_token	*next;
@@ -59,7 +60,7 @@ typedef struct s_arg
 {
 	char			*value;
 	t_quote_type	quote;
-	int join;
+	int expanded;
 	struct s_arg	*next;
 }					t_arg;
 
@@ -115,7 +116,8 @@ t_token				*token_last(t_token *head);
 void				token_add_back(t_token **head, t_token *new);
 void				token_clear(t_token **token);
 void				token_error_handling(t_data *data);
-int	add_token(t_data *data, char *value, t_token_type type, t_quote_type quote);
+int					add_token(t_data *data, char *value, t_token_type type, 
+                        t_quote_type quote);
 
 /* ------ lexer ------ */
 void				lexer(t_data *data);
@@ -161,7 +163,7 @@ char				*extract_key(t_data *data, char *str, int *i);
 char				*extract_value(t_data *data, char *key);
 
 /* ------ expand str ------ */
-void				expand_str(t_data *data, char **str);
+void				expand_str(t_data *data, char **str, int *expanded);
 
 /* ------ env ------ */
 void				init_env(t_data *data, char **envp);

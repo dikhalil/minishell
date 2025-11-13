@@ -54,32 +54,34 @@ static void	set_infile(t_cmd *cmd, t_redir *redir, int in_fd, int out_fd)
 
 void	handle_heredoc(t_data *data, t_cmd *cmd, t_redir *redir)
 {
-	int		end[2];
-	char	*line;
-	int		i;
+    int		end[2];
+    char	*line;
+    int		i;
+    int		expanded;
 
-	i = 0;
-	if (pipe(end) == -1)
-		exit_program(data, ERR_MEM);
-	while (TRUE)
-	{
-		i++;
-		line = get_next_line_stdin();
-		if (g_sig == SIGINT)
-		{
-			data->last_exit = 130;
-			break ;
-		}
-		if (!line || !ft_strcmp(line, redir->delim))
-			break ;
-		if (redir->quote == NONE && ft_strchr(line, '$'))
-			expand_str(data, &line);
-		ft_putendl_fd(line, end[1]);
-		free(line);
-	}
-	if (!line && g_sig != SIGINT)
-		heredoc_ctrl_d(redir->delim, i);
-	if (line)
-		free(line);
-	set_infile(cmd, redir, end[0], end[1]);
+    i = 0;
+    expanded = 0;
+    if (pipe(end) == -1)
+        exit_program(data, 1);
+    while (TRUE)
+    {
+        i++;
+        line = get_next_line_stdin();
+        if (g_sig == SIGINT)
+        {
+            data->last_exit = 130;
+            break ;
+        }
+        if (!line || !ft_strcmp(line, redir->delim))
+            break ;
+        if (redir->quote == NONE && ft_strchr(line, '$'))
+            expand_str(data, &line, &expanded);
+        ft_putendl_fd(line, end[1]);
+        free(line);
+    }
+    if (!line && g_sig != SIGINT)
+        heredoc_ctrl_d(redir->delim, i);
+    if (line)
+        free(line);
+    set_infile(cmd, redir, end[0], end[1]);
 }
