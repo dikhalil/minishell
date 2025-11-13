@@ -1,0 +1,276 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║            INTEGRATED LEAK & FD TESTING - IMPLEMENTATION                 ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+WHAT CHANGED
+══════════════════════════════════════════════════════════════════════════
+
+Previous Approach:
+  1. Run all functional tests (96 tests)
+  2. Separately ask if user wants leak/FD tests
+  3. Run 14 memory leak tests separately
+  4. Run 4 FD tests separately
+  
+  Result: 3 separate test suites
+
+New Approach:
+  1. Ask user once at start
+  2. For EACH passing functional test:
+     - ✓ Check output (functional)
+     - ✓ Check leaks (memory)
+     - ✓ Check FDs (resources)
+  
+  Result: Integrated testing per test case
+
+BENEFITS
+══════════════════════════════════════════════════════════════════════════
+
+✅ Comprehensive Coverage
+   - Every test validated for all three aspects
+   - No commands slip through without leak/FD checking
+
+✅ Better Diagnostics
+   - Immediately see if a specific command leaks
+   - No need to correlate separate test results
+
+✅ Clearer Output
+   - Results grouped by test case
+   - Easy to see: "This specific command has a leak"
+
+✅ Efficient
+   - Only tests passing commands (no leak check on failures)
+   - Single run covers everything
+
+IMPLEMENTATION DETAILS
+══════════════════════════════════════════════════════════════════════════
+
+New Functions:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. run_leak_check_inline()
+   - Compact leak check for individual tests
+   - Uses valgrind with readline suppression
+   - Shows: "✓ No leaks" or "✗ Memory leak detected"
+
+2. run_fd_check_inline()
+   - Compact FD check for individual tests
+   - Monitors /proc/$$/fd before/after
+   - Shows: "✓ No FD leaks" or "✗ FD leak: 10 → 13 (Δ3)"
+
+Modified Functions:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. run_test()
+   - Added optional parameter: skip_leak_fd (default: false)
+   - After functional pass, runs leak/FD checks if enabled
+   - Format:
+     Testing: echo hello
+     ✓ PASS
+       ✓ No leaks
+       ✓ No FD leaks
+
+2. check_valgrind()
+   - Sets VALGRIND_AVAILABLE global flag
+   - Auto-creates readline_curses.supp file
+   - Returns true/false for availability
+
+3. main()
+   - Checks valgrind at startup
+   - Prompts user once for leak/FD testing
+   - Sets RUN_LEAK_FD_TESTS global flag
+
+New Global Variables:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RUN_LEAK_FD_TESTS     - Boolean: user wants integrated testing
+VALGRIND_AVAILABLE    - Boolean: valgrind is installed
+
+EXAMPLE OUTPUT
+══════════════════════════════════════════════════════════════════════════
+
+With Leak/FD Testing Enabled:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Testing: echo Hello World
+✓ PASS
+  ✓ No leaks
+  ✓ No FD leaks
+
+Testing: cat file.txt | grep hello
+✓ PASS
+  ✗ Memory leak detected
+    definitely lost: 24 bytes in 1 blocks
+  ✓ No FD leaks
+
+Testing: echo test > output.txt
+✓ PASS
+  ✓ No leaks
+  ✗ FD leak: 10 → 13 (Δ3)
+
+Without Leak/FD Testing (faster):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Testing: echo Hello World
+✓ PASS
+
+Testing: cat file.txt | grep hello
+✓ PASS
+
+Testing: echo test > output.txt
+✓ PASS
+
+FINAL SUMMARY
+══════════════════════════════════════════════════════════════════════════
+
+Example with Integrated Testing:
+
+═══════════════════════════════════════════════════════════════════════════
+  FUNCTIONAL TESTS
+═══════════════════════════════════════════════════════════════════════════
+Total tests: 96
+Passed: 86
+Failed: 10
+Success rate: 89%
+
+═══════════════════════════════════════════════════════════════════════════
+  MEMORY & FILE DESCRIPTOR TESTS
+═══════════════════════════════════════════════════════════════════════════
+Memory Leak Tests:
+  Total: 86        ← One per passing functional test
+  Passed: 84
+  Failed: 2
+  Success rate: 97%
+
+File Descriptor Tests:
+  Total: 86        ← One per passing functional test
+  Passed: 85
+  Failed: 1
+  Success rate: 98%
+
+PERFORMANCE
+══════════════════════════════════════════════════════════════════════════
+
+Timing Comparison:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Functional Only (n):
+  Time: ~5-10 seconds
+  Tests: 96 functional tests
+
+Integrated Testing (y):
+  Time: ~30-45 seconds
+  Tests: 96 functional + ~86 leak + ~86 FD = ~268 total checks
+
+Previous Separate Approach:
+  Time: ~20-30 seconds
+  Tests: 96 functional + 14 leak + 4 FD = 114 total
+
+Improvement:
+  Coverage: 114 → 268 checks (135% more)
+  Time: Similar or slightly longer
+  Value: Much better per-command validation
+
+USAGE RECOMMENDATIONS
+══════════════════════════════════════════════════════════════════════════
+
+Development Phase:
+  Answer: n (functional only)
+  - Fast iteration
+  - Focus on getting tests to pass
+
+Testing Phase:
+  Answer: y (integrated)
+  - Once tests pass functionally
+  - Validate resource management
+
+Before Submission:
+  Answer: y (integrated)
+  - Ensure no memory leaks
+  - Ensure no FD leaks
+  - All 3 checks green for each test
+
+FILES MODIFIED
+══════════════════════════════════════════════════════════════════════════
+
+✓ minishell_tester.sh              - Core implementation
+✓ INTEGRATED_TESTING_GUIDE.md      - Complete documentation
+✓ QUICK_REFERENCE.txt              - Updated for integrated approach
+✓ INTEGRATED_IMPLEMENTATION.txt    - This file (summary)
+
+BACKWARD COMPATIBILITY
+══════════════════════════════════════════════════════════════════════════
+
+✅ Still works without valgrind
+   - Automatically detected
+   - Graceful fallback to functional-only
+
+✅ Fast mode still available
+   - Answer 'n' to prompt
+   - Same speed as before
+
+✅ Existing test cases unchanged
+   - All 96 functional tests work as before
+   - Output format compatible
+
+NEW FEATURES
+══════════════════════════════════════════════════════════════════════════
+
+✅ Per-test leak detection
+   - Know exactly which command leaks
+
+✅ Per-test FD monitoring
+   - Know exactly which command leaks FDs
+
+✅ Automatic suppression file
+   - readline_curses.supp created automatically
+   - No false positives from readline
+
+✅ Compact output format
+   - Leak/FD results indented under test
+   - Easy to scan results
+
+✅ Smart testing
+   - Only tests passing commands
+   - Skips leak/FD for failing tests
+
+MIGRATION NOTES
+══════════════════════════════════════════════════════════════════════════
+
+Old test_memory_and_fds() function:
+  - Still present in code
+  - No longer called by default
+  - Can be removed or kept as backup
+
+Old approach users:
+  - No changes needed
+  - Works better now automatically
+  - Just answer 'y' or 'n' at prompt
+
+CI/CD pipelines:
+  - Update to: echo "y" | ./minishell_tester.sh
+  - Will run all integrated tests
+  - Exit code reflects all checks
+
+TECHNICAL NOTES
+══════════════════════════════════════════════════════════════════════════
+
+Valgrind Suppression:
+  - Automatic creation of readline_curses.supp
+  - Suppresses: readline, add_history, ncurses, tgetent
+  - Only YOUR code leaks reported
+
+FD Variance:
+  - Allows ±2 FD difference (normal for shells)
+  - Only reports real leaks (3+ FDs)
+  - Accounts for system variations
+
+Test Skip Logic:
+  - Failing tests: No leak/FD check (fix functionality first)
+  - Passing tests: Full validation (functional + leak + FD)
+  - Optimal workflow
+
+═══════════════════════════════════════════════════════════════════════════
+
+RESULT: Comprehensive per-test validation with minimal user interaction! 🎯
+
+═══════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,185 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                  MINISHELL TESTER - QUICK REFERENCE                      ║
+║                    with Integrated Leak/FD Checking                      ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+RUNNING THE TESTER
+══════════════════════════════════════════════════════════════════════════
+
+Basic Run:
+    ./minishell_tester.sh
+
+The tester will ask:
+    "Run memory leak and FD checks for each test? (slower but comprehensive)"
+    
+    Answer 'y' for INTEGRATED testing (functional + leak + FD for EACH test)
+    Answer 'n' for functional tests only (faster)
+
+WHAT GETS TESTED
+══════════════════════════════════════════════════════════════════════════
+
+FUNCTIONAL TESTS (~176 tests):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Core Features (96 tests):
+✓ Echo (11 tests)          - All variations including -n flags
+✓ Pwd (1 test)             - Current directory
+✓ Cd (4 tests)             - Root, home, error cases
+✓ Env & Export (4 tests)   - Environment variables
+✓ Unset (1 test)           - Remove variables
+✓ Exit (3 tests)           - Exit codes and errors
+✓ Pipes (7 tests)          - Simple and complex pipes
+✓ Redirections (10 tests)  - >, >>, <, multiple redirects
+✓ Quotes (10 tests)        - Single, double, mixed, empty
+✓ Variables (7 tests)      - $VAR expansion
+✓ Errors (5 tests)         - Command not found, syntax errors
+✓ Export Advanced (5 tests) - Spaces, invalid identifiers
+✓ Variable Expansion (4 tests) - Context-sensitive expansion
+✓ Heredoc (2 tests)        - Basic and with variables
+✓ Syntax Errors (4 tests)  - Lone operators
+✓ Exit Status (3 tests)    - Negative, overflow, invalid
+✓ Special Chars (4 tests)  - Paths, spaces, empty commands
+✓ Complex Commands (8 tests) - Combined operations
+
+Edge Cases (~80 tests):
+✓ Quotes & Escaping (10 tests)  - Nested, empty, multiple
+✓ Pipes (6 tests)                - Long chains, spacing
+✓ Redirections (6 tests)         - Multiple, spacing
+✓ Variables (7 tests)            - $$, concatenation
+✓ Whitespace (6 tests)           - Tabs, spaces, empty
+✓ Special Characters (10 tests)  - Numbers, punctuation
+✓ Builtins (10 tests)            - cd ., echo -n, exit variations
+✓ Combinations (7 tests)         - Pipes + redirects
+✓ Exit Status (5 tests)          - Boundary values, wraparound
+✓ Paths (4 tests)                - Absolute, relative, normalization
+
+INTEGRATED LEAK & FD TESTS (if enabled):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+For EACH passing functional test (~176 tests):
+  ✓ Memory Leak Check      - Valgrind with readline suppression
+  ✓ File Descriptor Check  - FD count monitoring
+
+Total checks when enabled: ~528 (176 × 3)
+
+Example output per test:
+  Testing: echo Hello World
+  ✓ PASS
+    ✓ No leaks
+    ✓ No FD leaks
+
+REQUIREMENTS
+══════════════════════════════════════════════════════════════════════════
+
+Essential:
+  • bash
+  • Your compiled ./minishell binary
+
+Optional (for leak/FD tests):
+  • valgrind (memory leak detection)
+  • /proc filesystem (FD leak detection)
+
+Install valgrind:
+  Ubuntu/Debian:  sudo apt-get install valgrind
+  Fedora:         sudo dnf install valgrind
+  Arch:           sudo pacman -S valgrind
+
+OUTPUT INTERPRETATION
+══════════════════════════════════════════════════════════════════════════
+
+Symbols:
+  ✓ PASS          - Test passed successfully
+  ✗ FAIL          - Test failed
+  ⚠ Warning       - Non-critical issue
+
+Colors:
+  GREEN           - Passing tests
+  RED             - Failing tests
+  YELLOW          - Warnings or info
+  BLUE            - Section headers and stats
+
+RESULTS SUMMARY
+══════════════════════════════════════════════════════════════════════════
+
+Perfect Score:
+  🎉 All tests passed! Perfect score! 🎉
+  - All functional tests pass
+  - No memory leaks
+  - No FD leaks
+
+Partial Success:
+  ✓ All functional tests passed!
+  ⚠ Some memory/FD tests failed
+  - Commands work but resource leaks exist
+
+Needs Work:
+  ✗ Some tests failed
+  - Fix functional issues first
+  - Then address resource leaks
+
+TYPICAL RESULTS
+══════════════════════════════════════════════════════════════════════════
+
+Functional Tests:      ~158/176 passed (90%)
+Memory Leak Tests:     ~158/158 passed (100%)
+FD Tests:              ~157/158 passed (99%)
+
+Most common failures:
+  • Redirections (implementation complexity)
+  • Exit code propagation in pipes
+  • Long pipe chains (FD management)
+  • Nested quote parsing
+
+QUICK DEBUGGING
+══════════════════════════════════════════════════════════════════════════
+
+Failed functional test:
+  1. Look at "Got output" vs "Expected output"
+  2. Run command manually in bash
+  3. Run same command in ./minishell
+  4. Compare outputs character by character
+
+Memory leak:
+  1. Run: echo "cmd" | valgrind --leak-check=full \
+                --suppressions=readline_curses.supp ./minishell
+  2. Look for "definitely lost" lines
+  3. Check malloc/free pairs in relevant code
+
+FD leak:
+  1. Run: lsof -p $(pgrep minishell) before and after
+  2. Check open/close pairs for files and pipes
+  3. Verify error paths close all FDs
+
+IMPORTANT NOTES
+══════════════════════════════════════════════════════════════════════════
+
+• Readline leaks are SUPPRESSED - they're not real leaks
+• FD count can vary by 1-2 normally (test allows this)
+• Some tests compare against bash behavior exactly
+• Exit codes must match bash (214 for exit -42, etc.)
+• The tester creates readline_curses.supp automatically
+
+FILES CREATED
+══════════════════════════════════════════════════════════════════════════
+
+• readline_curses.supp        - Valgrind suppression file
+• /tmp/minishell_out.txt      - Minishell output (temp)
+• /tmp/bash_out.txt           - Bash output (temp)
+• /tmp/valgrind_out.txt       - Valgrind results (temp)
+
+All temporary files are cleaned up automatically.
+
+GETTING HELP
+══════════════════════════════════════════════════════════════════════════
+
+Full documentation:
+  • TESTER_COMPREHENSIVE.md  - Detailed test breakdown
+  • LEAK_FD_TESTING.md       - Memory/FD testing guide
+  • TESTS_ADDED_SUMMARY.txt  - What tests were added
+
+Review failing tests:
+  • Scroll up to see detailed failure output
+  • Check "Expected output" vs "Got output"
+  • Test commands manually to understand behavior
+
+═══════════════════════════════════════════════════════════════════════════
+
+Good luck with your minishell! 🚀
