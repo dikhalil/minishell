@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/17 22:09:53 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 00:42:24 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 		close(cmd->infile);
 	if (redir->type == T_IN_REDIR)
 	{
+		if (ft_strchr(redir->file, ' ') != NULL)
+		{
+    		write(2, "minishell: ", 11);
+    		write(2, redir->file, ft_strlen(redir->file));
+    		write(2, ": ambiguous redirect\n", 21);
+    		return (1);
+		}
 		cmd->infile = open(redir->file, O_RDONLY);
 		if (cmd->infile < 0){
 			write(2, "minishell: ", 11);
@@ -35,6 +42,13 @@ static int	handle_output_redir(t_cmd *cmd, t_redir *redir)
 {
 	if (cmd->outfile > STDOUT_FILENO)
 		close(cmd->outfile);
+	if (ft_strchr(redir->file, ' ') != NULL)
+	{
+		write(2, "minishell: ", 11);
+		write(2, redir->file, ft_strlen(redir->file));
+		write(2, ": ambiguous redirect\n", 21);
+		return (1);
+	}
 	if (redir->type == T_OUT_REDIR)
 		cmd->outfile = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (redir->type == T_APPEND)
