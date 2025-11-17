@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/13 14:29:54 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 00:59:00 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void export_builtin(t_data *data, t_arg *args)
                 data->last_exit = 1;
                 continue;
             }
+            else if(ft_strchr(args->value, '=') == NULL)
+                return ;
             else
                 add_or_update_env(data, args->value);
             args = args->next;
