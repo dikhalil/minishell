@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 02:12:59 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 02:39:56 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ char	**allocate_cmd_args(int count);
 int	fill_cmd_args(char **cmd_args, t_arg *arg, int count);
 char	**build_cmd_args(t_arg *arg);
 char	*get_command_path(char **cmd_args, t_data *data, char **envp);
-void	handle_execve_failure(char **cmd_args, char *path, t_data *data);
+void	handle_execve_failure(char **cmd_args, char *path, char **envp, t_data *data);
 void	free_envp_list(char **envp_list);
 t_arg *clean_empty_args(t_arg *arg);
 void	handle_child_process(t_cmd *cmd, t_cmd *next,

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:24:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/13 14:30:52 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 02:30:54 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp)
 			num = ft_atoll(arg->value);
 			if ((num == LLONG_MAX && arg->value[0] != '-') ||
     			(num == LLONG_MIN && arg->value[0] == '-')
-				|| (num >= LLONG_MAX) || (num <= LLONG_MIN))
+				|| (num > LLONG_MAX) || (num < LLONG_MIN))
 			{			
 				ft_putstr_fd("minishell: exit: ", 2);
 				ft_putstr_fd(arg->value, 2);

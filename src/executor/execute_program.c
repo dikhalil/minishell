@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 19:30:50 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/17 20:51:33 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 02:38:51 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,14 @@ char	**build_cmd_args(t_arg *arg)
 	return (cmd_args);
 }
 
-void	handle_execve_failure(char **cmd_args, char *path, t_data *data)
+void	handle_execve_failure(char **cmd_args, char *path,
+			char **envp, t_data *data)
 {
 	perror(cmd_args[0]);
 	if (path != cmd_args[0])
 		free(path);
 	ex_free_split(cmd_args);
+	free_envp_list(envp);
 	exit_program_v2(data, 126);
 }
 
@@ -123,6 +125,6 @@ int	execute_program(t_arg *arg, char **envp, t_data *data)
 		return (1);
 	path = get_command_path(cmd_args, data, envp);
 	execve(path, cmd_args, envp);
-	handle_execve_failure(cmd_args, path, data);
+	handle_execve_failure(cmd_args, path, envp, data);
 	return (0);
 }
