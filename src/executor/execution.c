@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 22:01:29 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/17 22:10:17 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 02:11:45 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 int	is_single_command(int num_cmd, t_cmd *cmd)
 {
-    if(!cmd->next && num_cmd == 1)
-        return (1);
-    return (0);
+	if (!cmd->next && num_cmd == 1)
+		return (1);
+	return (0);
 }
 
-int	handle_builtin_direct(t_cmd *cmd, t_data *data, char **envp)
+int	handle_builtin_direct(t_cmd *cmd, t_data *data, char **envp, int num_cmd)
 {
-	if (is_single_command(1, cmd) && cmd->outfile == STDOUT_FILENO)
+	if (is_single_command(num_cmd, cmd) && cmd->outfile == STDOUT_FILENO)
 	{
 		if (check_builtin(cmd, data, 0, envp))
 		{
@@ -83,13 +83,13 @@ int	handle_fd_error(t_cmd *cmd, t_data *data)
 	return (0);
 }
 
-pid_t	execute_single_cmd(t_cmd *cmd, t_data *data, char **envp)
+pid_t	execute_single_cmd(t_cmd *cmd, t_data *data, char **envp, int num)
 {
 	pid_t	result;
 
 	if (!cmd->arg)
 		return (0);
-	if (handle_builtin_direct(cmd, data, envp))
+	if (handle_builtin_direct(cmd, data, envp, num))
 		return (0);
 	result = fork_and_execute(cmd, cmd->next, envp, data);
 	return (result);
@@ -114,7 +114,7 @@ int	init_and_execute(t_data *data, char ***envp, pid_t *last)
 			cmd = cmd->next;
 			continue ;
 		}
-		*last = execute_single_cmd(cmd, data, *envp);
+		*last = execute_single_cmd(cmd, data, *envp, num_cmd);
 		if (*last < 0)
 			return (-1);
 		cmd = cmd->next;

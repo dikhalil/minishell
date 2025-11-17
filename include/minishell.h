@@ -6,7 +6,7 @@
 /*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/17 22:10:28 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 02:12:59 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,12 +223,12 @@ char	**alloc_envp(int count);
 int	count_env(t_env *env);
 char	**envp_to_list(t_env *env);
 int	init_and_execute(t_data *data, char ***envp, pid_t *last);
-pid_t	execute_single_cmd(t_cmd *cmd, t_data *data, char **envp);
+pid_t	execute_single_cmd(t_cmd *cmd, t_data *data, char **envp, int num);
 void	wait_children(pid_t last_pid, t_data *data, int last_error);
 int	handle_fd_error(t_cmd *cmd, t_data *data);
 void	process_child_status(int status, t_data *data, int last_error);
 void	handle_signal_status(int sig, t_data *data);
-int	handle_builtin_direct(t_cmd *cmd, t_data *data, char **envp);
+int	handle_builtin_direct(t_cmd *cmd, t_data *data, char **envp, int num_cmd);
 int	is_single_command(int num_cmd, t_cmd *cmd);
 
 /* ------ builtins ------ */
