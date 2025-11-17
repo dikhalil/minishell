@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 01:20:24 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/13 18:28:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 01:36:11 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ static void	handle_part(t_data *data, char *part, char **word, t_quote_type quot
 {
     char	**splited;
 
-    splited = NULL;
-    if (part && quote_type == NONE && ft_strchr(part, ' '))
+    if (part && quote_type == NONE && ft_strchr(part, ' ')
+        && !(token_last(data->tokens) && is_redirection(token_last(data->tokens)->type)))
     {
         splited = ft_split(part, ' ');
         free(part);

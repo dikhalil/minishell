@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 00:42:24 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 01:24:12 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 		close(cmd->infile);
 	if (redir->type == T_IN_REDIR)
 	{
-		if (ft_strchr(redir->file, ' ') != NULL)
+		if (ft_strchr(redir->file, ' ') != NULL && redir->quote == NONE) 
 		{
     		write(2, "minishell: ", 11);
     		write(2, redir->file, ft_strlen(redir->file));
@@ -42,7 +42,7 @@ static int	handle_output_redir(t_cmd *cmd, t_redir *redir)
 {
 	if (cmd->outfile > STDOUT_FILENO)
 		close(cmd->outfile);
-	if (ft_strchr(redir->file, ' ') != NULL)
+	if (ft_strchr(redir->file, ' ') != NULL && redir->quote == NONE)
 	{
 		write(2, "minishell: ", 11);
 		write(2, redir->file, ft_strlen(redir->file));
@@ -96,7 +96,6 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 
 	if (cmd->infile == -1)
 		cmd->infile = STDIN_FILENO;
-	// close (cmd->outfile);
 	cmd->outfile = STDOUT_FILENO;
 	if (has_next_cmd)
 	{
@@ -117,7 +116,6 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 	}
 	return (0);
 }
-
 
 
 void ex_free_split(char **path)
