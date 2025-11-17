@@ -1,0 +1,131 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_cmd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/17 01:07:40 by yocto             #+#    #+#             */
+/*   Updated: 2025/11/17 13:28:02 by yocto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+#include "../../include/minishell.h"
+
+void	exit_with_error(char **cmd_args, char **envp, t_data *data, int code)
+{
+	ex_free_split(cmd_args);
+	ex_free_split(envp);
+	exit_program_v2(data, code);
+}
+
+void	handle_dot_dir(char **cmd_args, char **envp, t_data *data)
+{
+	int	len;
+
+	ft_putstr_fd(cmd_args[0], 2);
+	len = ft_strlen(cmd_args[0]);
+	if (!ft_strcmp(cmd_args[0], ".") || cmd_args[0][len - 1] == '/')
+	{
+		ft_putendl_fd(": Is a directory", 2);
+		exit_with_error(cmd_args, envp, data, 126);
+	}
+	else if (!ft_strcmp(cmd_args[0], ".."))
+	{
+		ft_putendl_fd(": command not found", 2);
+		exit_with_error(cmd_args, envp, data, 127);
+	}
+	else if(len >= 2 && (cmd_args[0][1] == '/' && cmd_args[0][0] == '.'))
+	{
+		ft_putendl_fd(": Is a directory", 2);
+		exit_with_error(cmd_args, envp, data, 126);
+	}
+}
+
+void	check_is_directory(char **cmd_args, char **envp, t_data *data)
+{
+	struct stat	st;
+
+	if (cmd_args[0] && stat(cmd_args[0], &st) == 0)
+	{
+		if (S_ISDIR(st.st_mode))
+			handle_dot_dir(cmd_args, envp, data);
+	}
+}
+
+void	handle_trailing_slash(char **cmd_args, char **envp, t_data *data)
+{
+	int	len;
+
+	if (!cmd_args[0])
+		return ;
+	len = ft_strlen(cmd_args[0]);
+	if (len == 0 || cmd_args[0][len - 1] != '/')
+		return ;
+	ft_putstr_fd(cmd_args[0], 2);
+	cmd_args[0][len - 1] = 0;
+	if (!access(cmd_args[0], F_OK))
+	{
+		ft_putendl_fd(": Not a directory", 2);
+		exit_with_error(cmd_args, envp, data, 126);
+	}
+	ft_putendl_fd(": No such file or directory", 2);
+	exit_with_error(cmd_args, envp, data, 127);
+}
+
+int	is_path_format(char *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (cmd[0] == '/')
+		return (1);
+	if (ft_strncmp(cmd, "./", 2) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "../", 3) == 0)
+		return (1);
+	return (0);
+}
+
+int	check_path_access(char **cmd_args, char **envp, t_data *data)
+{
+	if (!is_path_format(cmd_args[0]))
+		return (0);
+	if (access(cmd_args[0], F_OK) != 0)
+	{
+		perror(cmd_args[0]);
+		exit_with_error(cmd_args, envp, data, 127);
+	}
+	if (access(cmd_args[0], X_OK) != 0)
+	{
+		perror(cmd_args[0]);
+		exit_with_error(cmd_args, envp, data, 126);
+	}
+	return (1);
+}
+
+int	is_executable(char *cmd)
+{
+	if (!cmd || !cmd[0])
+		return (0);
+	if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
+		return (1);
+	return (0);
+}
+
+int	check_cmd(char **cmd_args, t_data *data, char **envp)
+{
+	if (!cmd_args || !cmd_args[0])
+	{
+		ft_putendl_fd("invalid command", 2);
+		exit_program_v2(data, 127);
+	}
+	check_is_directory(cmd_args, envp, data);
+	handle_trailing_slash(cmd_args, envp, data);
+	if (check_path_access(cmd_args, envp, data))
+		return (1);
+	if (is_executable(cmd_args[0]))
+		return (1);
+	
+	return (0);
+}

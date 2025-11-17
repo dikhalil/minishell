@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/13 18:29:15 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/17 22:10:28 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+#include <sys/stat.h>
 
 # define TRUE 1
 # define ERR_MEM 1
@@ -193,6 +194,42 @@ void				close_fds(t_cmd *cmd);
 int					assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
 int					check_cmd(char **cmd_args, t_data *data, char **envp);
 void				exit_program_v2(t_data *data, int status);
+void				exit_with_error(char **cmd_args, char **envp, t_data *data, int code);
+void				handle_dot_dir(char **cmd_args, char **envp, t_data *data);
+void				check_is_directory(char **cmd_args, char **envp, t_data *data);
+void				handle_trailing_slash(char **cmd_args, char **envp, t_data *data);
+int					is_path_format(char *cmd);
+int					check_path_access(char **cmd_args, char **envp, t_data *data);
+int					is_executable(char *cmd);
+char *find_path_env(t_env *env);
+char	*build_full_path(char *dir, char *cmd);
+char	*search_in_paths(char **paths, char *cmd);
+t_arg	*find_prev_node(t_arg *head, t_arg *target, t_arg **prev);
+void	delete_arg_node(t_arg **head, t_arg *target);
+int	count_args(t_arg *arg);
+char	**allocate_cmd_args(int count);
+int	fill_cmd_args(char **cmd_args, t_arg *arg, int count);
+char	**build_cmd_args(t_arg *arg);
+char	*get_command_path(char **cmd_args, t_data *data, char **envp);
+void	handle_execve_failure(char **cmd_args, char *path, t_data *data);
+void	free_envp_list(char **envp_list);
+t_arg *clean_empty_args(t_arg *arg);
+void	handle_child_process(t_cmd *cmd, t_cmd *next,
+			char **envp, t_data *data);
+void	apply_redirections(t_cmd *cmd);
+void	handle_parent_process(t_cmd *cmd);
+int	fill_envp(char **envp, t_env *env);
+char	**alloc_envp(int count);
+int	count_env(t_env *env);
+char	**envp_to_list(t_env *env);
+int	init_and_execute(t_data *data, char ***envp, pid_t *last);
+pid_t	execute_single_cmd(t_cmd *cmd, t_data *data, char **envp);
+void	wait_children(pid_t last_pid, t_data *data, int last_error);
+int	handle_fd_error(t_cmd *cmd, t_data *data);
+void	process_child_status(int status, t_data *data, int last_error);
+void	handle_signal_status(int sig, t_data *data);
+int	handle_builtin_direct(t_cmd *cmd, t_data *data, char **envp);
+int	is_single_command(int num_cmd, t_cmd *cmd);
 
 /* ------ builtins ------ */
 int					isBuiltin(t_cmd *command);
