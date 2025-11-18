@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 01:07:40 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 11:23:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 13:44:00 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	handle_dot_dir(char **cmd_args, char **envp, t_data *data)
 	{
 		ft_putendl_fd(": filename argument required", 2);
 		ft_putendl_fd(".: usage: . filename [arguments]", 2);
-		exit_with_error(cmd_args, envp, data, 126);
+		exit_with_error(cmd_args, envp, data, 2);
 	}
 	else if (!ft_strcmp(cmd_args[0], ".."))
 	{
