@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 18:45:00 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 18:55:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 19:14:15 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,12 @@ void	exit_program_v2(t_data *data, int status)
 	free_all(data);
 	rl_clear_history();
 	exit(status);
+}
+
+void	close_fds(t_cmd *cmd)
+{
+	if (cmd->infile >= 0 && cmd->infile != STDIN_FILENO)
+		close(cmd->infile);
+	if (cmd->outfile >= 0 && cmd->outfile != STDOUT_FILENO)
+		close(cmd->outfile);
 }

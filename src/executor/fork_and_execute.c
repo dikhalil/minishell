@@ -34,8 +34,7 @@ void	apply_redirections(t_cmd *cmd)
 	}
 }
 
-void	handle_child_process(t_cmd *cmd, t_cmd *next,
-			char **envp, t_data *data)
+void	handle_child_process(t_cmd *cmd, t_cmd *next, char **envp, t_data *data)
 {
 	set_child_signal();
 	if (next)

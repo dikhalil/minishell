@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 19:30:50 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:55:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 19:06:38 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ char	*get_command_path(char **cmd_args, t_data *data, char **envp)
 	return (cmd_args[0]);
 }
 
-void	handle_execve_failure(char **cmd_args, char *path,
-			char **envp, t_data *data)
+void	handle_execve_failure(char **cmd_args, char *path, char **envp,
+		t_data *data)
 {
 	perror(cmd_args[0]);
 	if (path != cmd_args[0])

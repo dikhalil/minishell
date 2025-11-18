@@ -6,14 +6,22 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 15:13:07 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/13 13:22:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 19:27:54 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	add_token(t_data *data, char *value, t_token_type type,
-		t_quote_type quote)
+void	free_and_exit(t_data *data, char **splited, char **word)
+{
+	if (splited)
+		free_split(splited);
+	if (*word)
+		free(*word);
+	exit_program(data, ERR_MEM);
+}
+
+int	add_token(t_data *data, char *value, t_token_type type, t_quote_type quote)
 {
 	t_token	*new;
 
@@ -33,16 +41,16 @@ int	add_token(t_data *data, char *value, t_token_type type,
 
 static int	add_redir(t_data *data, char chr, char next_chr)
 {
-    if (chr == '|')
-        return (add_token(data, "|", T_PIPE, NONE));
-    else if (chr == '<' && next_chr == '<')
-        return (add_token(data, "<<", T_HEREDOC, NONE));
-    else if (chr == '<')
-        return (add_token(data, "<", T_IN_REDIR, NONE));
-    else if (chr == '>' && next_chr == '>')
-        return (add_token(data, ">>", T_APPEND, NONE));
-    else
-        return (add_token(data, ">", T_OUT_REDIR, NONE));
+	if (chr == '|')
+		return (add_token(data, "|", T_PIPE, NONE));
+	else if (chr == '<' && next_chr == '<')
+		return (add_token(data, "<<", T_HEREDOC, NONE));
+	else if (chr == '<')
+		return (add_token(data, "<", T_IN_REDIR, NONE));
+	else if (chr == '>' && next_chr == '>')
+		return (add_token(data, ">>", T_APPEND, NONE));
+	else
+		return (add_token(data, ">", T_OUT_REDIR, NONE));
 }
 
 void	lexer(t_data *data)

@@ -1,8 +1,26 @@
 {
-   <readline>
+   <readline_malloc>
    Memcheck:Leak
    ...
    fun:readline
+}
+{
+   <readline_insert>
+   Memcheck:Leak
+   ...
+   fun:rl_insert
+}
+{
+   <readline_insert_text>
+   Memcheck:Leak
+   ...
+   fun:rl_insert_text
+}
+{
+   <readline_add_undo>
+   Memcheck:Leak
+   ...
+   fun:rl_add_undo
 }
 {
     <add_history>
@@ -21,4 +39,26 @@
     Memcheck:Leak
     ...
     fun:tgetent_sp
+}
+{
+    <readline_xmalloc>
+    Memcheck:Leak
+    ...
+    fun:xmalloc
+    ...
+    fun:readline
+}
+{
+    <readline_rl_insert_char>
+    Memcheck:Leak
+    ...
+    fun:_rl_insert_char
+}
+{
+    <readline_dispatch>
+    Memcheck:Leak
+    ...
+    fun:_rl_dispatch_subseq
+    ...
+    fun:readline
 }

@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 01:07:40 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:55:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 19:06:22 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void	handle_dot_dir(char **cmd_args, char **envp, t_data *data)
 		ft_putendl_fd(": command not found", 2);
 		exit_with_error(cmd_args, envp, data, 127);
 	}
-	else if((len >= 2 && ((cmd_args[0][1] == '/' && cmd_args[0][0] == '.') 
-		|| cmd_args[0][len - 1] == '/')) 
-		|| (len == 1 && cmd_args[0][0] == '/'))
+	else if ((len >= 2 && ((cmd_args[0][1] == '/' && cmd_args[0][0] == '.')
+		|| cmd_args[0][len - 1] == '/')) || (len == 1
+				&& cmd_args[0][0] == '/'))
 	{
 		ft_putendl_fd(": Is a directory", 2);
 		exit_with_error(cmd_args, envp, data, 126);
@@ -100,6 +100,5 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
 		return (1);
 	if (is_executable(cmd_args[0]))
 		return (1);
-	
 	return (0);
 }

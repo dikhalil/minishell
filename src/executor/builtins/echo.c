@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:21:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:32:33 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 19:21:02 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 int	is_n_flag(char *s)
 {
 	int	i;
-	int n_counter = 0;
-	int e_counter = 0;
+	int	n_counter;
+	int	e_counter;
 
+	n_counter = 0;
+	e_counter = 0;
 	if (!s || s[0] != '-' || (s[1] != 'n' && s[1] != 'e' && s[1] != 'E'))
 		return (0);
 	i = 2;
@@ -25,13 +27,13 @@ int	is_n_flag(char *s)
 	{
 		if (s[i] != 'n' && s[i] != 'e' && s[i] != 'E')
 			return (0);
-		if(s[i] == 'n')
+		if (s[i] == 'n')
 			n_counter++;
 		else
 			e_counter++;
 		i++;
 	}
-	if(e_counter > 0 && n_counter == 0)
+	if (e_counter > 0 && n_counter == 0)
 		return (0);
 	return (1);
 }

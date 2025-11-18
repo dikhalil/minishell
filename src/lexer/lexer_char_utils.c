@@ -24,6 +24,6 @@ int	is_redir(char c)
 
 int	is_redirection(t_token_type type)
 {
-	return (type == T_IN_REDIR || type == T_OUT_REDIR
-		|| type == T_APPEND || type == T_HEREDOC);
+	return (type == T_IN_REDIR || type == T_OUT_REDIR || type == T_APPEND
+		|| type == T_HEREDOC);
 }

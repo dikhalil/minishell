@@ -6,12 +6,11 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 18:30:00 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 18:32:22 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 19:21:02 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 char	*get_env_value(t_env *env, const char *key)
 {

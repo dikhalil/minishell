@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:55:27 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 19:10:57 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,16 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 		close(cmd->infile);
 	if (redir->type == T_IN_REDIR)
 	{
-		if (ft_strchr(redir->file, ' ') != NULL && redir->quote == NONE) 
+		if (ft_strchr(redir->file, ' ') != NULL && redir->quote == NONE)
 		{
-    		write(2, "minishell: ", 11);
-    		write(2, redir->file, ft_strlen(redir->file));
-    		write(2, ": ambiguous redirect\n", 21);
-    		return (1);
+			write(2, "minishell: ", 11);
+			write(2, redir->file, ft_strlen(redir->file));
+			write(2, ": ambiguous redirect\n", 21);
+			return (1);
 		}
 		cmd->infile = open(redir->file, O_RDONLY);
-		if (cmd->infile < 0){
+		if (cmd->infile < 0)
+		{
 			write(2, "minishell: ", 11);
 			write(2, redir->file, ft_strlen(redir->file));
 			write(2, ": No such file or directory\n", 29);
@@ -59,7 +60,8 @@ static int	handle_output_redir(t_cmd *cmd, t_redir *redir)
 	}
 	return (0);
 }
-static int		process_redirections(t_cmd *cmd)
+
+static int	process_redirections(t_cmd *cmd)
 {
 	t_redir	*redir;
 
@@ -81,14 +83,6 @@ static int		process_redirections(t_cmd *cmd)
 	return (0);
 }
 
-void close_fds(t_cmd *cmd)
-{
-    if (cmd->infile >= 0 && cmd->infile != STDIN_FILENO)
-        close(cmd->infile);
-    if (cmd->outfile >= 0 && cmd->outfile != STDOUT_FILENO)
-        close(cmd->outfile);
-}
-
 int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 {
 	int	fd[2];
@@ -103,51 +97,32 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 			perror("pipe");
 			return (1);
 		}
-		if(cmd->outfile == STDOUT_FILENO)
+		if (cmd->outfile == STDOUT_FILENO)
 			cmd->outfile = fd[1];
 		else
 			close(fd[1]);
 		cmd->next->infile = fd[0];
 	}
-	if (process_redirections(cmd) != 0){
+	if (process_redirections(cmd) != 0)
+	{
 		close_fds(cmd);
 		return (1);
 	}
 	return (0);
 }
 
-int	is_builtin(t_cmd *command)
-{
-    char *cmd;
-
-	if (!command || !command->arg || !command->arg->value)
-		return (0);
-	cmd = command->arg->value;
-    if (!cmd)
-        return (0);
-    if (ft_strcmp(cmd, "echo") == 0
-        || ft_strcmp(cmd, "cd") == 0
-        || ft_strcmp(cmd, "env") == 0
-        || ft_strcmp(cmd, "exit") == 0
-        || ft_strcmp(cmd, "unset") == 0
-        || ft_strcmp(cmd, "export") == 0)
-        return (1);
-    return (0);
-}
-
-
-int check_builtin(t_cmd *command, t_data *data, int ischild, char **envp)
+int	check_builtin(t_cmd *command, t_data *data, int ischild, char **envp)
 {
 	if (!command || !command->arg || !command->arg->value)
 		return (0);
 	if (ft_strcmp(command->arg->value, "cd") == 0)
-		cd_builtin(data, command ->arg->next);
+		cd_builtin(data, command->arg->next);
 	else if (ft_strcmp(command->arg->value, "echo") == 0)
 		echo_builtin(data, command->arg->next);
 	else if (ft_strcmp(command->arg->value, "env") == 0)
 		env_builtin(data, data->env, command->arg);
 	else if (ft_strcmp(command->arg->value, "exit") == 0)
-		exit_builtin(data,  command->arg->next, ischild, envp);
+		exit_builtin(data, command->arg->next, ischild, envp);
 	else if (ft_strcmp(command->arg->value, "unset") == 0)
 		unset_builtin(data, command->arg->next);
 	else if (ft_strcmp(command->arg->value, "export") == 0)
