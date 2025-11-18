@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 01:07:40 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/17 13:28:02 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 11:23:11 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,13 @@ void	handle_dot_dir(char **cmd_args, char **envp, t_data *data)
 {
 	int	len;
 
+	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd_args[0], 2);
 	len = ft_strlen(cmd_args[0]);
-	if (!ft_strcmp(cmd_args[0], ".") || cmd_args[0][len - 1] == '/')
+	if (!ft_strcmp(cmd_args[0], "."))
 	{
-		ft_putendl_fd(": Is a directory", 2);
+		ft_putendl_fd(": filename argument required", 2);
+		ft_putendl_fd(".: usage: . filename [arguments]", 2);
 		exit_with_error(cmd_args, envp, data, 126);
 	}
 	else if (!ft_strcmp(cmd_args[0], ".."))
@@ -36,7 +38,9 @@ void	handle_dot_dir(char **cmd_args, char **envp, t_data *data)
 		ft_putendl_fd(": command not found", 2);
 		exit_with_error(cmd_args, envp, data, 127);
 	}
-	else if(len >= 2 && (cmd_args[0][1] == '/' && cmd_args[0][0] == '.'))
+	else if((len >= 2 && ((cmd_args[0][1] == '/' && cmd_args[0][0] == '.') 
+		|| cmd_args[0][len - 1] == '/')) 
+		|| (len == 1 && cmd_args[0][0] == '/'))
 	{
 		ft_putendl_fd(": Is a directory", 2);
 		exit_with_error(cmd_args, envp, data, 126);
