@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 14:29:35 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 14:52:02 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/12 08:38:48 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,10 @@ void	increment_shlvl(t_data *data)
 	{
 		free(shlvl->value);
 		shlvl->value = lvl_value;
-		return ;
 	}
-	env_add_back(&data->env, env_new(data, ft_strdup("SHLVL"), lvl_value));
-	free(lvl_value);
+	else
+	{
+		env_add_back(&data->env, env_new(data, ft_strdup("SHLVL"), lvl_value));
+		free(lvl_value);
+	}
 }

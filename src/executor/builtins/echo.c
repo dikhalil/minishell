@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:21:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 15:00:47 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/13 14:29:35 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ void	echo_builtin(t_data *data, t_arg *args)
 {
 	int		newline;
 	char	*str_exit;
+	// int code;
 
+	// code = 1;
 	newline = 1;
 	str_exit = ft_itoa(data->last_exit);
 	while (args && is_n_flag(args -> value))

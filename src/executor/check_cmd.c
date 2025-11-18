@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 01:07:40 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 15:06:37 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 13:44:00 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	handle_trailing_slash(char **cmd_args, char **envp, t_data *data)
 	len = ft_strlen(cmd_args[0]);
 	if (len == 0 || cmd_args[0][len - 1] != '/')
 		return ;
-    write(2, "minishell: ", 11);
 	ft_putstr_fd(cmd_args[0], 2);
 	cmd_args[0][len - 1] = 0;
 	if (!access(cmd_args[0], F_OK))
@@ -122,7 +121,6 @@ int	check_cmd(char **cmd_args, t_data *data, char **envp)
 {
 	if (!cmd_args || !cmd_args[0])
 	{
-    	write(2, "minishell: ", 11);
 		ft_putendl_fd("invalid command", 2);
 		exit_program_v2(data, 127);
 	}

@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 15:16:14 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 17:27:31 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	cd_builtin(t_data *data, t_arg *args)
 		if (!target_dir)
 		{
 			write(STDERR_FILENO, "cd: HOME not set\n", 17);
+			data->last_exit = 1;
 			return ;
 		}
 	}
@@ -76,6 +77,7 @@ void	cd_builtin(t_data *data, t_arg *args)
 		if (!target_dir)
 		{
 			write(STDERR_FILENO, "cd: OLDPWD not set\n", 19);
+			data->last_exit = 1;
 			return ;
 		}
 		printf("%s\n", target_dir);
@@ -86,6 +88,7 @@ void	cd_builtin(t_data *data, t_arg *args)
 		if (!target_dir)
 		{
 			write(STDERR_FILENO, "cd: HOME not set\n", 17);
+			data->last_exit = 1;
 			return ;
 		}
 	}

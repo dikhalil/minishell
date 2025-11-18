@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 18:06:31 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/13 14:30:13 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 17:42:31 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,5 @@ void	unset_builtin(t_data *data, t_arg *args)
 		}
 		args = args->next;
 	}
+	data->last_exit = 0;
 }

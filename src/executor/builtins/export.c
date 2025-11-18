@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 16:10:14 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 17:39:44 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,14 @@
 
 void export_builtin(t_data *data, t_arg *args)
 {
+    int flag;
+
+    flag = 0;
     if (!args)
+    {
         print_env_sorted(data->env);
+        data->last_exit = 0;
+    }
     else
     {
         while (args)
@@ -25,6 +31,7 @@ void export_builtin(t_data *data, t_arg *args)
                 ft_putendl_fd(" :not a valid identifier", 2);
                 args = args->next;
                 data->last_exit = 1;
+                flag = 1;
                 continue;
             }
             else
@@ -32,6 +39,8 @@ void export_builtin(t_data *data, t_arg *args)
             args = args->next;
         }
     }
+    if (!flag)
+        data->last_exit = 0;
 }
 
 void add_or_update_env(t_data *data, const char *arg)
@@ -108,6 +117,7 @@ void print_env_sorted(t_env *env)
 
     if (!env)
         return ;
+
     swapped = 1;
     while (swapped)
     {
