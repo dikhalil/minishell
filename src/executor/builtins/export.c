@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/13 14:29:54 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:10:14 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ void print_env_sorted(t_env *env)
 
     if (!env)
         return ;
-
     swapped = 1;
     while (swapped)
     {

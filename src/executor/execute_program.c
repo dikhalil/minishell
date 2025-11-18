@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 19:30:50 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 15:54:35 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:11:16 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,8 @@ int	execute_program(t_arg *arg, char **envp, t_data *data)
 	char	**cmd_args;
 	char	*path;
 
-	if (arg->next)
-		arg = clean_empty_args(arg);
-	if (!arg || !arg->next)
+	arg = clean_empty_args(arg);
+	if (!arg)
 	{
 		free_envp_list(envp);
 		exit_program_v2(data, 0);
