@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 01:24:12 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 15:57:46 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 			write(2, ": No such file or directory\n", 29);
 			return (1);
 		}
-		//i will go with this type of errors on the next errors like the real bash
 	}
 	return (0);
 }
@@ -143,9 +142,10 @@ void free_envp_list(char **envp_list)
 
 t_arg *clean_empty_args(t_arg *arg)
 {
-    t_arg *tmp = arg;
+    t_arg *tmp;
     t_arg *next;
 
+	tmp = arg;
     while (tmp)
     {
         next = tmp->next;
@@ -153,10 +153,8 @@ t_arg *clean_empty_args(t_arg *arg)
             delete_arg_node(&arg, tmp);
         tmp = next;
     }
-    return arg;
+    return (arg);
 }
-
-
 
 int isBuiltin(t_cmd *command)
 {

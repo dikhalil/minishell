@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 07:27:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/13 14:30:05 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 15:01:02 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,7 @@ void pwd_builtin(t_data *data, t_arg *args)
     char	cwd[1024];
 
     if(args && args->value)
-    {
-        // write(2, "minishell: pwd: too many arguments\n", 35);
         data->last_exit = 1;
-        // return;
-    }
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
         ft_putendl_fd(cwd, STDOUT_FILENO);

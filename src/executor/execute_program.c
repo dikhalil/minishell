@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_program.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 19:30:50 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 02:38:51 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 15:54:35 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,9 @@ int	execute_program(t_arg *arg, char **envp, t_data *data)
 	char	**cmd_args;
 	char	*path;
 
-	arg = clean_empty_args(arg);
-	if (!arg)
+	if (arg->next)
+		arg = clean_empty_args(arg);
+	if (!arg || !arg->next)
 	{
 		free_envp_list(envp);
 		exit_program_v2(data, 0);

@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/13 14:29:23 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 15:16:14 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,4 +101,5 @@ void	cd_builtin(t_data *data, t_arg *args)
 	set_env_value(&data->env, "OLDPWD", oldpwd);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		set_env_value(&data->env, "PWD", cwd);
+	data->last_exit = 0;
 }
