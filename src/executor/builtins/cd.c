@@ -6,103 +6,77 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 17:27:31 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:31:35 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_env_value(t_env *env, const char *key)
+static void	update_pwd_deleted(t_data *data, char *oldpwd, char *target)
 {
-	while (env)
+	char	*pwd_env;
+	char	*new_pwd;
+
+	pwd_env = get_env_value(data->env, "PWD");
+	if (pwd_env)
 	{
-		if (strcmp(env->key, key) == 0)
-			return (env->value);
-		env = env->next;
+		new_pwd = resolve_logical_path(pwd_env, target);
+		if (new_pwd)
+		{
+			ft_putstr_fd("cd: error retrieving current directory: ",
+				STDERR_FILENO);
+			ft_putendl_fd("getcwd: cannot access parent directories: "
+				"No such file or directory", STDERR_FILENO);
+			set_env_value(&data->env, "PWD", new_pwd);
+			free(new_pwd);
+		}
 	}
-	return (NULL);
+	if (oldpwd)
+	{
+		set_env_value(&data->env, "OLDPWD", oldpwd);
+		free(oldpwd);
+	}
 }
 
-void	set_env_value(t_env **env, const char *key, const char *value)
+static void	update_pwd(t_data *data, char *oldpwd, char *target)
 {
-	t_env	*tmp;
-	t_env	*new;
+	char	cwd[1024];
 
-	tmp = *env;
-	while (tmp)
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		set_env_value(&data->env, "PWD", cwd);
+	else
+		update_pwd_deleted(data, oldpwd, target);
+	if (oldpwd && getcwd(cwd, sizeof(cwd)) != NULL)
 	{
-		if (strcmp(tmp->key, key) == 0)
-		{
-			free(tmp->value);
-			tmp->value = strdup(value);
-			return ;
-		}
-		tmp = tmp->next;
+		set_env_value(&data->env, "OLDPWD", oldpwd);
+		free(oldpwd);
 	}
-	new = malloc(sizeof(t_env));
-	new->key = strdup(key);
-	new->value = strdup(value);
-	new->next = *env;
-	*env = new;
 }
 
 void	cd_builtin(t_data *data, t_arg *args)
 {
 	char	*target_dir;
-	char	oldpwd[1024];
-	char	cwd[1024];
+	char	*oldpwd;
 
-	if(args && args->next)
+	if (args && args->next)
 	{
-		ft_putstr_fd("cd: too many arguments\n", 2);
+		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
 		data->last_exit = 1;
 		return ;
 	}
-	target_dir = NULL;
-	if (getcwd(oldpwd, sizeof(oldpwd)) == NULL)
+	oldpwd = get_old_pwd(data);
+	target_dir = get_target_dir(data, args);
+	if (!target_dir)
 		return ;
-	if (args == NULL || args->value == NULL)
-	{
-		target_dir = get_env_value(data->env, "HOME");
-		if (!target_dir)
-		{
-			write(STDERR_FILENO, "cd: HOME not set\n", 17);
-			data->last_exit = 1;
-			return ;
-		}
-	}
-	else if (strcmp(args->value, "-") == 0)
-	{
-		target_dir = get_env_value(data->env, "OLDPWD");
-		if (!target_dir)
-		{
-			write(STDERR_FILENO, "cd: OLDPWD not set\n", 19);
-			data->last_exit = 1;
-			return ;
-		}
-		printf("%s\n", target_dir);
-	}
-	else if(strcmp(args->value, "~") == 0)
-	{
-		target_dir = get_env_value(data->env, "HOME");
-		if (!target_dir)
-		{
-			write(STDERR_FILENO, "cd: HOME not set\n", 17);
-			data->last_exit = 1;
-			return ;
-		}
-	}
-	else
-		target_dir = args->value;
 	if (chdir(target_dir) != 0)
 	{
-		ft_putstr_fd("cd: ", 2);
-		data ->last_exit = 1;
-		perror(NULL);
+		ft_putstr_fd("cd: ", STDERR_FILENO);
+		perror(target_dir);
+		data->last_exit = 1;
+		if (oldpwd)
+			free(oldpwd);
 		return ;
 	}
-	set_env_value(&data->env, "OLDPWD", oldpwd);
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		set_env_value(&data->env, "PWD", cwd);
+	update_pwd(data, oldpwd, target_dir);
 	data->last_exit = 0;
 }

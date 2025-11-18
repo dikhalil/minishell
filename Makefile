@@ -34,11 +34,14 @@ SRCS =  src/lexer/lexer.c \
 		src/shell/main.c\
 		src/executor/executor.c \
 		src/executor/builtins/cd.c\
+		src/executor/builtins/cd_utils.c\
 		src/executor/builtins/echo.c\
 		src/executor/builtins/env.c\
 		src/executor/builtins/exit.c\
 		src/executor/builtins/unset.c\
 		src/executor/builtins/export.c\
+		src/executor/builtins/export_env.c\
+		src/executor/builtins/export_utils.c\
 		src/executor/builtins/pwd.c\
 		src/executor/check_cmd.c \
 		src/executor/get_path.c \

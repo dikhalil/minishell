@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 17:32:16 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:25:46 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ int check_builtin(t_cmd *command, t_data *data, int ischild, char **envp)
 	else if (ft_strcmp(command->arg->value, "export") == 0)
 		export_builtin(data, command->arg->next);
 	else if (ft_strcmp(command->arg->value, "pwd") == 0)
-		pwd_builtin(data, command->arg->next);
+		pwd_builtin(data);
 	else
 		return (0);
 	return (1);

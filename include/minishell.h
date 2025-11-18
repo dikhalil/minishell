@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 17:33:11 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:40:08 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,21 +236,32 @@ int					isBuiltin(t_cmd *command);
 int					check_builtin(t_cmd *command, t_data *data, int ischild, char **envp);
 void				cd_builtin(t_data *data, t_arg *args);
 void				echo_builtin(t_data *data, t_arg *args);
-void	env_builtin(t_data *data, t_env *env , t_arg *args);
+void				env_builtin(t_data *data, t_env *env, t_arg *args);
 void				unset_builtin(t_data *data, t_arg *args);
 int					ft_isnumber(const char *s);
 void				exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp);
-void                pwd_builtin(t_data *data, t_arg *args);
-int				    validate_exit_arg(const char *str, long long *out);
+void				pwd_builtin(t_data *data);
+
+/* ------ builtin export ------ */
+void				export_builtin(t_data *data, t_arg *args);
+void				add_or_update_env(t_data *data, const char *arg);
+void				print_env_sorted(t_env *env);
+int					valid_identifier(const char *str);
+char				*strdup_until_char(const char *str, char c);
+void				swap_env_nodes(t_env *current, t_env *next);
+void				sort_env_list(t_env *env);
+void				print_env_entry(t_env *current);
+
+/* ------ builtin cd/env utils ------ */
+char				*get_env_value(t_env *env, const char *key);
+void				set_env_value(t_env **env, const char *key, const char *value);
+char				*resolve_logical_path(char *pwd, char *target);
+char				*get_target_dir(t_data *data, t_arg *args);
+char				*get_old_pwd(t_data *data);
+
 /* ------ cleanup ------ */
 void				reset_data(t_data *data);
 void				free_all(t_data *data);
 void				exit_program(t_data *data, int status);
-
-void print_env_sorted(t_env *env);
-int valid_identifier(const char *str);
-char *strdup_until_char(const char *str, char c);
-void add_or_update_env(t_data *data, const char *arg);
-void export_builtin(t_data *data, t_arg *args);
 
 #endif

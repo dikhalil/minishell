@@ -6,146 +6,47 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 17:39:44 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:38:16 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void export_builtin(t_data *data, t_arg *args)
+static void	handle_export_error(t_arg **args, t_data *data, int *flag)
 {
-    int flag;
-
-    flag = 0;
-    if (!args)
-    {
-        print_env_sorted(data->env);
-        data->last_exit = 0;
-    }
-    else
-    {
-        while (args)
-        {
-            if (!valid_identifier(args->value)){
-				ft_putstr_fd(args->value, 2);
-                ft_putendl_fd(" :not a valid identifier", 2);
-                args = args->next;
-                data->last_exit = 1;
-                flag = 1;
-                continue;
-            }
-            else
-                add_or_update_env(data, args->value);
-            args = args->next;
-        }
-    }
-    if (!flag)
-        data->last_exit = 0;
+	ft_putstr_fd((*args)->value, STDERR_FILENO);
+	ft_putendl_fd(" :not a valid identifier", STDERR_FILENO);
+	*args = (*args)->next;
+	data->last_exit = 1;
+	*flag = 1;
 }
 
-void add_or_update_env(t_data *data, const char *arg)
+static void	process_export_args(t_data *data, t_arg *args, int *flag)
 {
-    char    *key;
-    char    *value;
-    t_env   *current;
-    t_env   *new_node;
-
-    key = strdup_until_char(arg, '=');
-    if (ft_strchr(arg, '='))
-        value = strdup(ft_strchr(arg, '=') + 1);
-    else
-        value = NULL;
-    current = data->env;
-    while (current)
-    {
-        if (strcmp(current->key, key) == 0)
-        {
-            free(current->value);
-            current->value = value;
-            free(key);
-            return ;
-        }
-        current = current->next;
-    }
-    new_node = malloc(sizeof(t_env));
-    new_node->key = key;
-    new_node->value = value;
-    new_node->next = data->env;
-    data->env = new_node;
+	while (args)
+	{
+		if (!valid_identifier(args->value))
+			handle_export_error(&args, data, flag);
+		else
+		{
+			add_or_update_env(data, args->value);
+			args = args->next;
+		}
+	}
 }
 
-
-char *strdup_until_char(const char *str, char c)
+void	export_builtin(t_data *data, t_arg *args)
 {
-    size_t  len;
-    char    *dup;
+	int	flag;
 
-    len = 0;
-    while (str[len] && str[len] != c)
-        len++;
-    dup = malloc(len + 1);
-    if (!dup)
-        return (NULL);
-    strncpy(dup, str, len);
-    dup[len] = '\0';
-    return (dup);
-}
-
-int valid_identifier(const char *str)
-{
-    int i;
-
-    if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
-        return (0);
-    i = 1;
-    while (str[i] && str[i] != '=')
-    {
-        if (!ft_isalnum(str[i]) && str[i] != '_')
-            return (0);
-        i++;
-    }
-    return (1);
-}
-
-void print_env_sorted(t_env *env)
-{
-    t_env   *current;
-    t_env   *next;
-    char    *temp_key;
-    char    *temp_value;
-    int     swapped;
-
-    if (!env)
-        return ;
-
-    swapped = 1;
-    while (swapped)
-    {
-        swapped = 0;
-        current = env;
-        while (current->next)
-        {
-            next = current->next;
-            if (strcmp(current->key, next->key) > 0)
-            {
-                temp_key = current->key;
-                temp_value = current->value;
-                current->key = next->key;
-                current->value = next->value;
-                next->key = temp_key;
-                next->value = temp_value;
-                swapped = 1;
-            }
-            current = current->next;
-        }
-    }
-    current = env;
-    while (current)
-    {
-        if (current->value)
-            printf("declare -x %s=\"%s\"\n", current->key, current->value);
-        else
-            printf("declare -x %s\n", current->key);
-        current = current->next;
-    }
+	flag = 0;
+	if (!args)
+	{
+		print_env_sorted(data->env);
+		data->last_exit = 0;
+	}
+	else
+		process_export_args(data, args, &flag);
+	if (!flag)
+		data->last_exit = 0;
 }
