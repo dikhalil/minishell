@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:25:46 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:55:27 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 			write(2, ": No such file or directory\n", 29);
 			return (1);
 		}
-		//i will go with this type of errors on the next errors like the real bash
 	}
 	return (0);
 }
@@ -117,48 +116,7 @@ int	assign_fds(t_cmd *cmd, t_cmd *has_next_cmd)
 	return (0);
 }
 
-
-void ex_free_split(char **path)
-{
-    int i;
-
-    if (!path)
-        return;
-    i = 0;
-    while (path[i])
-    {
-        free(path[i]);
-        path[i] = NULL;
-        i++;
-    }
-    free(path);
-    path = NULL;
-}
-void free_envp_list(char **envp_list)
-{
-    if (!envp_list)
-        return;
-    ex_free_split(envp_list);
-}
-
-t_arg *clean_empty_args(t_arg *arg)
-{
-    t_arg *tmp = arg;
-    t_arg *next;
-
-    while (tmp)
-    {
-        next = tmp->next;
-        if (tmp->expanded && tmp->quote == NONE && tmp->value[0] == '\0')
-            delete_arg_node(&arg, tmp);
-        tmp = next;
-    }
-    return arg;
-}
-
-
-
-int isBuiltin(t_cmd *command)
+int	is_builtin(t_cmd *command)
 {
     char *cmd;
 
@@ -199,13 +157,4 @@ int check_builtin(t_cmd *command, t_data *data, int ischild, char **envp)
 	else
 		return (0);
 	return (1);
-}
-
-void exit_program_v2(t_data *data, int status)
-{
-    if (data->env)
-        env_clear(&data->env);
-    free_all(data);
-	rl_clear_history();
-    exit(status);
 }

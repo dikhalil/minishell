@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 18:40:08 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:55:44 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ int	handle_builtin_direct(t_cmd *cmd, t_data *data, char **envp, int num_cmd);
 int	is_single_command(int num_cmd, t_cmd *cmd);
 
 /* ------ builtins ------ */
-int					isBuiltin(t_cmd *command);
+int					is_builtin(t_cmd *command);
 int					check_builtin(t_cmd *command, t_data *data, int ischild, char **envp);
 void				cd_builtin(t_data *data, t_arg *args);
 void				echo_builtin(t_data *data, t_arg *args);

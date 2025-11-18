@@ -33,6 +33,7 @@ SRCS =  src/lexer/lexer.c \
 		src/shell/shell.c \
 		src/shell/main.c\
 		src/executor/executor.c \
+		src/executor/executor_utils.c \
 		src/executor/builtins/cd.c\
 		src/executor/builtins/cd_utils.c\
 		src/executor/builtins/echo.c\
@@ -44,12 +45,15 @@ SRCS =  src/lexer/lexer.c \
 		src/executor/builtins/export_utils.c\
 		src/executor/builtins/pwd.c\
 		src/executor/check_cmd.c \
+		src/executor/check_cmd_utils.c \
 		src/executor/get_path.c \
 		src/executor/delete_node.c \
 		src/executor/execute_program.c \
+		src/executor/build_cmd_args.c \
 		src/executor/fork_and_execute.c \
 		src/executor/envp_to_list.c \
-		src/executor/execution.c
+		src/executor/execution.c \
+		src/executor/execution_utils.c
 
 # Object files
 OBJ_DIR = obj

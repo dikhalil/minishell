@@ -3,34 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 22:01:29 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 02:11:45 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 18:55:11 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-int	is_single_command(int num_cmd, t_cmd *cmd)
-{
-	if (!cmd->next && num_cmd == 1)
-		return (1);
-	return (0);
-}
-
-int	handle_builtin_direct(t_cmd *cmd, t_data *data, char **envp, int num_cmd)
-{
-	if (is_single_command(num_cmd, cmd) && cmd->outfile == STDOUT_FILENO)
-	{
-		if (check_builtin(cmd, data, 0, envp))
-		{
-			close_fds(cmd);
-			return (1);
-		}
-	}
-	return (0);
-}
 
 void	handle_signal_status(int sig, t_data *data)
 {
@@ -73,26 +53,6 @@ void	wait_children(pid_t last_pid, t_data *data, int last_error)
 		if (pid == last_pid && last_pid != 0)
 			process_child_status(status, data, last_error);
 	}
-}
-
-int	handle_fd_error(t_cmd *cmd, t_data *data)
-{
-	data->last_exit = 1;
-	if (!cmd->next)
-		return (1);
-	return (0);
-}
-
-pid_t	execute_single_cmd(t_cmd *cmd, t_data *data, char **envp, int num)
-{
-	pid_t	result;
-
-	if (!cmd->arg)
-		return (0);
-	if (handle_builtin_direct(cmd, data, envp, num))
-		return (0);
-	result = fork_and_execute(cmd, cmd->next, envp, data);
-	return (result);
 }
 
 int	init_and_execute(t_data *data, char ***envp, pid_t *last)

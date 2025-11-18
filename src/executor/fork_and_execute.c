@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_and_execute.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 19:38:17 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/17 19:46:30 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/18 18:55:34 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	handle_child_process(t_cmd *cmd, t_cmd *next,
 	if (next)
 		close(next->infile);
 	apply_redirections(cmd);
-	if (isBuiltin(cmd))
+	if (is_builtin(cmd))
 	{
 		check_builtin(cmd, data, 1, envp);
 		close_fds(cmd);
