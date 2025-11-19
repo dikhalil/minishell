@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 19:38:23 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 19:10:57 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/19 23:14:13 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include <sys/stat.h>
+#include <errno.h>
 
 static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 {
@@ -30,9 +31,15 @@ static int	handle_input_redir(t_cmd *cmd, t_redir *redir)
 		if (cmd->infile < 0)
 		{
 			write(2, "minishell: ", 11);
-			write(2, redir->file, ft_strlen(redir->file));
-			write(2, ": No such file or directory\n", 29);
-			return (1);
+   		write(2, redir->file, ft_strlen(redir->file));
+    	write(2, ": ", 2);
+    	if (errno == EACCES)
+        	write(2, "Permission denied\n", 18);
+    	else if (errno == ENOENT)
+        	write(2, "No such file or directory\n", 27);
+    	else
+        	write(2, strerror(errno), ft_strlen(strerror(errno))); 
+	return (1);
 		}
 	}
 	return (0);

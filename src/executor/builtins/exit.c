@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 17:24:38 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 19:18:43 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/19 23:01:31 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	exit_builtin(t_data *data, t_arg *arg, int is_child, char **envp)
 
 	if (!is_child)
 		ft_putendl_fd("exit", 1);
-	data->last_exit = 0;
+	
 	ret = 0;
 	if (arg)
 		ret = exit_process_arg(data, arg, is_child);

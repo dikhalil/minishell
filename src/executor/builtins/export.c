@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 12:13:09 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:38:16 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/19 22:57:59 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,19 @@ static void	handle_export_error(t_arg **args, t_data *data, int *flag)
 	*flag = 1;
 }
 
-static void	process_export_args(t_data *data, t_arg *args, int *flag)
+static int	process_export_args(t_data *data, t_arg *args, int *flag)
 {
+	int counter;
+	
+	counter = 0;
 	while (args)
 	{
+		while(args && args->value && args->value[0] == '\0')
+			args = args->next;
+		if (!args){
+			counter++;
+			return(counter);
+		}
 		if (!valid_identifier(args->value))
 			handle_export_error(&args, data, flag);
 		else
@@ -33,12 +42,14 @@ static void	process_export_args(t_data *data, t_arg *args, int *flag)
 			args = args->next;
 		}
 	}
+	return(0);
 }
 
 void	export_builtin(t_data *data, t_arg *args)
 {
 	int	flag;
-
+	int code;
+	
 	flag = 0;
 	if (!args)
 	{
@@ -46,7 +57,12 @@ void	export_builtin(t_data *data, t_arg *args)
 		data->last_exit = 0;
 	}
 	else
-		process_export_args(data, args, &flag);
+		code = process_export_args(data, args, &flag);
+	if(code == 1)
+	{
+		print_env_sorted(data->env);
+		data->last_exit = 0;
+	}
 	if (!flag)
 		data->last_exit = 0;
 }
