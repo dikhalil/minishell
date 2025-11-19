@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 19:27:06 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/19 21:03:29 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,30 +109,49 @@ int					is_space(char c);
 int					is_redir(char c);
 int					is_redirection(t_token_type type);
 
-/* ------ lexer word utils ------ */
-char				*extract_word(t_data *data, char *str, int *i,
-						t_quote_type *quote_type);
-int					add_word(t_data *data, char *str);
-
 /* ------ lexer token utils ------ */
-t_token				*token_last(t_token *head);
+t_token			*token_last(t_token *head);
 void				token_add_back(t_token **head, t_token *new);
 void				token_clear(t_token **token);
 void				token_error_handling(t_data *data);
-int					add_token(t_data *data, char *value, t_token_type type,
+int				add_token(t_data *data, char *value, t_token_type type,
 						t_quote_type quote);
+
+/* ------ lexer word/extract utils ------ */
+char				*extract_word(t_data *data, char *str, int *i,
+						t_quote_type *quote_type);
+int				add_word(t_data *data, char *str);
 
 /* ------ lexer ------ */
 void				lexer(t_data *data);
 
-/* ------ parser cmd utils ------ */
-t_cmd				*cmd_new(t_data *data);
-t_cmd				*cmd_last(t_cmd *head);
+/* ------ executor utils ------*/
+char			*get_path(char *cmd, t_env *env);
+int				execute_program(t_arg **arg, char **envp, t_data *data);
+int				fork_and_execute(t_cmd *command, t_cmd *next, char **envp,
+						t_data *data);
+void			executor(t_data *data);
+void			ex_free_split(char **path);
+void			free_and_exit(t_data *data, char **splited, char **word);
+void			close_fds(t_cmd *cmd);
+int				assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
+int				check_cmd(char **cmd_args, t_data *data, char **envp);
+void			exit_program_v2(t_data *data, int status);
+void			exit_with_error(char **cmd_args, char **envp, t_data *data,
+						int code);
+void			handle_dot_dir(char **cmd_args, char **envp, t_data *data);
+void			check_is_directory(char **cmd_args, char **envp,
+						t_data *data);
+void			handle_trailing_slash(char **cmd_args, char **envp,
+						t_data *data);
 void				cmd_add_back(t_cmd **head, t_cmd *new);
 int					handle_pipe(t_data *data, t_cmd **current_cmd,
 						t_token *current_token);
 
 /* ------ parser arg utils ------ */
+t_cmd			*cmd_new(t_data *data);
+t_cmd			*cmd_last(t_cmd *head);
+
 t_arg				*arg_new(t_data *data, t_cmd **current_cmd,
 						t_token *current_token);
 t_arg				*arg_last(t_arg *head);
@@ -186,7 +205,7 @@ void				run_shell(t_data *data);
 
 /* ------ executor utils ------*/
 char				*get_path(char *cmd, t_env *env);
-int					execute_program(t_arg *arg, char **envp, t_data *data);
+int					execute_program(t_arg **arg, char **envp, t_data *data);
 int					fork_and_execute(t_cmd *command, t_cmd *next, char **envp,
 						t_data *data);
 void				executor(t_data *data);
@@ -216,12 +235,12 @@ int					count_args(t_arg *arg);
 char				**allocate_cmd_args(int count);
 int					fill_cmd_args(char **cmd_args, t_arg *arg, int count);
 char				**build_cmd_args(t_arg *arg);
-char				*get_command_path(char **cmd_args, t_data *data,
+char			*get_command_path(char **cmd_args, t_data *data,
 						char **envp);
 void				handle_execve_failure(char **cmd_args, char *path,
 						char **envp, t_data *data);
 void				free_envp_list(char **envp_list);
-t_arg				*clean_empty_args(t_arg *arg);
+t_arg			*clean_empty_args(t_arg **arg);
 void				handle_child_process(t_cmd *cmd, t_cmd *next, char **envp,
 						t_data *data);
 void				apply_redirections(t_cmd *cmd);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_program.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 19:30:50 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 19:06:38 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/19 14:30:31 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,18 +44,19 @@ void	handle_execve_failure(char **cmd_args, char *path, char **envp,
 	exit_program_v2(data, 126);
 }
 
-int	execute_program(t_arg *arg, char **envp, t_data *data)
+int	execute_program(t_arg **arg, char **envp, t_data *data)
 {
-	char	**cmd_args;
-	char	*path;
+	char    **cmd_args;
+	char    *path;
+	t_arg   *arg_list;
 
-	arg = clean_empty_args(arg);
-	if (!arg)
+	arg_list = clean_empty_args(arg);
+	if (!arg_list)
 	{
 		free_envp_list(envp);
 		exit_program_v2(data, 0);
 	}
-	cmd_args = build_cmd_args(arg);
+	cmd_args = build_cmd_args(arg_list);
 	if (!cmd_args)
 		return (1);
 	path = get_command_path(cmd_args, data, envp);

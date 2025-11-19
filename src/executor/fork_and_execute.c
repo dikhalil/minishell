@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_and_execute.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 19:38:17 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:55:34 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/19 14:30:32 by yocto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	handle_child_process(t_cmd *cmd, t_cmd *next, char **envp, t_data *data)
 		ex_free_split(envp);
 		exit_program_v2(data, data->last_exit);
 	}
-	execute_program(cmd->arg, envp, data);
+	execute_program(&cmd->arg, envp, data);
 	close_fds(cmd);
 	ex_free_split(envp);
 	exit_program_v2(data, EXIT_SUCCESS);
