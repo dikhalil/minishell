@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yocto <yocto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/19 21:03:29 by yocto            ###   ########.fr       */
+/*   Updated: 2025/11/19 21:54:49 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 # include "../libft/libft.h"
 # include <fcntl.h>
+# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stddef.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/stat.h>
@@ -47,6 +47,13 @@ typedef enum e_quote_type
 	SINGLE_QUOTE,
 	DOUBLE_QUOTE
 }					t_quote_type;
+
+typedef struct s_word_state
+{
+	char			*word;
+	t_quote_type	quote_type;
+	int				expanded;
+}					t_word_state;
 
 typedef struct s_token
 {
@@ -120,7 +127,15 @@ int				add_token(t_data *data, char *value, t_token_type type,
 /* ------ lexer word/extract utils ------ */
 char				*extract_word(t_data *data, char *str, int *i,
 						t_quote_type *quote_type);
-int				add_word(t_data *data, char *str);
+int					add_word(t_data *data, char *str);
+
+/* ------ lexer word split utils ------ */
+void				process_split_array(t_data *data, char **splited,
+						char **word);
+int					check_split_content(char **splited);
+void				extract_and_join_prefix(t_data *data, char *part,
+						char **word, int *first_space);
+void				handle_split_part(t_data *data, char *part, char **word);
 
 /* ------ lexer ------ */
 void				lexer(t_data *data);

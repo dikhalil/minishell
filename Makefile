@@ -15,6 +15,7 @@ SRCS =  src/lexer/lexer.c \
 		src/lexer/lexer_extract_word.c \
 		src/lexer/lexer_token_utils.c \
 		src/lexer/lexer_word_utils.c \
+		src/lexer/lexer_word_split.c \
 		src/lexer/lexer_char_utils.c \
 		src/parser/parser.c \
 		src/parser/parser_cmd_utils.c \
