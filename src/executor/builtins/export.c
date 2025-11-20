@@ -40,16 +40,18 @@ static int	process_export_args(t_data *data, t_arg *args, int *flag)
 		{
 			add_or_update_env(data, args->value);
 			args = args->next;
+			counter++;
 		}
 	}
-	return(0);
+	return(counter);
 }
 
 void	export_builtin(t_data *data, t_arg *args)
 {
 	int	flag;
 	int code;
-	
+
+	code = 0;
 	flag = 0;
 	if (!args)
 	{
