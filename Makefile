@@ -27,6 +27,7 @@ SRCS =  src/lexer/lexer.c \
 		src/expand/expand_extract.c \
 		src/expand/expand_str.c \
 		src/env/env.c \
+		src/env/env_utils.c \
 		src/env/shlvl.c \
 		src/clean/cleanup.c \
 		src/signals/signals.c \
@@ -34,10 +35,12 @@ SRCS =  src/lexer/lexer.c \
 		src/shell/shell.c \
 		src/shell/main.c\
 		src/executor/executor.c \
+		src/executor/executor_redir.c \
 		src/executor/executor_utils.c \
 		src/executor/executor_utils2.c \
 		src/executor/builtins/cd.c\
 		src/executor/builtins/cd_utils.c\
+		src/executor/builtins/cd_utils2.c\
 		src/executor/builtins/echo.c\
 		src/executor/builtins/env.c\
 		src/executor/builtins/exit.c\

@@ -52,8 +52,8 @@ int	check_split_content(char **splited)
 	return (0);
 }
 
-void	extract_and_join_prefix(t_data *data, char *part,
-		char **word, int *first_space)
+void	extract_and_join_prefix(t_data *data, char *part, char **word,
+		int *first_space)
 {
 	char	*prefix;
 

@@ -46,9 +46,9 @@ void	handle_execve_failure(char **cmd_args, char *path, char **envp,
 
 int	execute_program(t_arg **arg, char **envp, t_data *data)
 {
-	char    **cmd_args;
-	char    *path;
-	t_arg   *arg_list;
+	char	**cmd_args;
+	char	*path;
+	t_arg	*arg_list;
 
 	arg_list = clean_empty_args(arg);
 	if (!arg_list)

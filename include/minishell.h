@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 14:45:03 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/19 21:54:49 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:59:57 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 # include "../libft/libft.h"
 # include <fcntl.h>
-# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stddef.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/stat.h>
@@ -117,11 +117,11 @@ int					is_redir(char c);
 int					is_redirection(t_token_type type);
 
 /* ------ lexer token utils ------ */
-t_token			*token_last(t_token *head);
+t_token				*token_last(t_token *head);
 void				token_add_back(t_token **head, t_token *new);
 void				token_clear(t_token **token);
 void				token_error_handling(t_data *data);
-int				add_token(t_data *data, char *value, t_token_type type,
+int					add_token(t_data *data, char *value, t_token_type type,
 						t_quote_type quote);
 
 /* ------ lexer word/extract utils ------ */
@@ -141,31 +141,31 @@ void				handle_split_part(t_data *data, char *part, char **word);
 void				lexer(t_data *data);
 
 /* ------ executor utils ------*/
-char			*get_path(char *cmd, t_env *env);
-int				execute_program(t_arg **arg, char **envp, t_data *data);
-int				fork_and_execute(t_cmd *command, t_cmd *next, char **envp,
+char				*get_path(char *cmd, t_env *env);
+int					execute_program(t_arg **arg, char **envp, t_data *data);
+int					fork_and_execute(t_cmd *command, t_cmd *next, char **envp,
 						t_data *data);
-void			executor(t_data *data);
-void			ex_free_split(char **path);
-void			free_and_exit(t_data *data, char **splited, char **word);
-void			close_fds(t_cmd *cmd);
-int				assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
-int				check_cmd(char **cmd_args, t_data *data, char **envp);
-void			exit_program_v2(t_data *data, int status);
-void			exit_with_error(char **cmd_args, char **envp, t_data *data,
+void				executor(t_data *data);
+void				ex_free_split(char **path);
+void				free_and_exit(t_data *data, char **splited, char **word);
+void				close_fds(t_cmd *cmd);
+int					assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
+int					check_cmd(char **cmd_args, t_data *data, char **envp);
+void				exit_program_v2(t_data *data, int status);
+void				exit_with_error(char **cmd_args, char **envp, t_data *data,
 						int code);
-void			handle_dot_dir(char **cmd_args, char **envp, t_data *data);
-void			check_is_directory(char **cmd_args, char **envp,
+void				handle_dot_dir(char **cmd_args, char **envp, t_data *data);
+void				check_is_directory(char **cmd_args, char **envp,
 						t_data *data);
-void			handle_trailing_slash(char **cmd_args, char **envp,
+void				handle_trailing_slash(char **cmd_args, char **envp,
 						t_data *data);
 void				cmd_add_back(t_cmd **head, t_cmd *new);
 int					handle_pipe(t_data *data, t_cmd **current_cmd,
 						t_token *current_token);
 
 /* ------ parser arg utils ------ */
-t_cmd			*cmd_new(t_data *data);
-t_cmd			*cmd_last(t_cmd *head);
+t_cmd				*cmd_new(t_data *data);
+t_cmd				*cmd_last(t_cmd *head);
 
 t_arg				*arg_new(t_data *data, t_cmd **current_cmd,
 						t_token *current_token);
@@ -250,12 +250,12 @@ int					count_args(t_arg *arg);
 char				**allocate_cmd_args(int count);
 int					fill_cmd_args(char **cmd_args, t_arg *arg, int count);
 char				**build_cmd_args(t_arg *arg);
-char			*get_command_path(char **cmd_args, t_data *data,
+char				*get_command_path(char **cmd_args, t_data *data,
 						char **envp);
 void				handle_execve_failure(char **cmd_args, char *path,
 						char **envp, t_data *data);
 void				free_envp_list(char **envp_list);
-t_arg			*clean_empty_args(t_arg **arg);
+t_arg				*clean_empty_args(t_arg **arg);
 void				handle_child_process(t_cmd *cmd, t_cmd *next, char **envp,
 						t_data *data);
 void				apply_redirections(t_cmd *cmd);
@@ -306,6 +306,8 @@ void				set_env_value(t_env **env, const char *key,
 char				*resolve_logical_path(char *pwd, char *target);
 char				*get_target_dir(t_data *data, t_arg *args);
 char				*get_old_pwd(t_data *data);
+int					validate_cd_args(t_arg *args);
+t_arg				*skip_empty_args(t_arg *args);
 
 /* ------ cleanup ------ */
 void				reset_data(t_data *data);

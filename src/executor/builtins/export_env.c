@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 18:40:00 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/11/18 18:38:16 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:54:02 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,34 @@ static void	add_new_env(t_data *data, char *key, char *value)
 	t_env	*new_node;
 
 	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+	{
+		free(key);
+		free(value);
+		return ;
+	}
 	new_node->key = key;
 	new_node->value = value;
 	new_node->next = data->env;
 	data->env = new_node;
+}
+
+static char	*get_export_value(const char *arg, char *key)
+{
+	char	*value;
+
+	if (ft_strchr(arg, '='))
+	{
+		value = ft_strdup(ft_strchr(arg, '=') + 1);
+		if (!value)
+		{
+			free(key);
+			return (NULL);
+		}
+	}
+	else
+		value = NULL;
+	return (value);
 }
 
 void	add_or_update_env(t_data *data, const char *arg)
@@ -37,10 +61,11 @@ void	add_or_update_env(t_data *data, const char *arg)
 	t_env	*current;
 
 	key = strdup_until_char(arg, '=');
-	if (ft_strchr(arg, '='))
-		value = ft_strdup(ft_strchr(arg, '=') + 1);
-	else
-		value = NULL;
+	if (!key)
+		return ;
+	value = get_export_value(arg, key);
+	if (!value && ft_strchr(arg, '='))
+		return ;
 	current = data->env;
 	while (current)
 	{

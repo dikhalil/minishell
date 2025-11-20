@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 01:07:40 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 19:06:22 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:09:44 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	handle_dot_dir(char **cmd_args, char **envp, t_data *data)
 	}
 	else if ((len >= 2 && ((cmd_args[0][1] == '/' && cmd_args[0][0] == '.')
 		|| cmd_args[0][len - 1] == '/')) || (len == 1
-				&& cmd_args[0][0] == '/'))
+		&& cmd_args[0][0] == '/'))
 	{
 		ft_putendl_fd(": Is a directory", 2);
 		exit_with_error(cmd_args, envp, data, 126);

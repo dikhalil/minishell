@@ -6,7 +6,7 @@
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:26:48 by yocto             #+#    #+#             */
-/*   Updated: 2025/11/18 18:31:35 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:47:02 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,28 +53,42 @@ static void	update_pwd(t_data *data, char *oldpwd, char *target)
 	}
 }
 
+static int	handle_chdir_error(char *target_dir, char *oldpwd)
+{
+	ft_putstr_fd("cd: ", STDERR_FILENO);
+	perror(target_dir);
+	if (oldpwd)
+		free(oldpwd);
+	return (1);
+}
+
+static int	handle_target_error(char *oldpwd)
+{
+	if (oldpwd)
+		free(oldpwd);
+	return (0);
+}
+
 void	cd_builtin(t_data *data, t_arg *args)
 {
 	char	*target_dir;
 	char	*oldpwd;
 
-	if (args && args->next)
+	if (validate_cd_args(args))
 	{
-		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
 		data->last_exit = 1;
 		return ;
 	}
 	oldpwd = get_old_pwd(data);
 	target_dir = get_target_dir(data, args);
 	if (!target_dir)
+	{
+		handle_target_error(oldpwd);
 		return ;
+	}
 	if (chdir(target_dir) != 0)
 	{
-		ft_putstr_fd("cd: ", STDERR_FILENO);
-		perror(target_dir);
-		data->last_exit = 1;
-		if (oldpwd)
-			free(oldpwd);
+		data->last_exit = handle_chdir_error(target_dir, oldpwd);
 		return ;
 	}
 	update_pwd(data, oldpwd, target_dir);
