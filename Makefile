@@ -67,7 +67,7 @@ OBJS = $(patsubst src/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 # Default target
 all: $(NAME)
 
-# Build pipex binary (regular)
+# Build minishell binary
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) -L $(LIBFT_PATH) -lft -lreadline -o $(NAME)
 

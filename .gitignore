@@ -1,0 +1,17 @@
+# Binary
+minishell
+
+# Object files
+obj/
+*.o
+
+# Library archive
+libft/libft.a
+
+# Editor / OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store

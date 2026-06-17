@@ -13,11 +13,11 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <signal.h>
 # include "../libft/libft.h"
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
-# include <signal.h>
 # include <stddef.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -140,29 +140,6 @@ void				handle_split_part(t_data *data, char *part, char **word);
 /* ------ lexer ------ */
 void				lexer(t_data *data);
 
-/* ------ executor utils ------*/
-char				*get_path(char *cmd, t_env *env);
-int					execute_program(t_arg **arg, char **envp, t_data *data);
-int					fork_and_execute(t_cmd *command, t_cmd *next, char **envp,
-						t_data *data);
-void				executor(t_data *data);
-void				ex_free_split(char **path);
-void				free_and_exit(t_data *data, char **splited, char **word);
-void				close_fds(t_cmd *cmd);
-int					assign_fds(t_cmd *cmd, t_cmd *has_next_cmd);
-int					check_cmd(char **cmd_args, t_data *data, char **envp);
-void				exit_program_v2(t_data *data, int status);
-void				exit_with_error(char **cmd_args, char **envp, t_data *data,
-						int code);
-void				handle_dot_dir(char **cmd_args, char **envp, t_data *data);
-void				check_is_directory(char **cmd_args, char **envp,
-						t_data *data);
-void				handle_trailing_slash(char **cmd_args, char **envp,
-						t_data *data);
-void				cmd_add_back(t_cmd **head, t_cmd *new);
-int					handle_pipe(t_data *data, t_cmd **current_cmd,
-						t_token *current_token);
-
 /* ------ parser arg utils ------ */
 t_cmd				*cmd_new(t_data *data);
 t_cmd				*cmd_last(t_cmd *head);
@@ -184,6 +161,9 @@ int					handle_redir(t_data *data, t_cmd **current_cmd,
 
 /* ------ parser utils ------ */
 void				cmd_clear(t_cmd **cmds);
+void				cmd_add_back(t_cmd **head, t_cmd *new);
+int					handle_pipe(t_data *data, t_cmd **current_cmd,
+						t_token *current_token);
 void				parser_error_handling(t_data *data, t_token *current_token);
 
 /* ------ parser ------ */
